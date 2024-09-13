@@ -1,0 +1,61 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Splitting from "splitting";
+import "splitting/dist/splitting.css";
+import { useEffect } from "react";
+import "./Hero.css";
+
+const Hero: React.FC = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    Splitting();
+  }, []);
+
+  return (
+    <section className="pt-20 text-center md:flex bg-blue-50">
+      <div className="flex flex-col justify-center w-full px-4 md:w-1/2">
+        <h1 
+        className="font-extrabold"
+        >Your Health, 
+         <span className="splitting" 
+          data-splitting="chars">Simplified</span> 
+        </h1>
+        <p className="mt-4 text-lg text-gray-600">
+          "Access and manage your health data anytime, anywhere with MediKeep."
+        </p>
+        <div className="mt-8 space-x-4">
+          <button 
+            className="px-6 py-3 text-white bg-blue-600 rounded hover:bg-blue-700"
+            onClick={() => navigate('/sign-up')}
+          >
+            Get Started
+          </button>
+          <button 
+            className="px-6 py-3 text-blue-600 border border-blue-600 rounded hover:bg-blue-100"
+            onClick={() => navigate('/about')}
+          >
+            Learn More
+          </button>
+        </div>
+      </div>
+      <div className="relative hidden w-1/2 px-4 md:block">
+        <div className="relative w-full h-full">
+          <img 
+            src="https://res.cloudinary.com/avhixorin/image/upload/v1724770945/doctor_hy22hh.png" 
+            alt="doctor" 
+            className="h-[28rem] relative z-10 mx-auto" 
+          />
+          
+          {/* Left gradient */}
+          <div className="absolute inset-y-0 left-0 z-0 w-1/2 bg-gradient-to-r from-blue-50 to-blue-200"></div>
+          
+          {/* Right gradient */}
+          <div className="absolute inset-y-0 right-0 z-0 w-1/2 bg-gradient-to-l from-blue-50 to-blue-200"></div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Hero;

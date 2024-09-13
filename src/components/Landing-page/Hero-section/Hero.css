@@ -1,0 +1,37 @@
+@font-face {
+  font-family: "IBM Plex Sans Roman";
+  src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85648/IBMPlexSansVar-Roman.ttf");
+}
+
+h1 {
+  font-family: "IBM Plex Sans Roman", Times;
+  font-weight: 100;
+  font-size: 4rem; /* Tailwind's 6xl size */
+  line-height: 4.5rem; /* Adjust as needed for spacing */
+  font-variation-settings: 'wght' 100, 'wdth' 85;
+}
+
+h1 .char {
+  --delay: calc((var(--char-index) + 1) * 400ms);
+  animation: breathe 4000ms infinite both;
+  animation-delay: var(--delay);
+}
+
+h1:hover span {
+  animation-play-state: paused;
+}
+
+@keyframes breathe {
+  0% {
+    font-variation-settings: 'wght' 100, 'wdth' 85;
+    font-size: 4rem; /* Tailwind's 6xl size */
+  }
+  60% {
+    font-variation-settings: 'wght' 700, 'wdth' 100;
+    font-size: 4.5rem; /* Slightly larger size for animation effect */
+  }
+  100% {
+    font-variation-settings: 'wght' 100, 'wdth' 85;
+    font-size: 4rem; /* Tailwind's 6xl size */
+  }
+}
