@@ -68,7 +68,7 @@ const ContactUs = () => {
   // };
 
   return (
-    <div className="mt-12 flex flex-col gap-10 overflow-hidden py-6 bg-blue-50" id="contact">
+    <div itemID="contact-section" className="mt-12 flex flex-col gap-10 overflow-hidden py-6 bg-blue-50" id="contact">
       <div className="dark:bg-gray-800 p-8 w-full flex">
         <div className="w-full bg-white lg:w-[40%] py-8 rounded-2xl shadow-lg flex flex-col items-center">
           <p className="text-[18px] text-gray-600 dark:text-gray-400 uppercase tracking-wider text-center">

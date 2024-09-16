@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const About: React.FC = () => {
+  
   return (
-    <section className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 py-12">
+    <section className="bg-gradient-to-r from-blue-200 via-blue-100 to-white dark:from-blue-900 dark:via-blue-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 py-12">
       <div className="container mx-auto px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-center mb-10 text-blue-700 dark:text-blue-400">About Us</h1>
 
@@ -83,8 +84,9 @@ const About: React.FC = () => {
         <div className="mt-16 text-center">
           <h2 className="text-3xl font-bold mb-6 text-blue-700 dark:text-blue-400">Get in Touch</h2>
           <p className="text-lg mb-4 text-gray-700 dark:text-gray-300">
-            We welcome your feedback and are here to assist you with any questions or concerns. Feel free to reach out to us through our 
-            <a href="#" className="text-blue-600 hover:underline">contact page</a>, or connect with us on our social media channels.
+            We welcome your feedback and are here to assist you with any questions or concerns. Feel free to reach out to us through our&nbsp;  
+            <Link to={"/"} className="text-blue-600 hover:underline"
+            >contact page</Link>, or connect with us on our social media channels.
           </p>
           <p className="text-lg text-gray-700 dark:text-gray-300">
             Thank you for choosing MediKeep. Together, we are shaping the future of healthcare.
