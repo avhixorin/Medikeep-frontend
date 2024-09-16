@@ -10,9 +10,24 @@ import { AnimatePresence, motion } from "framer-motion";
 const persistor = persistStore(store);
 
 const pageTransition = {
-  initial: { opacity: 0, x: "-100vw" },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.5 } },
-  exit: { opacity: 0, x: "100vw", transition: { duration: 0.5 } },
+  initial: { 
+    opacity: 0, 
+    x: "-100vw" 
+  },
+  animate: { 
+    opacity: 1, 
+    x: 0, 
+    transition: { 
+      duration: 0.5 
+    } 
+  },
+  exit: { 
+    opacity: 0, 
+    x: "100vw", 
+    transition: { 
+      duration: 0.5 
+    } 
+  },
 };
 
 const App: React.FC = () => {
