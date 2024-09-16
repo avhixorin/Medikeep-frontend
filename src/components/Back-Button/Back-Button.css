@@ -2,16 +2,16 @@
 #back-btn {
     display: flex;
     height: 3em;
-    /* width: 100px; */
+    width: 100px;
     align-items: center;
     justify-content: center;
-    background-color: #eeeeee4b;
+    background-color: transparent;
     border-radius: 3px;
     letter-spacing: 1px;
     transition: all 0.2s linear;
     cursor: pointer;
     border: none;
-    background: #fff;
+    background: transparent;
    }
    
    #back-btn > svg {
