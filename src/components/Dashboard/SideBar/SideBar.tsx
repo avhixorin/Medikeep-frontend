@@ -4,7 +4,6 @@ import {
   LayoutGrid,
   Calendar,
   MessageSquare,
-  Clock,
   Settings,
   LogOut,
   HeartPulse,
@@ -36,7 +35,13 @@ export default function Sidebar() {
   );
 }
 
-function SidebarLink({ to, icon, label }) {
+interface SidebarLinkProps {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+}
+
+function SidebarLink({ to, icon, label }: SidebarLinkProps) {
   return (
     <Link
       to={to}
@@ -48,7 +53,12 @@ function SidebarLink({ to, icon, label }) {
   );
 }
 
-function SidebarButton({ icon, label }) {
+interface SidebarButtonProps {
+  icon: React.ReactNode;
+  label: string;
+}
+
+function SidebarButton({ icon, label }: SidebarButtonProps) {
   return (
     <button className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150 ease-in-out focus:outline-none">
       {icon}
