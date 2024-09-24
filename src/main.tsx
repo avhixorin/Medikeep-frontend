@@ -43,8 +43,8 @@ const router = createBrowserRouter(
         <Route index element={<Home />} />
         {/* <Route path='profile' element={<Profile />} /> */}
         <Route path='appointments' element={<Appointments/>}/>
-        <Route path='medicalrecords' element={<MedicalRecords/>}/>
-        <Route path='chat' element={<Chat/>}/>
+        <Route path='records' element={<MedicalRecords/>}/>
+        <Route path='chats' element={<Chat/>}/>
         <Route path='settings/healthprofile' element={<HealthProfile/>}/>
       </Route>
     </Route>
