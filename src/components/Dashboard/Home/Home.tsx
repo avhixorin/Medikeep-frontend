@@ -1,24 +1,8 @@
-import { Bell, Search, ChevronDown } from 'lucide-react'
+import { Bell, Search, ChevronDown } from 'lucide-react';
 
 export default function HealthDashboard() {
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-gray-100">
-      {/* Sidebar */}
-      {/* <div className="lg:w-16 w-full lg:h-full h-auto bg-white border-r border-gray-200 flex lg:flex-col flex-row justify-between lg:justify-start lg:space-y-4 px-4 lg:px-0 py-4">
-        <div className="flex lg:flex-col items-center lg:space-y-4 space-x-4 lg:space-x-0">
-          <div className="w-8 h-8 bg-orange-500 rounded-lg"></div>
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-        </div>
-        <div className="flex lg:flex-col items-center lg:space-y-4 space-x-4 lg:space-x-0">
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-        </div>
-      </div> */}
-
-      {/* Main Content */}
       <div className="flex-1 p-4 lg:p-8">
         <div className="flex justify-between items-center mb-4 lg:mb-8">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>
@@ -28,14 +12,12 @@ export default function HealthDashboard() {
           </div>
         </div>
 
-        {/* Health Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 lg:mb-8">
           <HealthMetric title="Blood Sugar" value="80" unit="mg / dL" status="Normal" color="bg-orange-100" />
           <HealthMetric title="Heart Rate" value="98" unit="bpm" status="Normal" color="bg-red-100" />
           <HealthMetric title="Blood Pressure" value="102" unit="/72 mmHg" status="Normal" color="bg-blue-100" />
         </div>
 
-        {/* Activity Growth */}
         <div className="bg-white p-4 lg:p-6 rounded-lg shadow mb-4 lg:mb-8">
           <div className="flex justify-between items-center mb-2 lg:mb-4">
             <h2 className="text-lg font-semibold">Activity Growth</h2>
@@ -90,10 +72,18 @@ export default function HealthDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-function HealthMetric({ title, value, unit, status, color }) {
+type HealthMetricProps = {
+  title: string;
+  value: string;
+  unit: string;
+  status: string;
+  color: string;
+};
+
+function HealthMetric({ title, value, unit, status, color }: HealthMetricProps) {
   return (
     <div className={`${color} p-4 rounded-lg`}>
       <h3 className="text-sm font-medium mb-2">{title}</h3>
@@ -106,19 +96,30 @@ function HealthMetric({ title, value, unit, status, color }) {
         {/* Placeholder for the chart */}
       </div>
     </div>
-  )
+  );
 }
 
-function InputField({ label, value }) {
+type InputFieldProps = {
+  label: string;
+  value: string;
+};
+
+function InputField({ label, value }: InputFieldProps) {
   return (
     <div className="bg-gray-700 p-3 rounded">
       <label className="block text-xs text-gray-400 mb-1">{label}</label>
       <input type="text" value={value} className="bg-transparent text-white w-full" readOnly />
     </div>
-  )
+  );
 }
 
-function MeasurementField({ label, value, trend }) {
+type MeasurementFieldProps = {
+  label: string;
+  value: string;
+  trend: 'up' | 'down';
+};
+
+function MeasurementField({ label, value, trend }: MeasurementFieldProps) {
   return (
     <div className="bg-gray-700 p-3 rounded">
       <label className="block text-xs text-gray-400 mb-1">{label}</label>
@@ -129,5 +130,5 @@ function MeasurementField({ label, value, trend }) {
         </span>
       </div>
     </div>
-  )
+  );
 }
