@@ -27,7 +27,7 @@ const NavBar: React.FC = () => {
   return (
     <nav
       className={`${
-        scrolled ? "bg-white shadow-md" : "bg-transparent"
+        scrolled ? "bg-white shadow-md backdrop:blur-sm" : "bg-transparent"
       } fixed w-full z-50 transition-all duration-300 p-4 flex justify-between items-center font-lato`}
     id="#"
     >
