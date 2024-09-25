@@ -41,14 +41,15 @@ const Hero: React.FC = () => {
         </div>
       </div>
       <div className="relative hidden w-1/2 px-4 md:block">
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full overflow-y-hidden">
           <motion.img
             src="https://res.cloudinary.com/avhixorin/image/upload/v1724770945/doctor_hy22hh.png"
             alt="doctor"
             className="h-[28rem] relative z-10 mx-auto"
             animate={{ scale: 1, opacity: 1 }}
             initial={{  opacity: 0}}  
-            transition={{ delay: 0.2, duration: 2 }}
+            transition={{ delay: 0, duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
           >
           </motion.img>
           {/* Left gradient */}
