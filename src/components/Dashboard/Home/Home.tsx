@@ -16,8 +16,8 @@ interface RootState {
 }
 
 const HealthDashboard: React.FC = () => {
-  const [height, setHeight] = useState<number>(153); // height in cm
-  const [weight, setWeight] = useState<number>(70); // weight in kg
+  const [height] = useState<number>(153); // height in cm
+  const [weight] = useState<number>(70); // weight in kg
   const [bmi, setBmi] = useState<number>(0);
   const [status, setStatus] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("January");
