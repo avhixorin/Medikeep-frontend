@@ -6,8 +6,8 @@ interface Activity {
 }
 
 // Function to generate random day data for every 5 days
-const generateRandomDayData = (numberOfDays: number): object => {
-  const data = {};
+const generateRandomDayData = (numberOfDays: number): { [key: number]: number } => {
+  const data: { [key: number]: number } = {};
   for (let i = 1; i <= numberOfDays; i += 5) {
     data[i] = Math.floor(Math.random() * 100);
   }
