@@ -68,6 +68,7 @@ const HealthDashboard: React.FC = () => {
   // Fetch activity data from Redux store
   const activityData = useSelector((state: RootState) => state.activity);
 
+  console.log(activityData);
   // Function to render bar chart for selected month
   const renderBarChart = (): JSX.Element | null => {
     const selectedActivity = activityData.find((activity) => activity.month === selectedMonth);
