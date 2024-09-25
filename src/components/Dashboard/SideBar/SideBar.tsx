@@ -14,9 +14,9 @@ export default function Sidebar() {
     <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-white border-r border-gray-200">
       
       {/* Logo at the top */}
-      <Link to="/" className="flex items-center justify-center md:justify-start text-indigo-600 hover:text-indigo-700">
+      <Link to="/" className="flex flex-col gap-4 items-center justify-center md:justify-start text-indigo-600 hover:text-indigo-700">
         <Infinity size={32} />
-        <span className="ml-2 text-xl font-bold hidden md:block">MyApp</span>
+        <span className="ml-2 text-xl font-bold hidden md:block">Username</span>
       </Link>
 
       {/* Navigation Links */}
