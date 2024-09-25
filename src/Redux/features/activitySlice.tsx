@@ -5,7 +5,7 @@ interface Activity {
   dayData: object;
 }
 
-// Function to generate random day data for every 5 days
+
 const generateRandomDayData = (numberOfDays: number): { [key: number]: number } => {
   const data: { [key: number]: number } = {};
   for (let i = 1; i <= numberOfDays; i += 5) {
@@ -17,51 +17,51 @@ const generateRandomDayData = (numberOfDays: number): { [key: number]: number } 
 const initialState: Activity[] = [
   {
     month: "January",
-    dayData: generateRandomDayData(31), // Adjusted for every 5 days
+    dayData: generateRandomDayData(31),
   },
   {
     month: "February",
-    dayData: generateRandomDayData(28), // Adjusted for every 5 days
+    dayData: generateRandomDayData(28), 
   },
   {
     month: "March",
-    dayData: generateRandomDayData(31), // Adjusted for every 5 days
+    dayData: generateRandomDayData(31), 
   },
   {
     month: "April",
-    dayData: generateRandomDayData(30), // Adjusted for every 5 days
+    dayData: generateRandomDayData(30), 
   },
   {
     month: "May",
-    dayData: generateRandomDayData(31), // Adjusted for every 5 days
+    dayData: generateRandomDayData(31), 
   },
   {
     month: "June",
-    dayData: generateRandomDayData(30), // Adjusted for every 5 days
+    dayData: generateRandomDayData(30),
   },
   {
     month: "July",
-    dayData: generateRandomDayData(31), // Adjusted for every 5 days
+    dayData: generateRandomDayData(31), 
   },
   {
     month: "August",
-    dayData: generateRandomDayData(31), // Adjusted for every 5 days
+    dayData: generateRandomDayData(31),
   },
   {
     month: "September",
-    dayData: generateRandomDayData(30), // Adjusted for every 5 days
+    dayData: generateRandomDayData(30), 
   },
   {
     month: "October",
-    dayData: generateRandomDayData(31), // Adjusted for every 5 days
+    dayData: generateRandomDayData(31), 
   },
   {
     month: "November",
-    dayData: generateRandomDayData(30), // Adjusted for every 5 days
+    dayData: generateRandomDayData(30), 
   },
   {
     month: "December",
-    dayData: generateRandomDayData(31), // Adjusted for every 5 days
+    dayData: generateRandomDayData(31), 
   },
 ];
 
