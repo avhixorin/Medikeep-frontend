@@ -6,7 +6,7 @@ export default function HealthDashboard() {
       <div className="flex-1 p-4 lg:p-8">
         <div className="flex justify-between items-center mb-4 lg:mb-8">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>
-          <div className="flex items-center space-x-2 lg:space-x-4">
+          <div className="flex items-center space-x-4 lg:space-x-6">
             <Search className="w-5 h-5 text-gray-500" />
             <Bell className="w-5 h-5 text-gray-500" />
           </div>

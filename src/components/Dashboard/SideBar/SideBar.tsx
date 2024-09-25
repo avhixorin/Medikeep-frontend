@@ -11,7 +11,8 @@ import {
 
 export default function Sidebar() {
   return (
-    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-screen py-8 space-y-8 bg-white border-r border-gray-200">
+    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-white border-r border-gray-200">
+      
       {/* Logo at the top */}
       <Link to="/" className="flex items-center justify-center md:justify-start text-indigo-600 hover:text-indigo-700">
         <Infinity size={32} />

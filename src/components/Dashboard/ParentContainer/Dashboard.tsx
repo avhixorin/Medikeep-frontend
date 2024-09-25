@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
   // }, [isAuthenticated, navigate]);
 
   return (
-    <div className="w-full relative max-h-[100dvh] bg-[#FFFCF8] flex">
+    <div className="w-full max-h-[100dvh] bg-[#FFFCF8] flex">
       <SideBar />
       <main className="flex-1 overflow-y-auto">
         <Outlet />
