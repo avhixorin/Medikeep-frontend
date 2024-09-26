@@ -24,11 +24,12 @@ const TnC: React.FC = () => {
 };
 
 const SignInForm: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [loginFormData, setLoginFormData] = useState<loginFormData>({
     email: '',
     password: ''
   });
-  // const [error, setError] = useState<string | null>(null);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -39,7 +40,7 @@ const SignInForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+    setLoading(true);
     try {
       const response = await fetch('https://medikeep-backend.onrender.com/api/v1/users/login', {
         method: 'POST',
@@ -62,17 +63,16 @@ const SignInForm: React.FC = () => {
           icon:"success"
         })
         
-        // console.log(data.data)
         dispatch(setAuthUser(data.data));
+        setLoading(false);
         navigate('/dashboard');
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        // setError(error.message);
-      } else {
-        // setError('An unknown error occurred');
-      }
-      // setError(error.message);
+      Swal.fire({
+        text: (error as Error).message,
+        icon: 'error',
+      });
+      setLoading(false);
     }
   };
 
@@ -88,10 +88,6 @@ const SignInForm: React.FC = () => {
               </div>
             <p className="sititle text-center w-full">Welcome back</p>
             </div>
-
-
-              {/* {error && <div className="error-message">{error}</div>} */}
-              
               <form onSubmit={handleSubmit} className="form flex flex-col gap-4">
                 <input 
                   type="email" 
@@ -118,7 +114,9 @@ const SignInForm: React.FC = () => {
                   <TnC />
                 </div>
                 <div className="input-group md:col-span-2">
-                  <button className='form-btn'>Log in</button>
+                  <button className='form-btn'
+                  disabled={loading}
+                  >{ loading ? "Logging in..." : "Log in"}</button>
                 </div>
               </form>
               
