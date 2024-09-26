@@ -119,7 +119,7 @@ const SignUpForm: React.FC = () => {
               <div className="absolute left-0">
                 <BackButton text={""} thickness={20} />
               </div>
-            <p className="sititle text-center w-full">Welcome back</p>
+            <p className="sititle text-center w-full">Sign Up and Get Started</p>
             </div>
           
           <form className="form grid gap-4 md:grid-cols-2" onSubmit={handleSubmit}>
