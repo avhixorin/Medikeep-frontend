@@ -95,7 +95,7 @@ const HealthDashboard: React.FC = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="value" fill="#f97316" />
+          <Bar dataKey="value" fill="#6C48C5" />
         </BarChart>
       </ResponsiveContainer>
     );
