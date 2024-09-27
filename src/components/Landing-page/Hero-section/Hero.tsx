@@ -14,7 +14,7 @@ const Hero: React.FC = () => {
   }, []);
 
   return (
-    <section className="pt-20 text-center md:flex bg-blue-50">
+    <section className="pt-20 pb-8 text-center md:flex bg-blue-50">
       <div className="flex flex-col justify-center w-full px-4 md:w-1/2">
         <h1 className="font-extrabold">
           Your Health,
