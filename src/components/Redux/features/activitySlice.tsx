@@ -8,10 +8,11 @@ interface Activity {
   dayData: DayData; 
 }
 
-const generateRandomDayData = (numberOfDays: number): DayData => {
+// Function to generate 10 random data points for each month
+const generateRandomDayData = (): DayData => {
   const data: DayData = [];
-  for (let i = 1; i <= numberOfDays; i += 5) {
-    data.push(Math.floor(Math.random() * 100));
+  for (let i = 0; i < 10; i++) {
+    data.push(Math.floor(Math.random() * 100)); // Generate random values between 0 and 100
   }
   return data;
 };
@@ -19,51 +20,51 @@ const generateRandomDayData = (numberOfDays: number): DayData => {
 const initialState: Activity[] = [
   {
     month: "January",
-    dayData: generateRandomDayData(31),
+    dayData: generateRandomDayData(),
   },
   {
     month: "February",
-    dayData: generateRandomDayData(28),
+    dayData: generateRandomDayData(),
   },
   {
     month: "March",
-    dayData: generateRandomDayData(31),
+    dayData: generateRandomDayData(),
   },
   {
     month: "April",
-    dayData: generateRandomDayData(30),
+    dayData: generateRandomDayData(),
   },
   {
     month: "May",
-    dayData: generateRandomDayData(31),
+    dayData: generateRandomDayData(),
   },
   {
     month: "June",
-    dayData: generateRandomDayData(30),
+    dayData: generateRandomDayData(),
   },
   {
     month: "July",
-    dayData: generateRandomDayData(31),
+    dayData: generateRandomDayData(),
   },
   {
     month: "August",
-    dayData: generateRandomDayData(31),
+    dayData: generateRandomDayData(),
   },
   {
     month: "September",
-    dayData: generateRandomDayData(30),
+    dayData: generateRandomDayData(),
   },
   {
     month: "October",
-    dayData: generateRandomDayData(31),
+    dayData: generateRandomDayData(),
   },
   {
     month: "November",
-    dayData: generateRandomDayData(30),
+    dayData: generateRandomDayData(),
   },
   {
     month: "December",
-    dayData: generateRandomDayData(31),
+    dayData: generateRandomDayData(),
   },
 ];
 
@@ -78,6 +79,9 @@ const activitySlice = createSlice({
         state[index].dayData = dayData;
       }
     },
+    // resetState: () => {
+    //   return initialState;  
+    // },
   },
 });
 
