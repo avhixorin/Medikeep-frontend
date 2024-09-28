@@ -3,7 +3,6 @@ import { Bell, Search } from "lucide-react";
 import HealthCard from "./HealthCard";
 import { useSelector } from "react-redux";
 import {
-  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -132,10 +131,10 @@ const HealthDashboard: React.FC = () => {
     setSelectedMonth(month);
   };
 
-  const resetStore = () => {
-    localStorage.clear();
-    window.location.reload();
-  };
+  // const resetStore = () => {
+  //   localStorage.clear();
+  //   window.location.reload();
+  // };
   return (
     <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8]">
       {/* <div>
