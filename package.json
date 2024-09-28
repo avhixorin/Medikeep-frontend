@@ -31,7 +31,8 @@
     "rsuite": "^5.70.2",
     "splitting": "^1.1.0",
     "styled-components": "^6.1.13",
-    "sweetalert2": "^11.6.13"
+    "sweetalert2": "^11.6.13",
+    "tailwind-scrollbar": "^3.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
