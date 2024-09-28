@@ -14,9 +14,9 @@ export default function Sidebar() {
       
       {/* Logo at the top */}
       <div className='w-full flex flex-col gap-28 md:gap-10'>
-        <NavLink to="#" className="flex flex-col gap-6 items-center justify-center md:justify-start text-indigo-600 hover:text-indigo-700">
+        <NavLink to="#" className="flex flex-col gap-6 items-center justify-center md:justify-start">
           <img src="https://randomuser.me/api/portraits/women/48.jpg" className='rounded-full h-12 w-10 md:h-20 md:w-20' alt="User" />
-          <span className="ml-2 text-xl font-bold hidden md:block">{"Username"}</span>
+          <span className="ml-2 text-lg font-medium hidden md:block font-poppins">{"Username"}</span>
         </NavLink>
 
         {/* Navigation Links */}
@@ -51,12 +51,12 @@ function SidebarLink({ to, icon, label, end = false }: SidebarLinkProps) {
       end={end} // This ensures the exact route is matched
       className={({ isActive }) =>
         `flex items-center justify-center md:justify-start p-2 w-full rounded-lg transition-colors duration-150 ease-in-out ${
-          isActive ? 'text-indigo-600 bg-indigo-100' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
+          isActive ? 'text-zinc-800 bg-gray-200' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
         }`
       }
     >
       {icon}
-      <span className="ml-3 hidden md:block">{label}</span>
+      <span className="ml-3 hidden md:block font-medium">{label}</span>
     </NavLink>
   );
 }

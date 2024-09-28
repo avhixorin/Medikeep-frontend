@@ -1,6 +1,7 @@
 import React from "react";
 import ChatCard from "./ChatCard";
 import "../../../index.css";
+import { Users } from "lucide-react";
 
 const randomNames = [
   "Dr. Jane Doe",
@@ -15,7 +16,19 @@ const randomNames = [
   "Dr. Robert Hernandez",
 ];
 
+
+
 const randomImages = [
+  "https://randomuser.me/api/portraits/women/48.jpg",
+  "https://randomuser.me/api/portraits/women/49.jpg",
+  "https://randomuser.me/api/portraits/women/50.jpg",
+  "https://randomuser.me/api/portraits/women/46.jpg",
+  "https://randomuser.me/api/portraits/women/52.jpg",
+  "https://randomuser.me/api/portraits/men/43.jpg",
+  "https://randomuser.me/api/portraits/men/44.jpg",
+  "https://randomuser.me/api/portraits/men/45.jpg",
+  "https://randomuser.me/api/portraits/men/46.jpg",
+  "https://randomuser.me/api/portraits/men/47.jpg",
   "https://randomuser.me/api/portraits/women/48.jpg",
   "https://randomuser.me/api/portraits/women/49.jpg",
   "https://randomuser.me/api/portraits/women/50.jpg",
@@ -38,7 +51,11 @@ const Chat: React.FC = () => {
     <div className="w-full h-full flex flex-col justify-center items-center bg-[#fffcf8] p-8">
       <div className="h-[25%] w-full flex flex-col justify-start gap-6">
         <div className="w-full flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-zinc-700">Connections</h1>
+          <div className="flex gap-3 items-center">
+            <h1 className="text-2xl font-semibold text-zinc-700">Connections</h1>
+            <Users size={24} stroke="#3f3f46" />
+          </div>
+          
           <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Add Connections
           </button>
@@ -47,12 +64,12 @@ const Chat: React.FC = () => {
         {/* <p>September 27, 2024</p> */}
 
         <div className="w-full flex justify-start items-center gap-6">
-          {randomImages.slice(0, 5).map((imgSrc) => (
+          {randomImages.slice(0, 10).map((imgSrc) => (
             <img
               key={imgSrc}
               src={imgSrc}
               alt=""
-              className="w-10 h-10 rounded-full"
+              className="w-10 h-10 rounded-full cursor-pointer"
             />
           ))}
         </div>
@@ -60,7 +77,7 @@ const Chat: React.FC = () => {
 
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex gap-3 overflow-hidden shadow-xl">
         {/* Set a fixed width for the aside section */}
-        <aside className="h-full w-64 md:w-72 bg-white flex flex-col justify-start overflow-y-scroll scrollbar-hidden">
+        <aside className="h-full w-64 md:w-72 bg-white flex flex-col justify-start overflow-y-auto scrollbar-hidden">
           {Array.from({ length: 10 }).map((_, index) => (
             <ChatCard
               key={index}
