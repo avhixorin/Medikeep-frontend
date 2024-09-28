@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutGrid,
   Calendar,
@@ -7,8 +7,31 @@ import {
   LogOut,
   HeartPulse,
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function Sidebar() {
+ 
+  const navigate = useNavigate();
+
+  const handleLogout = async() => {
+    const response = await fetch('https://medikeep-backend.onrender.com/api/v1/users/logout')
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      Swal.fire({
+        text: errorData.message || 'Failed to log out',
+        icon: 'error',
+      });
+    }
+
+    Swal.fire({
+      text: 'Logged out successfully',
+      icon: 'success',
+    });
+
+    navigate('/sign-in');
+
+  };
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-white border-r border-gray-200">
       
@@ -31,7 +54,12 @@ export default function Sidebar() {
       {/* Bottom Section */}
       <div className="flex flex-col items-center space-y-4 w-full px-2">
         <SidebarLink to="/dashboard/settings" icon={<Settings size={24} />} label="Settings" />
-        <SidebarButton icon={<LogOut size={24} />} label="Logout" />
+        <button className='w-full'
+        onClick={handleLogout}
+        >
+
+        <SidebarButton icon={<LogOut size={24} />} label="Logout"/>
+        </button>
       </div>
     </div>
   );
