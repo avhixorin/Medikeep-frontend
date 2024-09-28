@@ -10,28 +10,35 @@ import {
 import Swal from 'sweetalert2';
 
 export default function Sidebar() {
- 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Correct usage of useNavigate
 
-  const handleLogout = async() => {
-    const response = await fetch('https://medikeep-backend.onrender.com/api/v1/users/logout')
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('https://medikeep-backend.onrender.com/api/v1/users/logout');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        Swal.fire({
+          text: errorData.message || 'Failed to log out',
+          icon: 'error',
+        });
+        return; // Exit if there's an error
+      }
 
-    if (!response.ok) {
-      const errorData = await response.json();
       Swal.fire({
-        text: errorData.message || 'Failed to log out',
+        text: 'Logged out successfully',
+        icon: 'success',
+      });
+
+      navigate('/sign-in'); // Correct navigation after logout
+    } catch {
+      Swal.fire({
+        text: 'An error occurred while logging out. Please try again.',
         icon: 'error',
       });
     }
-
-    Swal.fire({
-      text: 'Logged out successfully',
-      icon: 'success',
-    });
-
-    navigate('/sign-in');
-
   };
+
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-white border-r border-gray-200">
       
@@ -54,12 +61,7 @@ export default function Sidebar() {
       {/* Bottom Section */}
       <div className="flex flex-col items-center space-y-4 w-full px-2">
         <SidebarLink to="/dashboard/settings" icon={<Settings size={24} />} label="Settings" />
-        <button className='w-full'
-        onClick={handleLogout}
-        >
-
-        <SidebarButton icon={<LogOut size={24} />} label="Logout"/>
-        </button>
+        <SidebarButton icon={<LogOut size={24} />} label="Logout" onClick={handleLogout} />
       </div>
     </div>
   );
@@ -92,11 +94,15 @@ function SidebarLink({ to, icon, label, end = false }: SidebarLinkProps) {
 interface SidebarButtonProps {
   icon: React.ReactNode;
   label: string;
+  onClick: () => void;
 }
 
-function SidebarButton({ icon, label }: SidebarButtonProps) {
+function SidebarButton({ icon, label, onClick }: SidebarButtonProps) {
   return (
-    <button className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150 ease-in-out focus:outline-none">
+    <button
+      className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150 ease-in-out focus:outline-none"
+      onClick={onClick} // Pass the onClick handler
+    >
       {icon}
       <span className="ml-3 hidden md:block">{label}</span>
     </button>
