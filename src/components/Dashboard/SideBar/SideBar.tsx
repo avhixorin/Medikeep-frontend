@@ -8,8 +8,13 @@ import {
   HeartPulse,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { clearAuthUser } from '../../Redux/features/authSlice';
+import { RootState } from '../../Redux/store/store'; // Adjust the path as necessary
 export default function Sidebar() {
+  const dispatch = useDispatch(); // Correct usage of useDispatch
+  const user = useSelector((state: RootState) => state.auth.user);
+  console.log(user);
   const navigate = useNavigate(); // Correct usage of useNavigate
 
   const handleLogout = async () => {
@@ -29,6 +34,8 @@ export default function Sidebar() {
         text: 'Logged out successfully',
         icon: 'success',
       });
+
+      dispatch(clearAuthUser()); 
 
       navigate('/sign-in'); // Correct navigation after logout
     } catch {

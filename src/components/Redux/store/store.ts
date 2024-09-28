@@ -10,24 +10,24 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 // Redux Persist configuration
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-}
+};
 
 // Combine reducers
 const rootReducer = combineReducers({
   auth: authSlice,
-  activity: activitySlice
-})
+  activity: activitySlice,
+});
 
 // Wrap rootReducer with persistConfig
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // Configure Redux store
 const store = configureStore({
@@ -38,6 +38,10 @@ const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
-})
+});
 
+// Get RootState type from the store
+export type RootState = ReturnType<typeof rootReducer>;
+
+// Export the store as default
 export default store;
