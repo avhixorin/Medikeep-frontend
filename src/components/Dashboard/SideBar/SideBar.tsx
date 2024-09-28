@@ -52,8 +52,8 @@ export default function Sidebar() {
       {/* Logo at the top */}
       <div className='w-full flex flex-col gap-28 md:gap-10'>
         <NavLink to="#" className="flex flex-col gap-6 items-center justify-center md:justify-start">
-          <img src="https://randomuser.me/api/portraits/women/48.jpg" className='rounded-full h-12 w-10 md:h-20 md:w-20' alt="User" />
-          <span className="ml-2 text-lg font-medium hidden md:block font-poppins">{"Username"}</span>
+          <img src={user?.profilePicture} className='rounded-full h-12 w-10 md:h-20 md:w-20' alt="User" />
+          <span className="ml-2 text-lg font-medium hidden md:block font-poppins">{user?.username}</span>
         </NavLink>
 
         {/* Navigation Links */}
