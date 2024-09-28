@@ -23,8 +23,8 @@ interface RootState {
 }
 
 const HealthDashboard: React.FC = () => {
-  const [height] = useState<number>(153); // height in cm
-  const [weight] = useState<number>(70); // weight in kg
+  const height = 175;
+  const weight = 70;
   const [bmi, setBmi] = useState<number>(0);
   const [status, setStatus] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("January");
@@ -45,38 +45,41 @@ const HealthDashboard: React.FC = () => {
     return prev < current ? "up" : "down";
   };
 
+  // Use useEffect to avoid infinite loop
   useEffect(() => {
-    bmiCalculator(height, weight);
     setBodyMeasurements((prevMeasurements) => ({
       ...prevMeasurements,
       chestTrend: setTrend(prevMeasurements.prevChest, prevMeasurements.chest),
       waistTrend: setTrend(prevMeasurements.prevWaist, prevMeasurements.waist),
       hipTrend: setTrend(prevMeasurements.prevHip, prevMeasurements.hip),
     }));
+  }, [bodyMeasurements.chest, bodyMeasurements.waist, bodyMeasurements.hip]);
+
+  // BMI calculation moved into useEffect
+  useEffect(() => {
+    const bmiCalculator = (height: number, weight: number): void => {
+      const heightInMeters = height / 100;
+      let tempBmi = weight / (heightInMeters * heightInMeters);
+      tempBmi = Math.round(tempBmi * 10) / 10;
+      setBmi(tempBmi);
+
+      if (tempBmi < 18.5) {
+        setStatus("Underweight");
+      } else if (tempBmi >= 18.5 && tempBmi <= 24.9) {
+        setStatus("Normal");
+      } else if (tempBmi >= 25 && tempBmi <= 29.9) {
+        setStatus("Overweight");
+      } else {
+        setStatus("Obese");
+      }
+    };
+
+    bmiCalculator(height, weight);
   }, [height, weight]);
-
-  const bmiCalculator = (height: number, weight: number): void => {
-    const heightInMeters = height / 100;
-    let tempBmi = weight / (heightInMeters * heightInMeters);
-    tempBmi = Math.round(tempBmi * 10) / 10;
-    setBmi(tempBmi);
-
-    if (tempBmi < 18.5) {
-      setStatus("Underweight");
-    } else if (tempBmi >= 18.5 && tempBmi <= 24.9) {
-      setStatus("Normal");
-    } else if (tempBmi >= 25 && tempBmi <= 29.9) {
-      setStatus("Overweight");
-    } else {
-      setStatus("Obese");
-    }
-  };
 
   // Fetch activity data from Redux store
   const activityData = useSelector((state: RootState) => state.activity);
 
-  console.log(activityData);
-  // Function to render bar chart for selected month
   const renderLineChart = (): JSX.Element | null => {
     const selectedActivity = activityData.find(
       (activity) => activity.month === selectedMonth
@@ -98,11 +101,7 @@ const HealthDashboard: React.FC = () => {
     }));
 
     return (
-      <ResponsiveContainer
-        width="100%"
-        height={250}
-        className={"mouse-pointer"}
-      >
+      <ResponsiveContainer width="100%" height={250} className={"mouse-pointer"}>
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
@@ -131,10 +130,6 @@ const HealthDashboard: React.FC = () => {
     setSelectedMonth(month);
   };
 
-  // const resetStore = () => {
-  //   localStorage.clear();
-  //   window.location.reload();
-  // };
   return (
     <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8]">
       {/* <div>

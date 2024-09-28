@@ -1,3 +1,4 @@
+import { Circle } from 'lucide-react';
 import React from 'react';
 
 interface Props {
@@ -17,7 +18,7 @@ const ChatCard: React.FC<Props> = ({ name, imgSrc }) => {
       </div>
       
       <div className='flex items-center justify-center mr-4'>
-        <span className='w-2.5 h-2.5 rounded-full bg-green-500' />
+        <Circle size={10} color='#00A884' fill='#00A884' />
       </div>
     </div>
   );
