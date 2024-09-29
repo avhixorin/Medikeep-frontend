@@ -16,9 +16,8 @@ const randomNames = [
   "Dr. Robert Hernandez",
 ];
 
-
-
 const randomImages = [
+  
   "https://randomuser.me/api/portraits/women/48.jpg",
   "https://randomuser.me/api/portraits/women/49.jpg",
   "https://randomuser.me/api/portraits/women/50.jpg",
@@ -43,8 +42,6 @@ const randomImages = [
 
 const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
-
-
 const Chat: React.FC = () => {
   const [isOnline] = React.useState(true);
   return (
@@ -52,10 +49,12 @@ const Chat: React.FC = () => {
       <div className="h-[25%] w-full flex flex-col justify-start gap-6">
         <div className="w-full flex items-center justify-between">
           <div className="flex gap-3 items-center">
-            <h1 className="text-2xl font-semibold text-zinc-700">Connections</h1>
+            <h1 className="text-2xl font-semibold text-zinc-700">
+              Connections
+            </h1>
             <Users size={24} stroke="#3f3f46" />
           </div>
-          
+
           <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Add Connections
           </button>
@@ -63,7 +62,7 @@ const Chat: React.FC = () => {
 
         {/* <p>September 27, 2024</p> */}
 
-        <div className="w-full flex justify-start items-center gap-6">
+        <div className="w-full flex justify-start items-center gap-6 overflow-x-auto whitespace-nowrap scrollbar-webkit">
           {randomImages.slice(0, 10).map((imgSrc) => (
             <img
               key={imgSrc}
@@ -77,7 +76,7 @@ const Chat: React.FC = () => {
 
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex gap-3 overflow-hidden shadow-xl">
         {/* Set a fixed width for the aside section */}
-        <aside className="h-full w-64 md:w-72 bg-white flex flex-col justify-start overflow-y-auto scrollbar-hidden">
+        <aside className="h-full w-64 md:w-72 bg-white flex flex-col justify-start overflow-y-auto scrollbar-webkit">
           {Array.from({ length: 10 }).map((_, index) => (
             <ChatCard
               key={index}
@@ -98,13 +97,11 @@ const Chat: React.FC = () => {
               <h3 className="font-medium text-lg">{randomNames[0]}</h3>
             </div>
 
-            <h3 className={ isOnline ? "text-[#d7d0d0]" : "text-slate-400"}>
-              { isOnline ? "Active now" : "Last online: 12:53 AM"
-              }</h3>
+            <h3 className={isOnline ? "text-[#d7d0d0]" : "text-slate-400"}>
+              {isOnline ? "Active now" : "Last online: 12:53 AM"}
+            </h3>
           </header>
-          <div className="w-full h-full overflow-y-auto">
-
-          </div>
+          <div className="w-full h-full overflow-y-auto scrollbar-webkit"></div>
         </main>
       </div>
     </div>
