@@ -139,7 +139,10 @@ const HealthDashboard: React.FC = () => {
         <div className="flex justify-between items-center mb-4 lg:mb-8">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>
           <div className="flex items-center space-x-4 lg:space-x-6">
-            <Search className="w-5 h-5 text-gray-500 cursor-pointer" />
+          <button className="bg-green-500 text-sm text-white px-4 py-2 rounded-md hover:bg-green-600">
+            Update
+          </button>
+            {/* <Search className="w-5 h-5 text-gray-500 cursor-pointer" /> */}
             <Bell className="w-5 h-5 text-gray-500 cursor-pointer" />
           </div>
         </div>

@@ -74,7 +74,7 @@ const Chat: React.FC = () => {
         </div>
       </div>
 
-      <div className="h-full w-full bg-[#fbf1e3] rounded-md flex gap-3 overflow-hidden shadow-xl">
+      <div className="h-full w-full bg-[#fbf1e3] rounded-md flex overflow-hidden shadow-xl">
         {/* Set a fixed width for the aside section */}
         <aside className="h-full w-64 md:w-72 bg-white flex flex-col justify-start overflow-y-auto scrollbar-webkit">
           {Array.from({ length: 10 }).map((_, index) => (
