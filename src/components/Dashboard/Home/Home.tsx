@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Bell, Search } from "lucide-react";
+import { Bell } from "lucide-react";
 import HealthCard from "./HealthCard";
 import { useSelector } from "react-redux";
 import {
