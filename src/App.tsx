@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import Lenis from "lenis";
 import { Provider } from "react-redux";
 import store from "./components/Redux/store/store";
-// import { PersistGate } from "redux-persist/integration/react";
+import { PersistGate } from "redux-persist/integration/react";
 import { Outlet } from "react-router-dom";
-// import { persistStore } from "redux-persist";
+import { persistStore } from "redux-persist";
 // import { AnimatePresence, motion } from "framer-motion";
 
-// const persistor = persistStore(store);
+const persistor = persistStore(store);
 
 // const pageTransition = {
 //   initial: { 
@@ -53,8 +53,8 @@ const App: React.FC = () => {
   return (
     <div className="w-full h-full bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 dark:from-blue-800 dark:via-blue-700 dark:to-blue-900">
       <Provider store={store}>
-        {/* <PersistGate loading={null} persistor={persistor}>
-          <AnimatePresence mode="wait">
+        <PersistGate loading={null} persistor={persistor}>
+          {/* <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
               initial="initial"
@@ -64,8 +64,8 @@ const App: React.FC = () => {
             > */}
               <Outlet />
             {/* </motion.div>
-          </AnimatePresence>
-        </PersistGate> */}
+          </AnimatePresence> */}
+        </PersistGate>
       </Provider>
     </div>
   );

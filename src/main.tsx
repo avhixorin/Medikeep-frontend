@@ -19,7 +19,7 @@ import MedicalRecords from './components/Dashboard/MedicalRecords/MedicalRecords
 import Chat from './components/Dashboard/Chat/Chat';
 import HealthProfile from './components/Dashboard/HealthProfile/Healthprofile';
 import Unauthorized from './components/UnauthorizedPage/Unauthorized';
-// import Profile from './components/Dashboard/Profile/Profile';
+import Profile from './components/Dashboard/Profile/Profile';
 import About from './components/AboutUs/About';
 
 const router = createBrowserRouter(
@@ -41,7 +41,7 @@ const router = createBrowserRouter(
       <Route path="doctoraddform" element={<DoctorAddForm />} />
       <Route path="dashboard/" element={<Dashboard/>}>
         <Route index element={<Home />} />
-        {/* <Route path='profile' element={<Profile />} /> */}
+        <Route path='profile' element={<Profile />} />
         <Route path='appointments' element={<Appointments/>}/>
         <Route path='records' element={<MedicalRecords/>}/>
         <Route path='chats' element={<Chat/>}/>

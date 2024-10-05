@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import './SignInForm.css';
-import Swal from 'sweetalert2';
+import "./SignInForm.css";
+import Swal from "sweetalert2";
 import BackButton from "../Back-Button/BackButton";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { setAuthUser } from "../Redux/features/authSlice";
-
+import { Eye, EyeOff } from "lucide-react";
 
 interface loginFormData {
   email: string;
@@ -17,19 +18,22 @@ const TnC: React.FC = () => {
     <div className="tnc-container flex justify-start items-center">
       <p className="text-zinc-500 dark:text-zinc-400">
         By logging in, you accept our
-        <Link className="text-blue-500 hover:text-blue-800 ml-2" to={'/tnc'}>terms and conditions</Link>
+        <Link className="text-blue-500 hover:text-blue-800 ml-2" to={"/tnc"}>
+          terms and conditions
+        </Link>
       </p>
     </div>
   );
 };
 
 const SignInForm: React.FC = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [loginFormData, setLoginFormData] = useState<loginFormData>({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -42,35 +46,35 @@ const SignInForm: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('https://medikeep-backend.onrender.com/api/v1/users/login', {
-        method: 'POST',
+      const response = await fetch("https://medikeep-backend.onrender.com/api/v1/users/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(loginFormData),
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to log in');
+        throw new Error(errorData.message || "Failed to log in");
       }
 
       const data = await response.json();
       if (data?.statusCode === 200) {
         await Swal.fire({
-          text:data.message,
-          icon:"success"
-        })
-        
+          text: data.message,
+          icon: "success",
+        });
+
         dispatch(setAuthUser(data.data));
         setLoading(false);
-        navigate('/dashboard');
+        navigate("/dashboard");
       }
     } catch (error: unknown) {
       Swal.fire({
         text: (error as Error).message,
-        icon: 'error',
+        icon: "error",
       });
       setLoading(false);
     }
@@ -82,31 +86,72 @@ const SignInForm: React.FC = () => {
         <div className="flex items-center justify-center col-span-1 lg:p-8">
           <div className="lform-container w-[75%] flex justify-center items-center">
             <div className="w-full">
-            <div className="w-full mb-9 relative flex items-center justify-center">
-              <div className="absolute left-0">
-                <BackButton text={""} thickness={20} />
+              <div className="w-full mb-9 relative flex items-center justify-center">
+                <div className="absolute left-0">
+                  <BackButton text={""} thickness={20} />
+                </div>
+                <p className="sititle text-center w-full">Welcome back</p>
               </div>
-            <p className="sititle text-center w-full">Welcome back</p>
-            </div>
-              <form onSubmit={handleSubmit} className="form flex flex-col gap-4">
-                <input 
-                  type="email" 
+              <form
+                onSubmit={handleSubmit}
+                className="form flex flex-col gap-4"
+              >
+                <input
+                  type="email"
                   name="email"
-                  className="sinput" 
-                  placeholder="Email" 
+                  className="sinput"
+                  placeholder="Email"
                   onChange={handleInputChange}
                   value={loginFormData.email}
                   required
                 />
-                <input
-                  type="password"
-                  name="password"
-                  className="sinput"
-                  placeholder="Password"
-                  onChange={handleInputChange}
-                  value={loginFormData.password}
-                  required
-                />
+                <div className="w-full relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    className="sinput"
+                    placeholder="Password"
+                    onChange={handleInputChange}
+                    value={loginFormData.password}
+                    required
+                  />
+
+                  <div
+                    className="absolute right-4 top-4 cursor"
+                    aria-label="Toggle password visibility"
+                  >
+                    {showPassword ? (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Eye
+                          className="cursor-pointer"
+                          stroke="rgb(148 163 184)"
+                          size={20}
+                          onClick={() => setShowPassword(false)}
+                        />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <EyeOff
+                          className="cursor-pointer"
+                          stroke="rgb(148 163 184)"
+                          size={20}
+                          onClick={() => setShowPassword(true)}
+                        />
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+
                 <p className="page-link">
                   <span className="page-link-label">Forgot Password?</span>
                 </p>
@@ -114,12 +159,12 @@ const SignInForm: React.FC = () => {
                   <TnC />
                 </div>
                 <div className="input-group md:col-span-2">
-                  <button className='form-btn'
-                  disabled={loading}
-                  >{ loading ? "Logging in..." : "Log in"}</button>
+                  <button className="form-btn" disabled={loading}>
+                    {loading ? "Logging in..." : "Log in"}
+                  </button>
                 </div>
               </form>
-              
+
               <p className="sign-up-label">
                 Don't have an account?
                 <Link to={"/sign-up"} className="sign-up-link">
@@ -167,9 +212,7 @@ const SignInForm: React.FC = () => {
           </div>
         </div>
 
-        <div
-          className="hidden lg:block w-full h-full"
-        >
+        <div className="hidden lg:block w-full h-full">
           <img
             className="h-[70%] w-[70%] object-contain my-20 mx-auto"
             draggable={false}
