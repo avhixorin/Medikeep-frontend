@@ -116,9 +116,10 @@ const ContactUs = () => {
                 rows={5}
                 name="message"
                 value={form.message}
+                
                 onChange={handleChange}
                 placeholder="What would you like to say?"
-                className="bg-gray-100 dark:bg-gray-700 py-3 px-4 placeholder:text-gray-400 text-gray-900 dark:text-white rounded-lg outline-none border-none font-medium"
+                className="bg-gray-100 dark:bg-gray-700 py-3 px-4 placeholder:text-gray-400 text-gray-900 dark:text-white rounded-lg outline-none border-none font-medium resize-none"
               />
             </label>
 
