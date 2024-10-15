@@ -16,8 +16,11 @@ const Hero: React.FC = () => {
   return (
     <section className="pt-20 pb-8 md:pb-0 text-center md:flex bg-blue-50">
       <div className="flex flex-col justify-center w-full px-4 md:w-1/2">
-        <h1 className="font-extrabold">
+        <h1>
+          <span>
           Your Health,
+          </span>
+          
           <span className="splitting" data-splitting="chars">
             Simplified
           </span>

@@ -5,7 +5,7 @@
 
 h1 {
   font-family: "IBM Plex Sans Roman", Times;
-  font-weight: 100;
+  font-weight: 300;
   font-size: 4rem; /* Tailwind's 6xl size */
   line-height: 4.5rem; /* Adjust as needed for spacing */
   font-variation-settings: 'wght' 100, 'wdth' 85;
@@ -17,9 +17,9 @@ h1 .char {
   animation-delay: var(--delay);
 }
 
-h1:hover span {
+/* h1:hover span {
   animation-play-state: paused;
-}
+} */
 
 @keyframes breathe {
   0% {

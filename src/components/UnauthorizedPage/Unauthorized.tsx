@@ -1,12 +1,18 @@
 import React from 'react' 
 import { ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 const Unauthorized: React.FC = () => {
   const navigate = useNavigate();
+
   const handleClick = () => {
-    navigate(-1)
-  }
+    if (window.history.length > 1) {
+      navigate(-1);  // Go back if possible
+    } else {
+      navigate('/');  // Fallback to home if there's no history
+    }
+  };
+
   return (
     <div className="py-10 w-full min-h-[100dvh] flex justify-center items-center bg-white-100">
       <div className="text-center">
@@ -22,25 +28,24 @@ const Unauthorized: React.FC = () => {
           <button
             type="button"
             onClick={handleClick}
-            className="inline-flex items-center px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className="rounded-md inline-flex items-center px-3 py-2 text-sm font-semibold text-black shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
           >
             <ArrowLeft size={16} className="mr-2" />
             Go back
           </button>
           
           <Link to={'/sign-in'}>
-          <button
-            type="button"
-            className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-          >
-            Login
-          </button>
+            <button
+              type="button"
+              className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            >
+              Login
+            </button>
           </Link>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
-export default Unauthorized
+export default Unauthorized;
