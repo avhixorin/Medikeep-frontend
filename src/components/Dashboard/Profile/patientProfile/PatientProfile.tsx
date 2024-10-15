@@ -1,26 +1,51 @@
-import { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export function PatientProfile() {
-  const [isEditing, setIsEditing] = useState(false)
+import { User } from "@/components/Redux/features/authSlice";
+import Upload from "../Upload/Upload";
+
+interface PatientProfileProps {
+  user: User | null;
+}
+
+const PatientProfile: React.FC<PatientProfileProps> = ({ user }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [uploadClicked, setUploadClicked] = useState(false);
+
+  const cancelUpload = () => {
+    setUploadClicked(false);
+  }
+  const firstName = user?.fullName.split(" ")[0];
+  const lastName = user?.fullName.split(" ")[1];
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="min-h-screen bg-gradient-to-r from-blue-500 to-green-300 p-6 md:p-10">
+      {uploadClicked && <Upload cancelUpload={cancelUpload} setUploadClicked={setUploadClicked} />}
       <CardHeader>
         <div className="flex items-center space-x-4">
           <Avatar className="w-20 h-20">
-            <AvatarImage src="/placeholder-patient.jpg" alt="Patient" />
+            <AvatarImage
+              src={user?.profilePicture || "/placeholder-patient.jpg"}
+              alt="Patient"
+            />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div>
-            <CardTitle>John Doe</CardTitle>
-            <CardDescription>Patient ID: P123456</CardDescription>
+            <CardTitle>{user?.fullName}</CardTitle>
+            <CardDescription>Patient ID: {user?._id}</CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -37,34 +62,64 @@ export function PatientProfile() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" defaultValue="John" readOnly={!isEditing} />
+                  <Input
+                    id="firstName"
+                    defaultValue={firstName || ""}
+                    readOnly={!isEditing}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" defaultValue="Doe" readOnly={!isEditing} />
+                  <Input
+                    id="lastName"
+                    defaultValue={lastName || ""}
+                    readOnly={!isEditing}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="dob">Date of Birth</Label>
-                  <Input id="dob" type="date" defaultValue="1985-05-15" readOnly={!isEditing} />
+                  <Input
+                    id="dob"
+                    type="date"
+                    defaultValue={user?.dateOfBirth || ""}
+                    readOnly={!isEditing}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="gender">Gender</Label>
-                  <Input id="gender" defaultValue="Male" readOnly={!isEditing} />
+                  <Input
+                    id="gender"
+                    defaultValue={user?.gender || ""}
+                    readOnly={!isEditing}
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" defaultValue="+1 (555) 987-6543" readOnly={!isEditing} />
+                <Input
+                  id="phone"
+                  defaultValue={user?.phone || ""}
+                  readOnly={!isEditing}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue="john.doe@example.com" readOnly={!isEditing} />
+                <Input
+                  id="email"
+                  type="email"
+                  defaultValue={user?.email || ""}
+                  readOnly={!isEditing}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="address">Address</Label>
-                <Textarea id="address" defaultValue="456 Patient St, Healthville, HC 54321" readOnly={!isEditing} />
+                <Textarea
+                  id="address"
+                  defaultValue={"City, Country"}
+                  readOnly={!isEditing}
+                />
               </div>
             </div>
           </TabsContent>
@@ -72,23 +127,42 @@ export function PatientProfile() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="bloodType">Blood Type</Label>
-                <Input id="bloodType" defaultValue="A+" readOnly={!isEditing} />
+                <Input 
+                id="bloodType" 
+                defaultValue={"O+"} 
+                readOnly={!isEditing} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="allergies">Allergies</Label>
-                <Textarea id="allergies" defaultValue="Penicillin, Peanuts" readOnly={!isEditing} />
+                <Textarea
+                  id="allergies"
+                  defaultValue={"Peanuts, Penicillin"}
+                  readOnly={!isEditing}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="conditions">Pre-existing Conditions</Label>
-                <Textarea id="conditions" defaultValue="Asthma, Hypertension" readOnly={!isEditing} />
+                <Textarea
+                  id="conditions"
+                  defaultValue={"Asthma, Hypertension"}
+                  readOnly={!isEditing}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="medications">Current Medications</Label>
-                <Textarea id="medications" defaultValue="Lisinopril 10mg daily, Albuterol inhaler as needed" readOnly={!isEditing} />
+                <Textarea
+                  id="medications"
+                  defaultValue={"Albuterol, Lisinopril"}
+                  readOnly={!isEditing}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="familyHistory">Family History</Label>
-                <Textarea id="familyHistory" defaultValue="Father: Heart Disease, Mother: Breast Cancer" readOnly={!isEditing} />
+                <Textarea
+                  id="familyHistory"
+                  defaultValue={"Diabetes, Heart Disease"}
+                  readOnly={!isEditing}
+                />
               </div>
             </div>
           </TabsContent>
@@ -97,28 +171,52 @@ export function PatientProfile() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="height">Height (cm)</Label>
-                  <Input id="height" type="number" defaultValue="175" readOnly={!isEditing} />
+                  <Input
+                    id="height"
+                    type="number"
+                    defaultValue={"175"}
+                    readOnly={!isEditing}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="weight">Weight (kg)</Label>
-                  <Input id="weight" type="number" defaultValue="70" readOnly={!isEditing} />
+                  <Input
+                    id="weight"
+                    type="number"
+                    defaultValue={"70"}
+                    readOnly={!isEditing}
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bmi">BMI</Label>
-                <Input id="bmi" defaultValue="22.9" readOnly />
+                <Input 
+                id="bmi" 
+                defaultValue={"22.9"} 
+                readOnly />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bloodPressure">Blood Pressure (mmHg)</Label>
-                <Input id="bloodPressure" defaultValue="120/80" readOnly={!isEditing} />
+                <Input
+                  id="bloodPressure"
+                  defaultValue={"120/80"}
+                  readOnly={!isEditing}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bloodSugar">Blood Sugar Level (mg/dL)</Label>
-                <Input id="bloodSugar" defaultValue="95" readOnly={!isEditing} />
+                <Input
+                  id="bloodSugar"
+                  defaultValue={"90"}
+                  readOnly={!isEditing}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="heartRate">Heart Rate (bpm)</Label>
-                <Input id="heartRate" defaultValue="72" readOnly={!isEditing} />
+                <Input 
+                id="heartRate" 
+                defaultValue={"70"}
+                readOnly={!isEditing} />
               </div>
             </div>
           </TabsContent>
@@ -143,10 +241,10 @@ export function PatientProfile() {
           </TabsContent>
         </Tabs>
       </CardContent>
-      
+
       <CardFooter className="flex justify-between">
         <Button onClick={() => setIsEditing(!isEditing)}>
-          {isEditing ? 'Save Changes' : 'Edit Profile'}
+          {isEditing ? "Save Changes" : "Edit Profile"}
         </Button>
         <div className="space-y-2">
           <Label>Emergency Contact</Label>
@@ -154,5 +252,7 @@ export function PatientProfile() {
         </div>
       </CardFooter>
     </Card>
-  )
-}
+  );
+};
+
+export default PatientProfile;

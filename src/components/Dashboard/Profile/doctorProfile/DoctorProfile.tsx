@@ -22,28 +22,46 @@ import {
   MapPinIcon,
   HeartPulseIcon,
 } from "lucide-react";
+import Upload from "../Upload/Upload";
+import { User } from "@/components/Redux/features/authSlice";
 
-export default function DoctorProfile() {
+interface DoctorProfileProps {
+  user: User | null;
+}
+const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [uploadClicked, setUploadClicked] = useState(false);
+
+  const cancelUpload = () => {
+    setUploadClicked(false);
+  }
+
+  const firstName = user?.fullName.split(" ")[0];
+  const lastName = user?.fullName.split(" ")[1];
+  const clinicAffiliation = user?.clinicAffiliation?.join(", ");
+  const clinicHours = user?.consultationHours?.join(", ");
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 bg-gradient-to-r from-blue-500 to-green-300 p-6 md:p-10">
+      {uploadClicked && <Upload cancelUpload={cancelUpload} setUploadClicked={setUploadClicked} />}
       {/* Left Profile Section */}
       <Card className="shadow-2xl rounded-lg">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-green-500 text-white rounded-t-lg">
           <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
-            <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
+            <Avatar className="w-24 h-24 border-4 border-white shadow-lg cursor-pointer"
+            onClick={() => setUploadClicked(true)}
+            >
               <AvatarImage
-                src="https://i.pravatar.cc/192?img=36"
+                src={user?.profilePicture || "https://i.pravatar.cc/192?img=36"}
                 alt="Dr. Jane Smith"
               />
               <AvatarFallback>JS</AvatarFallback>
             </Avatar>
             <div className="text-center md:text-left">
               <CardTitle className="text-2xl md:text-3xl font-bold">
-                Dr. Jane Smith
+                {user?.fullName|| "No user"}
               </CardTitle>
-              <span className="text-white text-lg">Cardiologist</span>
+              <span className="text-white text-lg">{user?.specialization}</span>
             </div>
           </div>
         </CardHeader>
@@ -53,14 +71,14 @@ export default function DoctorProfile() {
               icon={<UserIcon className="text-gray-400" />}
               label="First Name"
               id="firstName"
-              defaultValue="Jane"
+              defaultValue={firstName || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
               icon={<UserIcon className="text-gray-400" />}
               label="Last Name"
               id="lastName"
-              defaultValue="Smith"
+              defaultValue={lastName || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
@@ -68,21 +86,21 @@ export default function DoctorProfile() {
               label="Date of Birth"
               id="dob"
               type="date"
-              defaultValue="1980-01-01"
+              defaultValue={user?.dateOfBirth || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
               icon={<UserIcon className="text-gray-400" />}
               label="Gender"
               id="gender"
-              defaultValue="Female"
+              defaultValue={user?.gender || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
               icon={<PhoneIcon className="text-gray-400" />}
               label="Phone"
               id="phone"
-              defaultValue="+1 (555) 123-4567"
+              defaultValue={user?.phone || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
@@ -90,14 +108,14 @@ export default function DoctorProfile() {
               label="Email"
               id="email"
               type="email"
-              defaultValue="jane.smith@example.com"
+              defaultValue={user?.email || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
               icon={<MapPinIcon className="text-gray-400" />}
               label="Address"
               id="address"
-              defaultValue="123 Medical Center Dr, Healthville, HC 12345"
+              defaultValue={"City, Country"}
               isEditing={isEditing}
               isTextarea
             />
@@ -128,14 +146,14 @@ export default function DoctorProfile() {
                   icon={<HospitalIcon className="text-gray-400" />}
                   label="Medical License Number"
                   id="license"
-                  defaultValue="ML123456"
+                  defaultValue={user?.medicalLicenseNumber || ""}
                   isEditing={isEditing}
                 />
                 <InputWithIcon
                   icon={<HeartPulseIcon className="text-gray-400" />}
                   label="Specialization"
                   id="specialization"
-                  defaultValue="Cardiology"
+                  defaultValue={user?.specialization || ""}
                   isEditing={isEditing}
                 />
                 <InputWithIcon
@@ -143,14 +161,14 @@ export default function DoctorProfile() {
                   label="Years of Experience"
                   id="experience"
                   type="number"
-                  defaultValue="15"
+                  defaultValue={user?.yearsOfExperience?.toString() || ""}
                   isEditing={isEditing}
                 />
                 <InputWithIcon
                   icon={<HospitalIcon className="text-gray-400" />}
                   label="Affiliated Hospitals/Clinics"
                   id="affiliations"
-                  defaultValue="City General Hospital, Heart Care Clinic"
+                  defaultValue={clinicAffiliation || ""}
                   isEditing={isEditing}
                   isTextarea
                 />
@@ -158,7 +176,7 @@ export default function DoctorProfile() {
                   icon={<CalendarIcon className="text-gray-400" />}
                   label="Consultation Hours"
                   id="hours"
-                  defaultValue="Mon-Fri: 9AM-5PM, Sat: 10AM-2PM"
+                  defaultValue={clinicHours || ""}
                   isEditing={isEditing}
                   isTextarea
                 />
@@ -170,7 +188,7 @@ export default function DoctorProfile() {
                   icon={<UserIcon className="text-gray-400" />}
                   label="Biography/Introduction"
                   id="bio"
-                  defaultValue="Dr. Jane Smith is a board-certified cardiologist with over 15 years of experience."
+                  defaultValue={"Dr. Jane Smith is a cardiologist with over 10 years of experience."}
                   isEditing={isEditing}
                   isTextarea
                 />
@@ -178,7 +196,7 @@ export default function DoctorProfile() {
                   icon={<GraduationCapIcon className="text-gray-400" />}
                   label="Educational Background"
                   id="education"
-                  defaultValue="MD from Harvard Medical School"
+                  defaultValue={"MD, Cardiology, University of California"}
                   isEditing={isEditing}
                   isTextarea
                 />
@@ -186,7 +204,7 @@ export default function DoctorProfile() {
                   icon={<UserIcon className="text-gray-400" />}
                   label="Professional Associations"
                   id="associations"
-                  defaultValue="American College of Cardiology"
+                  defaultValue={"American College of Cardiology, American Medical Association"}
                   isEditing={isEditing}
                   isTextarea
                 />
@@ -207,6 +225,7 @@ export default function DoctorProfile() {
   );
 }
 
+export default DoctorProfile;
 // Reusable InputWithIcon component
 interface InputWithIconProps {
   icon: React.ReactNode;
