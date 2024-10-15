@@ -34,7 +34,7 @@ const NavBar: React.FC = () => {
     pricing?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleLogoClick = () => {
+ const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -51,7 +51,7 @@ const NavBar: React.FC = () => {
           src="https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Logo_kletrg.png"
           alt="logo"
           className="h-5 md:h-10 m-1 hover:cursor-pointer"
-          onClick={handleLogoClick}
+          onClick={scrollTop}
         />
       </div>
       <div className="hidden md:block">

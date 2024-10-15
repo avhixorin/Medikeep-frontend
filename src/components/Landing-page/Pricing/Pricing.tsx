@@ -78,9 +78,7 @@ const Pricing: React.FC = () => {
     <section className="w-full py-12 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
-            Pricing Plans
-          </h1>
+        <h2 className="text-[2.6rem] font-helmet font-bold text-center text-gray-800 mb-10">Pricing Plans</h2>
           <p className="max-w-2xl mx-auto text-xl text-gray-600">
             Choose the perfect plan for your healthcare needs
           </p>
