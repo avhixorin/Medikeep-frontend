@@ -21,7 +21,7 @@ const MedicalRecords = lazy(() => import('./components/Dashboard/MedicalRecords/
 const Chat = lazy(() => import('./components/Dashboard/Chat/Chat'));
 const HealthProfile = lazy(() => import('./components/Dashboard/HealthProfile/Healthprofile'));
 const Unauthorized = lazy(() => import('./components/UnauthorizedPage/Unauthorized'));
-const Profile = lazy(() => import('./components/Dashboard/Profile/Profile'));
+const Profile = lazy(() => import('./components/Dashboard/Profile/ProfileParent'));
 const About = lazy(() => import('./components/AboutUs/About'));
 
 const router = createBrowserRouter(
@@ -95,7 +95,7 @@ const router = createBrowserRouter(
             <Dashboard />
           </Suspense>
         }
-        loader={checkAuth}
+        // loader={checkAuth}
       >
         <Route
           index
