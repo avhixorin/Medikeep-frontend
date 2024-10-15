@@ -67,7 +67,8 @@ export default {
         'playwrite': ["Playwrite IN", 'cursive'],
         'lato': ['Lato', 'sans-serif'],
         'helmet': ['Helmet', 'sans-serif'],
-        'frick':['Frick','sans-serif']
+        'frick':['Frick','sans-serif'],
+        'rozha':['Rozha One','serif'],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -100,6 +100,8 @@ const SignUpForm: React.FC = () => {
           navigate("/sign-in");
         }
       } catch (error) {
+
+
         let errorMessage = "Form submission failed. Please try again.";
 
         if (error instanceof Response) {

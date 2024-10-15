@@ -1,30 +1,36 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
-import SignInForm from './components/Sign-In/SignInForm';
-import SignUpForm from './components/Sign-Up/SignUpForm';
-
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
-import LazyHome from './components/Landing-page/LazyHome';
-import DoctorAddForm from './components/AdditionalInfo/DoctorAddForm';
 import 'rsuite/dist/rsuite-no-reset.min.css';
-import Dashboard from './components/Dashboard/ParentContainer/Dashboard';
-import Home from './components/Dashboard/Home/Home';
-import TermsAndConditions from './components/TnC/TnC';
-import Error from './components/ErrorBoundary/Error';
-import Appointments from './components/Dashboard/Appointments/Appointments';
-import MedicalRecords from './components/Dashboard/MedicalRecords/MedicalRecords';
-import Chat from './components/Dashboard/Chat/Chat';
-import HealthProfile from './components/Dashboard/HealthProfile/Healthprofile';
-import Unauthorized from './components/UnauthorizedPage/Unauthorized';
-import Profile from './components/Dashboard/Profile/Profile';
-import About from './components/AboutUs/About';
+import checkAuth from './utils/checkAuth';
+
+// Lazy load all the components
+const SignInForm = lazy(() => import('./components/Sign-In/SignInForm'));
+const SignUpForm = lazy(() => import('./components/Sign-Up/SignUpForm'));
+const LazyHome = lazy(() => import('./components/Landing-page/LandingPage'));
+const DoctorAddForm = lazy(() => import('./components/AdditionalInfo/DoctorAddForm'));
+const Dashboard = lazy(() => import('./components/Dashboard/ParentContainer/Dashboard'));
+const Home = lazy(() => import('./components/Dashboard/Home/Home'));
+const TermsAndConditions = lazy(() => import('./components/TnC/TnC'));
+const Error = lazy(() => import('./components/ErrorBoundary/Error'));
+const Appointments = lazy(() => import('./components/Dashboard/Appointments/Appointments'));
+const MedicalRecords = lazy(() => import('./components/Dashboard/MedicalRecords/MedicalRecords'));
+const Chat = lazy(() => import('./components/Dashboard/Chat/Chat'));
+const HealthProfile = lazy(() => import('./components/Dashboard/HealthProfile/Healthprofile'));
+const Unauthorized = lazy(() => import('./components/UnauthorizedPage/Unauthorized'));
+const Profile = lazy(() => import('./components/Dashboard/Profile/Profile'));
+const About = lazy(() => import('./components/AboutUs/About'));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />} errorElement={<Error />}>
+    <Route path="/" element={<App />} errorElement={
+      <Suspense fallback={<LoadingScreen />}>
+        <Error />
+      </Suspense>
+    }>
       <Route
         path=""
         element={
@@ -33,28 +39,119 @@ const router = createBrowserRouter(
           </Suspense>
         }
       />
-      <Route path='about' element={<About />} />
-      <Route path='unauthorized' element={<Unauthorized/>}></Route>
-      <Route path="tnc" element={<TermsAndConditions />} />
-      <Route path="sign-in" element={<SignInForm />} />
-      <Route path="sign-up" element={<SignUpForm />} />
-      <Route path="doctoraddform" element={<DoctorAddForm />} />
-      <Route path="dashboard/" element={<Dashboard/>}>
-        <Route index element={<Home />} />
-        <Route path='profile' element={<Profile />} />
-        <Route path='appointments' element={<Appointments/>}/>
-        <Route path='records' element={<MedicalRecords/>}/>
-        <Route path='chats' element={<Chat/>}/>
-        <Route path='settings/healthprofile' element={<HealthProfile/>}/>
+      <Route
+        path="about"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <About />
+          </Suspense>
+        }
+      />
+      <Route
+        path="unauthorized"
+        loader={() => import('./components/UnauthorizedPage/Unauthorized')}
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <Unauthorized />
+          </Suspense>
+        }
+      />
+      <Route
+        path="tnc"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <TermsAndConditions />
+          </Suspense>
+        }
+      />
+      <Route
+        path="sign-in"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SignInForm />
+          </Suspense>
+        }
+      />
+      <Route
+        path="sign-up"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SignUpForm />
+          </Suspense>
+        }
+      />
+      <Route
+        path="doctoraddform"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <DoctorAddForm />
+          </Suspense>
+        }
+      />
+      <Route
+        path="dashboard"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <Dashboard />
+          </Suspense>
+        }
+        loader={checkAuth}
+      >
+        <Route
+          index
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Home />
+            </Suspense>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Profile />
+            </Suspense>
+          }
+        />
+        <Route
+          path="appointments"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Appointments />
+            </Suspense>
+          }
+        />
+        <Route
+          path="records"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <MedicalRecords />
+            </Suspense>
+          }
+        />
+        <Route
+          path="chats"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Chat />
+            </Suspense>
+          }
+        />
+        <Route
+          path="settings/healthprofile"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <HealthProfile />
+            </Suspense>
+          }
+        />
       </Route>
     </Route>
   )
 );
 
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
-
