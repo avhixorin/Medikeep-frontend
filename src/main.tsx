@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -5,7 +6,7 @@ import './index.css';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 import 'rsuite/dist/rsuite-no-reset.min.css';
-import checkAuth from './utils/checkAuth';
+// import checkAuth from './utils/checkAuth';
 
 // Lazy load all the components
 const SignInForm = lazy(() => import('./components/Sign-In/SignInForm'));
