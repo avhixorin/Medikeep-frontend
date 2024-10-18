@@ -10,7 +10,7 @@ const Error: React.FC = () => {
   return (
     <div className="py-10 w-full min-h-[100dvh] flex justify-center items-center">
       <div className="text-center">
-        <p className="text-4xl font-semibold text-black">404</p>
+        <p className="text-4xl font-semibold text-red-500">404</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-5xl">
           Page not found
         </h1>

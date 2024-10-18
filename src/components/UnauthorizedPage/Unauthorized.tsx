@@ -16,7 +16,7 @@ const Unauthorized: React.FC = () => {
   return (
     <div className="py-10 w-full min-h-[100dvh] flex justify-center items-center bg-white-100">
       <div className="text-center">
-        <p className="text-4xl font-semibold text-black">401</p>
+        <p className="text-4xl font-semibold text-red-500">401</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-5xl">
           Unauthorized Access
         </h1>
