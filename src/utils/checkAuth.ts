@@ -1,4 +1,4 @@
-import store from "../components/Redux/store/store"; // Import the store
+import store from "../components/Redux/store/store";
 import { redirect } from "react-router-dom";
 
 const checkAuth = () => {
