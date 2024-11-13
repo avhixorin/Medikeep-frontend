@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { setAuthUser } from "../../../Redux/features/authSlice";
+import { setAuthUser } from "../../../../redux/features/authSlice";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 

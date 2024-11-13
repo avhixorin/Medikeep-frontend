@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import DoctorProfile from './doctorProfile/DoctorProfile';
 import PatientProfile from './patientProfile/PatientProfile';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/components/Redux/store/store';
+import { RootState } from '@/redux/store/store';
 
 export default function ProfileSection() {
   const [userType, setUserType] = useState('patient');

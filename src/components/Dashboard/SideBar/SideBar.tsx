@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAuthUser } from '../../Redux/features/authSlice';
-import { RootState } from '../../Redux/store/store'; // Adjust the path as necessary
+import { clearAuthUser } from '../../../redux/features/authSlice';
+import { RootState } from '../../../redux/store/store'; // Adjust the path as necessary
 export default function Sidebar() {
   const dispatch = useDispatch(); // Correct usage of useDispatch
   const user = useSelector((state: RootState) => state.auth.user);

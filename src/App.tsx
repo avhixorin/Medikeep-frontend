@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Lenis from "lenis";
 import { Provider } from "react-redux";
-import store from "./components/Redux/store/store";
+import store from "./redux/store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Outlet } from "react-router-dom";
 import { persistStore } from "redux-persist";

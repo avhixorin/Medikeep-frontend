@@ -5,7 +5,7 @@ import "./SignInForm.css";
 import Swal from "sweetalert2";
 import BackButton from "../Back-Button/BackButton";
 import { useDispatch } from "react-redux";
-import { setAuthUser } from "../Redux/features/authSlice";
+import { setAuthUser } from "../../redux/features/authSlice";
 import { Eye, EyeOff } from "lucide-react";
 
 interface loginFormData {
