@@ -14,8 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { User } from "@/redux/features/authSlice";
 import Upload from "../Upload/Upload";
+import { User } from "@/types/types";
 
 interface PatientProfileProps {
   user: User | null;

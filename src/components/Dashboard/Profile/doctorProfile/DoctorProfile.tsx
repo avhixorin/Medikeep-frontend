@@ -23,7 +23,7 @@ import {
   HeartPulseIcon,
 } from "lucide-react";
 import Upload from "../Upload/Upload";
-import { User } from "@/redux/features/authSlice";
+import { User } from "@/types/types";
 
 interface DoctorProfileProps {
   user: User | null;

@@ -22,7 +22,6 @@ const useSockets = () => {
     if (socket && !socket.connected) {
         socket.connect();
     }
-
     return () => {
         if (socket && socket.connected) {
             socket.disconnect();
