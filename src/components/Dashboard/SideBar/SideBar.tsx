@@ -19,7 +19,7 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('https://medikeep-backend.onrender.com/api/v1/users/logout');
+      const response = await fetch('https://localhost:3000/api/v1/users/logout');
       
       if (!response.ok) {
         const errorData = await response.json();

@@ -1,7 +1,7 @@
 import { BaseFormData, DoctorFormData } from "../components/Sign-Up/SignUpForm";
 const submitForm = async (formData: BaseFormData | DoctorFormData) => {
     try {
-      const response = await fetch('https://medikeep-backend.onrender.com/api/v1/users/register', {
+      const response = await fetch('https://localhost:3000/api/v1/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
