@@ -1,25 +1,5 @@
-
+import { User } from '@/types/types';
 import { createSlice } from '@reduxjs/toolkit';
-
-export interface User {
-    _id: string | null;
-    profilePicture?: string;
-    username: string;
-    fullName: string;
-    email: string;
-    dateOfBirth: string;
-    gender: string;
-    phone: string;
-    role: string;
-    medicalLicenseNumber?: string;
-    specialization?: string;
-    yearsOfExperience?: number;
-    clinicAffiliation?: string[];
-    consultationHours?: { start: string; end: string }[];
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
 
 export interface AuthState {
     user: User | null;
