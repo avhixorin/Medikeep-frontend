@@ -19,7 +19,8 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('https://localhost:3000/api/v1/users/logout');
+      const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
+      const response = await fetch(logoutUrl);
       
       if (!response.ok) {
         const errorData = await response.json();

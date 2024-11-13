@@ -1,7 +1,8 @@
 import { BaseFormData, DoctorFormData } from "../components/Sign-Up/SignUpForm";
 const submitForm = async (formData: BaseFormData | DoctorFormData) => {
     try {
-      const response = await fetch('https://localhost:3000/api/v1/users/register', {
+      const registerUrl = import.meta.env.VITE_SIGN_UP_URL;
+      const response = await fetch(registerUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

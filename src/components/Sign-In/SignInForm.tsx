@@ -46,7 +46,8 @@ const SignInForm: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("https://localhost:3000/api/v1/users/login", {
+      const loginUrl = import.meta.env.VITE_SIGN_IN_URL
+      const response = await fetch(loginUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
