@@ -2,7 +2,7 @@ import { User } from "@/types/types";
 
 const submitForm = async (formData: User) => {
     try {
-      const registerUrl = import.meta.env.VITE_SIGN_UP_URL;
+      const registerUrl: string = import.meta.env.VITE_SIGN_UP_URL;
       const response = await fetch(registerUrl, {
         method: 'POST',
         headers: {

@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="w-full max-h-[100dvh] bg-[#FFFCF8] flex">
       <SideBar />
-      <main className="flex-1 overflow-y-auto scrollbar-webkit">
+      <main className="flex-1 overflow-y-scroll scrollbar-webkit">
         <Outlet />
       </main>
     </div>
