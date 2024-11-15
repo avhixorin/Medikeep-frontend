@@ -39,6 +39,7 @@
     "react-tooltip": "^5.28.0",
     "recharts": "^2.12.7",
     "redux-persist": "^6.0.0",
+    "redux-thunk": "^3.1.0",
     "rsuite": "^5.70.2",
     "socket.io-client": "^4.8.1",
     "splitting": "^1.1.0",
