@@ -7,11 +7,8 @@ import BackButton from "../Back-Button/BackButton";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "../../redux/features/authSlice";
 import { Eye, EyeOff } from "lucide-react";
-
-interface loginFormData {
-  email: string;
-  password: string;
-}
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const TnC: React.FC = () => {
   return (
@@ -29,30 +26,32 @@ const TnC: React.FC = () => {
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loginFormData, setLoginFormData] = useState<loginFormData>({
-    email: "",
-    password: "",
-  });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setLoginFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // Validation schema
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // Form submit handler
+  const handleSubmit = async (values: { email: string; password: string }) => {
     setLoading(true);
     try {
-      const loginUrl = import.meta.env.VITE_SIGN_IN_URL
+      const loginUrl = import.meta.env.VITE_SIGN_IN_URL;
+      console.log("loginUrl", loginUrl);
       const response = await fetch(loginUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(loginFormData),
+        body: JSON.stringify(values),
         credentials: "include",
       });
 
@@ -69,7 +68,6 @@ const SignInForm: React.FC = () => {
         });
 
         dispatch(setAuthUser(data.data));
-        setLoading(false);
         navigate("/dashboard");
       }
     } catch (error: unknown) {
@@ -77,152 +75,128 @@ const SignInForm: React.FC = () => {
         text: (error as Error).message,
         icon: "error",
       });
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200">
-        <div className="flex items-center justify-center col-span-1 lg:p-8">
-          <div className="lform-container w-[75%] flex justify-center items-center">
-            <div className="w-full">
-              <div className="w-full mb-9 relative flex items-center justify-center">
-                <div className="absolute left-0">
-                  <BackButton text={""} thickness={20} />
-                </div>
-                <p className="sititle text-center w-full">Welcome back</p>
+    <div className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200">
+      <div className="flex items-center justify-center col-span-1 lg:p-8">
+        <div className="lform-container w-[75%] flex justify-center items-center">
+          <div className="w-full">
+            <div className="w-full mb-9 relative flex items-center justify-center">
+              <div className="absolute left-0">
+                <BackButton text={""} thickness={20} />
               </div>
-              <form
-                onSubmit={handleSubmit}
-                className="form flex flex-col gap-4"
-              >
-                <input
-                  type="email"
-                  name="email"
-                  className="sinput"
-                  placeholder="Email"
-                  onChange={handleInputChange}
-                  value={loginFormData.email}
-                  required
-                />
-                <div className="w-full relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    className="sinput"
-                    placeholder="Password"
-                    onChange={handleInputChange}
-                    value={loginFormData.password}
-                    required
-                  />
-
-                  <div
-                    className="absolute right-4 top-4 cursor"
-                    aria-label="Toggle password visibility"
-                  >
-                    {showPassword ? (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Eye
-                          className="cursor-pointer"
-                          stroke="rgb(148 163 184)"
-                          size={20}
-                          onClick={() => setShowPassword(false)}
-                        />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <EyeOff
-                          className="cursor-pointer"
-                          stroke="rgb(148 163 184)"
-                          size={20}
-                          onClick={() => setShowPassword(true)}
-                        />
-                      </motion.div>
-                    )}
+              <p className="sititle text-center w-full">Welcome back</p>
+            </div>
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {() => (
+                <Form className="form flex flex-col gap-4">
+                  {/* Email Field */}
+                  <div>
+                    <Field
+                      type="email"
+                      name="email"
+                      className="sinput"
+                      placeholder="Email"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
                   </div>
-                </div>
 
-                <p className="page-link">
-                  <span className="page-link-label">Forgot Password?</span>
-                </p>
-                <div className="input-group md:col-span-2">
+                  {/* Password Field */}
+                  <div className="w-full relative">
+                    <Field
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      className="sinput"
+                      placeholder="Password"
+                    />
+                    <ErrorMessage
+                      name="password"
+                      component="div"
+                      className="text-red-500 text-sm"
+                    />
+                    <div
+                      className="absolute right-4 top-4 cursor"
+                      aria-label="Toggle password visibility"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Eye
+                            className="cursor-pointer"
+                            stroke="rgb(148 163 184)"
+                            size={20}
+                          />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <EyeOff
+                            className="cursor-pointer"
+                            stroke="rgb(148 163 184)"
+                            size={20}
+                          />
+                        </motion.div>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="page-link">
+                    <span className="page-link-label">Forgot Password?</span>
+                  </p>
                   <TnC />
-                </div>
-                <div className="input-group md:col-span-2">
-                  <button className="form-btn" disabled={loading}>
+                  <button className={`form-btn ${loading ? "cursor-not-allowed" : "cursor-pointer"}`} type="submit" disabled={loading}
+                  
+                  >
                     {loading ? "Logging in..." : "Log in"}
                   </button>
-                </div>
-              </form>
+                </Form>
+              )}
+            </Formik>
 
-              <p className="sign-up-label">
-                Don't have an account?
-                <Link to={"/sign-up"} className="sign-up-link">
-                  Sign up
-                </Link>
-              </p>
-              <div className="buttons-container mt-3">
-                <div className="google-login-button">
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth="0"
-                    version="1.1"
-                    x="0px"
-                    y="0px"
-                    className="google-icon"
-                    viewBox="0 0 48 48"
-                    height="1.1em"
-                    width="1.1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill="#FFC107"
-                      d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12
-                      c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-                    ></path>
-                    <path
-                      fill="#FF3D00"
-                      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657
-                      C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-                    ></path>
-                    <path
-                      fill="#4CAF50"
-                      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-                    ></path>
-                    <path
-                      fill="#1976D2"
-                      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-                    ></path>
-                  </svg>
-                  <span>Log in with Google</span>
-                </div>
-              </div>
-            </div>
+            <p className="sign-up-label">
+              Don't have an account?
+              <Link to={"/sign-up"} className="sign-up-link">
+                Sign up
+              </Link>
+            </p>
+            {/* <div className="buttons-container mt-3">
+              <div className="google-login-button"> */}
+                {/* Google Login Button */}
+              {/* </div>
+            </div> */}
           </div>
         </div>
-
-        <div className="hidden lg:block w-full h-full">
-          <img
-            className="h-[70%] w-[70%] object-contain my-20 mx-auto"
-            draggable={false}
-            src="https://res.cloudinary.com/avhixorin/image/upload/v1724779943/Account3DAnimatedIcon-ezgif.com-crop_1_xivavn.gif"
-            alt="gif"
-          />
-        </div>
       </div>
-    </>
+      <div className="hidden lg:block w-full h-full">
+        <img
+          className="h-[70%] w-[70%] object-contain my-20 mx-auto"
+          draggable={false}
+          src="https://res.cloudinary.com/avhixorin/image/upload/v1724779943/Account3DAnimatedIcon-ezgif.com-crop_1_xivavn.gif"
+          alt="gif"
+        />
+      </div>
+    </div>
   );
 };
 

@@ -3,8 +3,9 @@ export type User = {
     profilePicture?: string;
     username: string;
     fullName: string;
+    password: string;
     email: string;
-    dateOfBirth: string;
+    dateOfBirth: Date | null;
     gender: string;
     phone: string;
     role: string;
@@ -13,9 +14,9 @@ export type User = {
     yearsOfExperience?: number;
     clinicAffiliation?: string[];
     consultationHours?: { start: string; end: string }[];
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
+    createdAt?: string;
+    updatedAt?: string;
+    __v?: number;
 }
 
 // Define a type for dayData
