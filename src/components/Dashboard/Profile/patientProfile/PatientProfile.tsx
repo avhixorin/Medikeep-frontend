@@ -83,7 +83,7 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ user }) => {
                   <Input
                     id="dob"
                     type="date"
-                    defaultValue={user?.dateOfBirth || ""}
+                    defaultValue={user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : ""}
                     readOnly={!isEditing}
                   />
                 </div>

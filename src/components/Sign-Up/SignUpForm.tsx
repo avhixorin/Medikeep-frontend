@@ -27,8 +27,19 @@ const SignUpForm: React.FC = () => {
       password: "",
       role: "",
       gender: "",
-      dateOfBirth: null,
+      dateOfBirth: new Date(),
       phone: "",
+      availability: {
+        days: [],
+        timeSlots: [],
+      },
+      clinicalAddress: {
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+        zipCode: "",
+      },
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email format").required("Required"),
@@ -152,7 +163,7 @@ const SignUpForm: React.FC = () => {
                 format="yyyy-MM-dd"
                 className=""
               />
-              {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? <div className="error">{formik.errors.dateOfBirth}</div> : null}
+              {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? <div className="error">{String(formik.errors.dateOfBirth)}</div> : null}
               </div>
               <div>
               <PhoneInput

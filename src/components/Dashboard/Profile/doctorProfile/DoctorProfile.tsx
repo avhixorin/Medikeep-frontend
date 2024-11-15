@@ -39,7 +39,6 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
   const firstName = user?.fullName.split(" ")[0];
   const lastName = user?.fullName.split(" ")[1];
   const clinicAffiliation = user?.clinicAffiliation?.join(", ");
-  const clinicHours = user?.consultationHours?.join(", ");
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 bg-gradient-to-r from-blue-500 to-green-300 p-6 md:p-10">
@@ -86,7 +85,7 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
               label="Date of Birth"
               id="dob"
               type="date"
-              defaultValue={user?.dateOfBirth || ""}
+              defaultValue={user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : ""}
               isEditing={isEditing}
             />
             <InputWithIcon
@@ -172,14 +171,14 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
                   isEditing={isEditing}
                   isTextarea
                 />
-                <InputWithIcon
+                {/* <InputWithIcon
                   icon={<CalendarIcon className="text-gray-400" />}
                   label="Consultation Hours"
                   id="hours"
                   defaultValue={clinicHours || ""}
                   isEditing={isEditing}
                   isTextarea
-                />
+                /> */}
               </div>
             </TabsContent>
             <TabsContent value="professional">

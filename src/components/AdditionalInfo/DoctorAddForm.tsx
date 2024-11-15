@@ -1,61 +1,60 @@
 import React from 'react';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DatePicker } from 'rsuite';
-import { DoctorFormData } from '../Sign-Up/SignUpForm';
-import submitForm from '../../utils/submitForm';
 import 'react-international-phone/style.css'; 
 import './DoctorAddForm.css';
 import Swal from 'sweetalert2';
+import { User } from '@/types/types';
+import submitForm from '@/utils/submitForm';
 
 const DoctorAddForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const [consultationTimes, setConsultationTimes] = useState<{ start: Date | null, end: Date | null }[]>([
-    { start: null, end: null },
-  ]);
+  // const [consultationTimes, setConsultationTimes] = useState<{ start: Date | null, end: Date | null }[]>([
+  //   { start: null, end: null },
+  // ]);
 
-  const [formData, setFormData] = useState<DoctorFormData>({
+  const [formData, setFormData] = useState<User>({
     ...location.state, 
     medicalLicenseNumber: '',
     specialization: '',
     yearsOfExperience: '',
-    clinicAffiliation: '',
+    clinicAffiliation: [],
     consultationHours: '',
   });
 
-  const handleConsultationTimeChange = (index: number, type: 'start' | 'end', date: Date | null) => {
-    const updatedTimes = consultationTimes.map((time, i) =>
-      i === index ? { ...time, [type]: date } : time
-    );
-    setConsultationTimes(updatedTimes);
-  };
+  // const handleConsultationTimeChange = (index: number, type: 'start' | 'end', date: Date | null) => {
+  //   const updatedTimes = consultationTimes.map((time, i) =>
+  //     i === index ? { ...time, [type]: date } : time
+  //   );
+  //   setConsultationTimes(updatedTimes);
+  // };
 
-  const addConsultationInterval = async() => {
-    if (consultationTimes.length < 3) {
-      setConsultationTimes([...consultationTimes, { start: null, end: null }]);
-    } else {
-      await Swal.fire({
-        text: 'You can only add up to 3 consultation intervals',
-        icon: "error"
-      });
-    }
-  };
+  // const addConsultationInterval = async() => {
+  //   if (consultationTimes.length < 3) {
+  //     setConsultationTimes([...consultationTimes, { start: null, end: null }]);
+  //   } else {
+  //     await Swal.fire({
+  //       text: 'You can only add up to 3 consultation intervals',
+  //       icon: "error"
+  //     });
+  //   }
+  // };
 
-  const removeLastConsultationInterval = () => {
-    if (consultationTimes.length > 1) {
-      const updatedTimes = consultationTimes.slice(0, -1);
-      setConsultationTimes(updatedTimes);
-    }
-  };
+  // const removeLastConsultationInterval = () => {
+  //   if (consultationTimes.length > 1) {
+  //     const updatedTimes = consultationTimes.slice(0, -1);
+  //     setConsultationTimes(updatedTimes);
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    const completeFormData: DoctorFormData = {
+    const completeFormData: User = {
       ...formData,
-      consultationHours: consultationTimes, 
+      // consultations: consultationTimes, 
     };
 
     try {
@@ -120,7 +119,7 @@ const DoctorAddForm = () => {
                 className="w-[95%] border border-gray-300 rounded-lg py-2 px-3 text-gray-900"
                 placeholder="Enter years of experience"
                 value={formData.yearsOfExperience}
-                onChange={(e) => setFormData({ ...formData, yearsOfExperience: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, yearsOfExperience: parseInt(e.target.value,10) })}
               />
             </div>
             <div className='mb-4'>
@@ -133,10 +132,10 @@ const DoctorAddForm = () => {
                 className="w-[95%] border border-gray-300 rounded-lg py-2 px-3 text-gray-900"
                 placeholder="Enter clinic/hospital affiliation"
                 value={formData.clinicAffiliation}
-                onChange={(e) => setFormData({ ...formData, clinicAffiliation: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, clinicAffiliation: [e.target.value] })}
               />
             </div>
-            <div className='md:col-span-2 mb-4'>
+            {/* <div className='md:col-span-2 mb-4'>
               <label htmlFor="consultationHours" className="block text-sm font-medium text-gray-700 mb-2">
                 Consultation Hours
               </label>
@@ -180,7 +179,7 @@ const DoctorAddForm = () => {
                   </button>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
           <button
             type="submit"
