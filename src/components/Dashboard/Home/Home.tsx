@@ -99,7 +99,7 @@ const HealthDashboard: React.FC = () => {
       day: parseInt(day),
       value: dayData[day] + 1,
     }));
-
+    
     return (
       <ResponsiveContainer width="100%" height={250} className={"mouse-pointer"}>
         <AreaChart data={data}>
@@ -129,13 +129,13 @@ const HealthDashboard: React.FC = () => {
   const handleMonthSelect = (month: string): void => {
     setSelectedMonth(month);
   };
-
+  
   return (
     <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8]">
       {/* <div>
         <button onClick={resetStore} className="bg-red-500 text-white p-2 rounded-lg mt-4 ml-4">Reset Store</button>
       </div> */}
-      <div className="flex-1 p-4 lg:p-8 max-w-full">
+      <div className="flex-1 p-4 lg:p-8 max-w-full overflow-y-auto pointer-events-auto">
         <div className="flex justify-between items-center mb-4 lg:mb-8">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>
           <div className="flex items-center space-x-4 lg:space-x-6">
@@ -185,7 +185,7 @@ const HealthDashboard: React.FC = () => {
       </div>
 
       {/* Right Sidebar */}
-      <div className="lg:w-80 w-full bg-gray-800 p-4 lg:p-6 text-white flex flex-col space-y-6">
+      <div className="lg:w-80 w-full bg-gray-800 p-4 lg:p-6 text-white flex flex-col space-y-6 overflow-y-auto">
         <div>
           <h2 className="text-lg font-semibold mb-4">BMI Calculator</h2>
           <div className="space-y-4">

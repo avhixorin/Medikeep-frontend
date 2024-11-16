@@ -14,13 +14,14 @@ const SignUpForm = lazy(() => import('./components/Sign-Up/SignUpForm'));
 const LazyHome = lazy(() => import('./components/Landing-page/LandingPage'));
 const DoctorAddForm = lazy(() => import('./components/AdditionalInfo/DoctorAddForm'));
 const Dashboard = lazy(() => import('./components/Dashboard/ParentContainer/Dashboard'));
-const Home = lazy(() => import('./components/Dashboard/Home/Home'));
+const Vitals = lazy(() => import('./components/Dashboard/Home/Home'));
 const TermsAndConditions = lazy(() => import('./components/TnC/TnC'));
 const Error = lazy(() => import('./components/ErrorBoundary/Error'));
 const Appointments = lazy(() => import('./components/Dashboard/Appointments/Appointments'));
 const MedicalRecords = lazy(() => import('./components/Dashboard/MedicalRecords/MedicalRecords'));
 const Chat = lazy(() => import('./components/Dashboard/Chat/Chat'));
 const HealthProfile = lazy(() => import('./components/Dashboard/HealthProfile/Healthprofile'));
+const Welcome = lazy(() => import('./components/Dashboard/Welcome/Welcome'));
 const Unauthorized = lazy(() => import('./components/UnauthorizedPage/Unauthorized'));
 const Profile = lazy(() => import('./components/Dashboard/Profile/ProfileParent'));
 const About = lazy(() => import('./components/AboutUs/About'));
@@ -102,10 +103,11 @@ const router = createBrowserRouter(
           index
           element={
             <Suspense fallback={<LoadingScreen />}>
-              <Home />
+              <Welcome />
             </Suspense>
           }
         />
+        
         <Route
           path="profile"
           element={
@@ -127,6 +129,14 @@ const router = createBrowserRouter(
           element={
             <Suspense fallback={<LoadingScreen />}>
               <MedicalRecords />
+            </Suspense>
+          }
+        />
+        <Route
+          path="records"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Vitals />
             </Suspense>
           }
         />

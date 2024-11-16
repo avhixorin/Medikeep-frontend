@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearAuthUser } from '../../../redux/features/authSlice';
 import { RootState } from '../../../redux/store/store'; // Adjust the path as necessary
-export default function Sidebar() {
+export default function LeftSidebar() {
   const dispatch = useDispatch(); // Correct usage of useDispatch
   const user = useSelector((state: RootState) => state.auth.user);
   console.log(user);
@@ -51,7 +51,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-white border-r border-gray-200">
+    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-[#f6f4f4] border-r border-gray-200">
       
       {/* Logo at the top */}
       <div className='w-full flex flex-col gap-28 md:gap-10'>

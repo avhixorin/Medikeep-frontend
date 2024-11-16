@@ -59,7 +59,10 @@ export default {
   			signInLogo: 'url("./public/publicAssets/homepage/signInLogo.png")',
   			'sign-in': 'url("./src/assets/sign-in.png")',
   			'sign-up': 'url("./src/assets/sign-up.png")',
-  			herobg: 'url("./src/assets/homepage/herobg.png")'
+  			herobg: 'url("./src/assets/homepage/herobg.png")',
+			dashboard: 'url("./images/dashboardBg.jpg")',
+			dashboard2: 'url("./images/dashboardBg2.png")',
+			dashboard3: 'url("./images/dashboardBg3.png")',
   		},
   		fontFamily: {
   			poppins: ['Poppins', 'sans-serif'],

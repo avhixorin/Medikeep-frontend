@@ -7,6 +7,9 @@
 @tailwind components;
 @tailwind utilities;
 
+html,body{
+  scroll-behavior: smooth;
+}
 
 @font-face {
   font-family: "Frick";
@@ -16,10 +19,6 @@
   font-weight: 100 900;
 }
 
-::selection{
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
 
 @font-face {
   font-family: 'Helmet';
@@ -115,3 +114,5 @@
   transform: translateX(100%);
   transition: opacity 500ms ease, transform 500ms ease;
 }
+
+

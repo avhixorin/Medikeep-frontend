@@ -7,7 +7,6 @@ import Pricing from './Pricing/Pricing';
 import ContactUs from './ContactUs/ContactUs';
 import Footer from './Footer/Footer';
 
-
 const LandingPage: React.FC = () => {
   return (
     <div>
@@ -18,7 +17,6 @@ const LandingPage: React.FC = () => {
       <Pricing />
       <ContactUs />
       <Footer />    
-      
     </div>
   );
 };
