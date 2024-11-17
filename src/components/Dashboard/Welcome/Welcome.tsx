@@ -1,37 +1,35 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useSelector } from "react-redux"
+import { RootState } from "@/redux/store/store"
 
-interface WelcomeProps {
-  userName: string
-  userRole: 'Doctor' | 'Patient'
-}
-
-export default function Welcome({ userName, userRole }: WelcomeProps) {
+export default function Welcome() {
+  const { user } = useSelector((state: RootState) => state.auth)
   const cards = [
     {
       title: "Upcoming Appointments",
-      description: userRole === 'Doctor'
+      description: user?.role === 'Doctor'
         ? 'View and prepare for your upcoming consultations.'
         : 'Check your scheduled appointments with your doctors.',
       action: "View Appointments"
     },
     {
       title: "Prescriptions",
-      description: userRole === 'Doctor'
+      description: user?.role === 'Doctor'
         ? 'Manage and send prescriptions to your patients.'
         : 'Access your recent and saved prescriptions.',
       action: "View Prescriptions"
     },
     {
       title: "Messages",
-      description: userRole === 'Doctor'
+      description: user?.role === 'Doctor'
         ? 'Communicate with your patients effectively.'
         : 'Check messages from your doctors and clinics.',
       action: "View Messages"
     },
     {
       title: "Health Overview",
-      description: userRole === 'Doctor'
+      description: user?.role === 'Doctor'
         ? 'Monitor patient health trends and stats at a glance.'
         : 'Get a quick overview of your health status.',
       action: "View Overview"
@@ -43,10 +41,10 @@ export default function Welcome({ userName, userRole }: WelcomeProps) {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            Hello, {userName}! 👋
+            Hello, {user?.fullName}! 👋
           </h1>
           <p className="text-muted-foreground max-w-[700px] text-lg sm:text-xl">
-            {userRole === 'Doctor'
+            {user?.role === 'Doctor'
               ? 'Ready to manage your patients and appointments efficiently? Let\'s make healthcare seamless!'
               : 'Your health is our priority. Track appointments, prescriptions, and more with ease.'}
           </p>
