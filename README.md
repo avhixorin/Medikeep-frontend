@@ -1,155 +1,90 @@
-<<<<<<< HEAD
-# MediKeep 🩺 Healthcare Management System
+# 🏥 MediKeep - Healthcare Management System
+
+![MediKeep Logo](https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Logo_kletrg.png)
 
 ## Table of Contents
-- [MediKeep 🩺 Healthcare Management System](#medikeep--healthcare-management-system)
+- [🏥 MediKeep - Healthcare Management System](#-medikeep---healthcare-management-system)
   - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Features](#features)
-    - [Patient Management](#patient-management)
-    - [Appointment System](#appointment-system)
-    - [Medical Records Management](#medical-records-management)
-    - [User Authentication](#user-authentication)
+  - [Introduction 🚀](#introduction-)
+  - [Features ✨](#features-)
+    - [Patient Management 📋](#patient-management-)
+    - [Appointment System 🗓️](#appointment-system-️)
+    - [Medical Records Management 🩺](#medical-records-management-)
+    - [User Authentication 🔐](#user-authentication-)
+  - [Prerequisites ✅](#prerequisites-)
+  - [Installation 🛠️](#installation-️)
+  - [Project Structure](#project-structure)
   - [Technologies](#technologies)
     - [Frontend](#frontend)
     - [Backend](#backend)
     - [Database](#database)
     - [Authentication](#authentication)
-    - [DevOps](#devops)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Running the Application](#running-the-application)
-      - [Development Mode](#development-mode)
-      - [Production Build](#production-build)
-    - [Docker Deployment](#docker-deployment)
-  - [Project Structure](#project-structure)
-  - [Testing](#testing)
-    - [Frontend Testing](#frontend-testing)
-    - [Backend Testing](#backend-testing)
-    - [End-to-End Testing](#end-to-end-testing)
-  - [Security Considerations](#security-considerations)
+  - [Usage 🖥️](#usage-️)
+  - [Security Considerations 🔒](#security-considerations-)
   - [Contributing](#contributing)
   - [License](#license)
   - [Contact](#contact)
 
-## Overview
+## Introduction 🚀
 
-MediKeep is a comprehensive full-stack healthcare management application designed to streamline medical record tracking, appointment scheduling, and patient data management.
+Welcome to **MediKeep** 🏥—your all-in-one healthcare management solution! Designed to simplify and secure the way you handle medical records, appointments, and patient data, MediKeep combines cutting-edge technology with ease of use. ✨ 
 
-## Features
+🔒 **Secure:** Advanced encryption keeps medical histories and sensitive data safe.  
+📅 **Effortless Scheduling:** Manage appointments like a pro with just a few clicks.  
+👩‍⚕️ **For Everyone:** Seamlessly bridges the gap between patients and healthcare providers.  
 
-### Patient Management
+With **MediKeep**, healthcare is smarter, faster, and always within reach. Let's transform the way you care! 🌟
+
+
+## Features ✨
+
+### Patient Management 📋
 - Create, update, and delete patient profiles
 - Comprehensive medical history tracking
 - Secure storage of personal and medical information
 
-### Appointment System
+### Appointment System 🗓️
 - Real-time appointment scheduling
 - Automated reminders and notifications
 - Calendar integration
 - Conflict prevention and management
 
-### Medical Records Management
+### Medical Records Management 🩺
 - Secure document storage
 - Prescription tracking
 - Test result management
 - Confidential data encryption
 
-### User Authentication
+### User Authentication 🔐
 - Role-based access control
 - Multi-tier user permissions
 - Secure login mechanisms
 - OAuth2 and JWT authentication
 
-## Technologies
+## Prerequisites ✅
 
-### Frontend
-- React
-- TypeScript
-- Tailwind CSS
-- Socket.io-client
-- State Management: Redux/Context API
-- Form Handling: Formik
-- Validation: Yup
-
-### Backend
-- Node.js
-- Express.js
-- TypeScript
-- Mongoose ODM
-- Socket.io
-- REST API Design
-
-### Database
-- MongoDB Atlas
-- Mongoose Schema Validation
-- Indexed Collections
-- Aggregation Pipelines
-
-### Authentication
-- JSON Web Tokens (JWT)
-- OAuth2 Providers
-- Bcrypt Password Hashing
-- Role-Based Access Control (RBAC)
-
-### DevOps
-- Docker Containerization
-- Docker Compose
-- CI/CD: GitHub Actions
-- Cloud Deployment: AWS/Heroku
-
-## Getting Started
-
-### Prerequisites
 - Node.js (v16+)
 - npm or Yarn
 - MongoDB Atlas Account
 - Docker (optional)
 
-### Installation
+## Installation 🛠️
 
-1. Clone the repository
-
+1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/medikeep.git
-cd medikeep
+git clone https://github.com/avhixorin/MediKeep.git
+cd MediKeep
 ```
 
-2. Install dependencies
-
+2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
 ```
 
-3. Set up environment variables
-
+3. Set up environment variables:
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
-```
-
-### Running the Application
-
-#### Development Mode
-
-```bash
-npm run dev
-```
-
-#### Production Build
-
-```bash
-npm run build
-npm start
-```
-
-### Docker Deployment
-
-```bash
-docker-compose up --build
 ```
 
 ## Project Structure
@@ -224,124 +159,69 @@ docker-compose up --build
             └── utils/
 ```
 
-## Testing
+## Technologies
 
-### Frontend Testing
+### Frontend
+- React
+- TypeScript
+- Tailwind CSS
+- Socket.io-client
+- Redux/Context API
 
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+- Mongoose
+- Socket.io
+
+### Database
+- MongoDB Atlas
+
+### Authentication
+- JWT
+- OAuth2
+- Bcrypt Password Hashing
+
+## Usage 🖥️
+
+1. Development Server:
 ```bash
-npm run test:frontend
+npm run dev
 ```
 
-### Backend Testing
-
+2. Production Build:
 ```bash
-npm run test:backend
+npm run build
+npm start
 ```
 
-### End-to-End Testing
-
+3. Docker Deployment:
 ```bash
-npm run test:e2e
+docker-compose up --build
 ```
 
-## Security Considerations
+## Security Considerations 🔒
 
-- All patient data encrypted at rest and in transit
+- Patient data encrypted at rest and in transit
 - Regular security audits
-- HIPAA compliance guidelines followed
+- HIPAA compliance guidelines
 - Comprehensive input validation
-- Protection against common web vulnerabilities
+- Protection against web vulnerabilities
 
 ## Contributing
+
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
 
 ## License
+
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
-avhixorin - avhixorin@gmail.com
 
-Project Link: [MediKeep](https://github.com/avhixorin/Medikeep-frontend)
-=======
-# MediKeep 🏥
-
-![MediKeep](https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Logo_kletrg.png)
-
-## Table of Contents
-
-- [MediKeep 🏥](#medikeep-)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Features ✨](#features-)
-  - [Prerequisites ✅](#prerequisites-)
-  - [Installation 🛠️](#installation-️)
-  - [Usage 🖥️](#usage-️)
-  - [Contact Us 📬](#contact-us-)
-
-## Introduction
-
-MediKeep offers a secure and centralized platform for managing your entire medical history with advanced encryption. Our user-friendly interface is tailored for both patients and doctors. Patients can easily track health progress, access records, and manage appointments, while doctors can efficiently monitor patient histories and manage prescriptions. The seamless report upload system ensures all health information is readily available. MediKeep also facilitates direct communication between doctors and patients, promoting better collaboration. Experience the future of healthcare management with MediKeep, where your health is our priority.
-
-## Features ✨
-
-- **Health Records** 📋: Keep all your medical records in one secure place.
-- **Doctor Portal** 🩺: Doctors can efficiently manage patient records and prescriptions.
-- **Patient Dashboard** 💊: Patients can track their health progress and manage appointments.
-- **Secure Storage** 🔒: Advanced encryption ensures your data is secure.
-- **Report Upload** 📎: Easily upload and manage your medical reports.
-- **Direct Communication** 🗣️: Facilitate direct communication between doctors and patients.
-
-## Prerequisites ✅
-
-Before you begin, ensure you have met the following requirements:
-- **Node.js** (v14 or higher)
-- **npm** (v6 or higher) or **yarn**
-- **MongoDB**: Make sure you have MongoDB installed and running.
-
-## Installation 🛠️
-
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/avhixorin/MediKeep.git
-
-2. Navigate to the project directory:
-   ```sh
-   cd MediKeep
-3. Install dependencies:
-   ```sh
-   npm install
-4. Set up environment variables:
-   Create a `.env` file in the root directory and add the following:
-   ```sh
-   MONGODB_URI=your_mongodb_uri
-   JWT_SECRET=your_jwt_secret
-5. Start the development server:
-   ```sh
-   npm run dev
-   
-## Usage 🖥️
-
-1. Frontend: The frontend is deployed on Vercel. You can access it at:
-   ```sh
-   https://medikeep.vercel.app
-2. Backend: The backend is deployed on Render. You can access it at:
-   ```sh
-   https://medikeep-backend.onrender.com
-   
-- **Sign Up** : Create an account either as a patient or a doctor.
-   
-- **Login** : Log in to your account using the credentials.
-   
-- **Dashboard** : Access your dashboard to manage medical records, appointments, and communications.
-
-## Contact Us 📬
-
-For any inquiries or issues, please contact us at:
-Email: [support@medikeep.com] 
-
-Feel free to contribute to the project by submitting pull requests or reporting issues. Your contributions are welcome!
->>>>>>> 442ce49be5c2b0b4aab8356e5ba4d04a11c99072
+- Email: avhixorin@gmail.com
+- Project Link: [MediKeep GitHub](https://github.com/avhixorin/Medikeep-frontend)
