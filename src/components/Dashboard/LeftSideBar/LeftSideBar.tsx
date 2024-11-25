@@ -52,7 +52,7 @@ export default function LeftSidebar() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-[#f6f4f4] border-r border-gray-200">
+    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 border-r border-gray-200">
       {/* Logo at the top */}
       <div className="w-full flex flex-col gap-28 md:gap-10">
         <NavLink to="/dashboard/profile" className="flex flex-col gap-6 items-center justify-center md:justify-start">
@@ -65,8 +65,8 @@ export default function LeftSidebar() {
           <SidebarLink to="/dashboard" icon={<LayoutGrid size={24} />} label="Dashboard" end />
           <SidebarLink to="/dashboard/appointments" icon={<Calendar size={24} />} label="Appointments" />
           <SidebarLink to="/dashboard/chats" icon={<MessageSquare size={24} />} label="Chats" />
-          <SidebarLink to="/dashboard/records" icon={<HeartPulse size={24} />} label="Records" />
-          <SidebarLink to="/dashboard/health-profile" icon={<User size={24} />} label="Health Profile" /> {/* New Section */}
+          <SidebarLink to="/dashboard/medical-records" icon={<HeartPulse size={24} />} label="Records" />
+          <SidebarLink to="/dashboard/vitals" icon={<User size={24} />} label="Health Profile" />
         </nav>
       </div>
 

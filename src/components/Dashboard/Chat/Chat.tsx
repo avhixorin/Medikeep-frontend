@@ -39,9 +39,9 @@ const Chat: React.FC = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = () => {
-    if (message.trim() === "") return; // Prevent empty messages
+    if (message.trim() === "") return; 
     setChatHistory([...chatHistory, message]);
-    setMessage(""); // Clear input field after sending
+    setMessage(""); 
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

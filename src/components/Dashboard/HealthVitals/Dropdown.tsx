@@ -27,7 +27,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative w-full flex flex-col items-center rounded-lg">
+    <div className="relative w-full flex flex-col items-center">
       <button
         className="w-full gap-2 py-1 px-2 text-zinc-700 rounded-lg border-2 border-slate-300 active:border-white duration-300 active:text-white-100 flex justify-between items-center"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -40,7 +40,9 @@ const Dropdown: React.FC<DropdownProps> = ({
         )}
       </button>
       {isOpen && (
-        <div className="absolute left-0 top-12 bg-slate-100 w-full border-2 rounded-lg flex flex-col justify-center items-center pointer-events-auto z-30 overflow-y-auto scrollbar-webkit">
+        <div
+          className="absolute left-0 top-12 bg-slate-100 w-full border-2 rounded-lg flex flex-col pointer-events-auto z-30 max-h-40 overflow-y-auto shadow-lg overflow-x-hidden scrollbar-webkit"
+        >
           {options.map((month, index) => (
             <button
               key={index}
@@ -48,7 +50,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                 handleMonthSelect(month);
                 setIsOpen(false);
               }}
-              className="w-full text-zinc-700 py-2 px-4  hover:bg-slate-200 rounded-r-lg hover:border-l-4 hover:border-black"
+              className="w-full text-zinc-700 py-2 px-4 hover:bg-slate-200 rounded-r-lg hover:border-l-4 hover:border-black"
             >
               {month}
             </button>

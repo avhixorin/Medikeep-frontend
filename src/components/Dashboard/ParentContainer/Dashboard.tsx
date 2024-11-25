@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="w-full max-h-[100dvh] bg-[#FFFCF8] flex">
       <LeftSidebar />
-      <main className="flex-1 overflow-y-auto bg-dashboard2 bg-center bg-no-repeat bg-cover">
+      <main className="flex-1 overflow-y-auto bg-dashboard2 bg-center bg-no-repeat bg-cover scrollbar-webkit">
         <Outlet />
       </main>
     </div>

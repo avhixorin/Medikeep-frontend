@@ -37,7 +37,7 @@ export default function Welcome() {
   ]
 
   return (
-    <div className="w-full min-h-screen p-6 sm:p-8 md:p-12">
+    <div className="w-full min-h-screen p-6 sm:p-8 md:p-12 bg-transparent">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">

@@ -99,9 +99,13 @@ const HealthDashboard: React.FC = () => {
       day: parseInt(day),
       value: dayData[day] + 1,
     }));
-    
+
     return (
-      <ResponsiveContainer width="100%" height={250} className={"mouse-pointer"}>
+      <ResponsiveContainer
+        width="100%"
+        height={250}
+        className={"mouse-pointer"}
+      >
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
@@ -129,19 +133,19 @@ const HealthDashboard: React.FC = () => {
   const handleMonthSelect = (month: string): void => {
     setSelectedMonth(month);
   };
-  
+
   return (
     <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8]">
       {/* <div>
         <button onClick={resetStore} className="bg-red-500 text-white p-2 rounded-lg mt-4 ml-4">Reset Store</button>
       </div> */}
-      <div className="flex-1 p-4 lg:p-8 max-w-full overflow-y-auto pointer-events-auto">
+      <div className="flex-1 p-4 lg:p-8 max-w-full">
         <div className="flex justify-between items-center mb-4 lg:mb-8">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>
           <div className="flex items-center space-x-4 lg:space-x-6">
-          <button className="bg-green-500 text-sm text-white px-4 py-2 rounded-md hover:bg-green-600">
-            Update
-          </button>
+            <button className="bg-green-500 text-sm text-white px-4 py-2 rounded-md hover:bg-green-600">
+              Update
+            </button>
             {/* <Search className="w-5 h-5 text-gray-500 cursor-pointer" /> */}
             <Bell className="w-5 h-5 text-gray-500 cursor-pointer" />
           </div>
@@ -185,58 +189,76 @@ const HealthDashboard: React.FC = () => {
       </div>
 
       {/* Right Sidebar */}
-      <div className="lg:w-80 w-full bg-gray-800 p-4 lg:p-6 text-white flex flex-col space-y-6 overflow-y-auto">
-        <div>
-          <h2 className="text-lg font-semibold mb-4">BMI Calculator</h2>
-          <div className="space-y-4">
-            <InputField label="Height (cm)" value={height.toString()} />
-            <InputField label="Weight (kg)" value={weight.toString()} />
-          </div>
-          <div className="mt-4">
-            <h3 className="text-sm font-medium mb-2">Body Mass Index (BMI)</h3>
-            <div className="flex items-center">
-              <span className="text-3xl font-bold">{bmi}</span>
-              <span className="ml-2 text-xs bg-green-500 px-2 py-1 rounded">
-                {status}
-              </span>
+      <div className="lg:w-80 w-full bg-gray-800 p-4 lg:p-6 text-white flex flex-col space-y-6 h-full overflow-hidden">
+        <div className="flex flex-col flex-grow space-y-6">
+          {/* BMI Calculator Section */}
+          <div className="flex flex-col space-y-4">
+            <h2 className="text-lg font-semibold">BMI Calculator</h2>
+            <div className="space-y-3">
+              <InputField label="Height (cm)" value={height.toString()} />
+              <InputField label="Weight (kg)" value={weight.toString()} />
             </div>
-            <div className="w-full bg-gray-700 h-2 rounded-full mt-2">
-              <div
-                className={`h-2 rounded-full ${
-                  status === "Underweight"
-                    ? "bg-yellow-500"
-                    : status === "Normal"
-                    ? "bg-green-500"
-                    : status === "Overweight"
-                    ? "bg-orange-500"
-                    : "bg-red-500"
-                }`}
-                style={{ width: `${(bmi / 40) * 100}%` }}
-              ></div>
+            <div className="mt-4">
+              <h3 className="text-sm font-medium">Body Mass Index (BMI)</h3>
+              <div className="flex items-center mt-2">
+                <span className="text-2xl font-bold">{bmi}</span>
+                <span
+                  className={`ml-2 text-xs px-2 py-1 rounded ${
+                    status === "Underweight"
+                      ? "bg-yellow-500"
+                      : status === "Normal"
+                      ? "bg-green-500"
+                      : status === "Overweight"
+                      ? "bg-orange-500"
+                      : "bg-red-500"
+                  }`}
+                >
+                  {status}
+                </span>
+              </div>
+              <div className="w-full bg-gray-700 h-2 rounded-full mt-2">
+                <div
+                  className={`h-2 rounded-full ${
+                    status === "Underweight"
+                      ? "bg-yellow-500"
+                      : status === "Normal"
+                      ? "bg-green-500"
+                      : status === "Overweight"
+                      ? "bg-orange-500"
+                      : "bg-red-500"
+                  }`}
+                  style={{ width: `${(bmi / 40) * 100}%` }}
+                ></div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div>
-          <h2 className="text-lg font-semibold mb-4">Body Measurements</h2>
-          <p className="text-sm text-gray-400 mb-4">Last checked 2 Days Ago</p>
-          <p className="text-sm mb-4">Inverted Triangle Body Shape</p>
-          <div className="grid grid-row-3 gap-4">
-            <MeasurementField
-              label="Chest (in)"
-              value={bodyMeasurements.chest.toString()}
-              trend={bodyMeasurements.chestTrend}
-            />
-            <MeasurementField
-              label="Waist (in)"
-              value={bodyMeasurements.waist.toString()}
-              trend={bodyMeasurements.waistTrend}
-            />
-            <MeasurementField
-              label="Hip (in)"
-              value={bodyMeasurements.hip.toString()}
-              trend={bodyMeasurements.hipTrend}
-            />
+          {/* Body Measurements Section */}
+          <div className="flex-grow overflow-hidden">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Body Measurements</h2>
+              <p className="text-sm text-gray-400">Last updated 2 Days Ago</p>
+            </div>
+            <div className="space-y-3">
+              <p className="text-sm">Inverted Triangle Body Shape</p>
+              <div className="grid grid-rows-3 gap-4">
+                <MeasurementField
+                  label="Chest (in)"
+                  value={bodyMeasurements.chest.toString()}
+                  trend={bodyMeasurements.chestTrend}
+                />
+                <MeasurementField
+                  label="Waist (in)"
+                  value={bodyMeasurements.waist.toString()}
+                  trend={bodyMeasurements.waistTrend}
+                />
+                <MeasurementField
+                  label="Hip (in)"
+                  value={bodyMeasurements.hip.toString()}
+                  trend={bodyMeasurements.hipTrend}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
