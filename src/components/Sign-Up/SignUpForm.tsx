@@ -26,6 +26,7 @@ const SignUpForm: React.FC = () => {
       username: "",
       password: "",
       role: "",
+      theme: "light",
       gender: "",
       dateOfBirth: new Date(),
       phone: "",

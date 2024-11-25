@@ -1,6 +1,5 @@
 import { combineReducers, configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authSlice from "../features/authSlice";
-import activitySlice from "../features/activitySlice";
 
 import {
   persistReducer,
@@ -23,7 +22,6 @@ const persistConfig = {
 // Combine reducers
 const rootReducer = combineReducers({
   auth: authSlice,
-  activity: activitySlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
