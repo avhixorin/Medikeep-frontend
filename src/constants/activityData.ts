@@ -1,60 +1,77 @@
-import { DayData } from "@/types/types";
-
-const generateRandomDayData = (): DayData => {
-    const data: DayData = [];
-    for (let i = 0; i < 10; i++) {
-      data.push(Math.floor(Math.random() * 100));
-    }
-    return data;
-  };
-
 export const activityData = [
-    {
-      month: "January",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "February",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "March",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "April",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "May",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "June",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "July",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "August",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "September",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "October",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "November",
-      dayData: generateRandomDayData(),
-    },
-    {
-      month: "December",
-      dayData: generateRandomDayData(),
-    },
-  ];
+  { date: "2024-04-01", stepCount: 5120, heartRate: 72 },
+  { date: "2024-04-02", stepCount: 4178, heartRate: 76 },
+  { date: "2024-04-03", stepCount: 6400, heartRate: 68 },
+  { date: "2024-04-04", stepCount: 7302, heartRate: 70 },
+  { date: "2024-04-05", stepCount: 8250, heartRate: 65 },
+  { date: "2024-04-06", stepCount: 7100, heartRate: 72 },
+  { date: "2024-04-07", stepCount: 6045, heartRate: 74 },
+  { date: "2024-04-08", stepCount: 7543, heartRate: 73 },
+  { date: "2024-04-09", stepCount: 5320, heartRate: 75 },
+  { date: "2024-04-10", stepCount: 6842, heartRate: 71 },
+  { date: "2024-04-11", stepCount: 7280, heartRate: 69 },
+  { date: "2024-04-12", stepCount: 5600, heartRate: 74 },
+  { date: "2024-04-13", stepCount: 6500, heartRate: 72 },
+  { date: "2024-04-14", stepCount: 5152, heartRate: 70 },
+  { date: "2024-04-15", stepCount: 4880, heartRate: 73 },
+  { date: "2024-04-16", stepCount: 6000, heartRate: 76 },
+  { date: "2024-04-17", stepCount: 7801, heartRate: 67 },
+  { date: "2024-04-18", stepCount: 8020, heartRate: 69 },
+  { date: "2024-04-19", stepCount: 6905, heartRate: 71 },
+  { date: "2024-04-20", stepCount: 4815, heartRate: 75 },
+  { date: "2024-04-21", stepCount: 5300, heartRate: 74 },
+  { date: "2024-04-22", stepCount: 6125, heartRate: 72 },
+  { date: "2024-04-23", stepCount: 4590, heartRate: 73 },
+  { date: "2024-04-24", stepCount: 7000, heartRate: 75 },
+  { date: "2024-04-25", stepCount: 5540, heartRate: 77 },
+  { date: "2024-04-26", stepCount: 4800, heartRate: 78 },
+  { date: "2024-04-27", stepCount: 8250, heartRate: 69 },
+  { date: "2024-04-28", stepCount: 5300, heartRate: 74 },
+  { date: "2024-04-29", stepCount: 7100, heartRate: 70 },
+  { date: "2024-04-30", stepCount: 7400, heartRate: 69 },
+  { date: "2024-05-01", stepCount: 8000, heartRate: 73 },
+  { date: "2024-05-02", stepCount: 7300, heartRate: 75 },
+  { date: "2024-05-03", stepCount: 6000, heartRate: 68 },
+  { date: "2024-05-04", stepCount: 7900, heartRate: 70 },
+  { date: "2024-05-05", stepCount: 9000, heartRate: 65 },
+  { date: "2024-05-06", stepCount: 8700, heartRate: 72 },
+  { date: "2024-05-07", stepCount: 7950, heartRate: 74 },
+  { date: "2024-05-08", stepCount: 6500, heartRate: 73 },
+  { date: "2024-05-09", stepCount: 5800, heartRate: 71 },
+  { date: "2024-05-10", stepCount: 7700, heartRate: 69 },
+  { date: "2024-05-11", stepCount: 8300, heartRate: 72 },
+  { date: "2024-05-12", stepCount: 7600, heartRate: 73 },
+  { date: "2024-05-13", stepCount: 6000, heartRate: 75 },
+  { date: "2024-05-14", stepCount: 8500, heartRate: 70 },
+  { date: "2024-05-15", stepCount: 9100, heartRate: 72 },
+  { date: "2024-05-16", stepCount: 9500, heartRate: 74 },
+  { date: "2024-05-17", stepCount: 7700, heartRate: 76 },
+  { date: "2024-05-18", stepCount: 5000, heartRate: 73 },
+  { date: "2024-05-19", stepCount: 6300, heartRate: 71 },
+  { date: "2024-05-20", stepCount: 6700, heartRate: 75 },
+  { date: "2024-05-21", stepCount: 6100, heartRate: 74 },
+  { date: "2024-05-22", stepCount: 8000, heartRate: 72 },
+  { date: "2024-05-23", stepCount: 5600, heartRate: 78 },
+  { date: "2024-05-24", stepCount: 5900, heartRate: 73 },
+  { date: "2024-05-25", stepCount: 7100, heartRate: 75 },
+  { date: "2024-05-26", stepCount: 8200, heartRate: 70 },
+  { date: "2024-05-27", stepCount: 6400, heartRate: 74 },
+  { date: "2024-05-28", stepCount: 7500, heartRate: 72 },
+  { date: "2024-05-29", stepCount: 6600, heartRate: 77 },
+  { date: "2024-05-30", stepCount: 8900, heartRate: 71 },
+  { date: "2024-05-31", stepCount: 7000, heartRate: 72 },
+
+  // Add data for the last 7 days (dummy data for demonstration)
+  { date: "2024-06-01", stepCount: 7800, heartRate: 70 },
+  { date: "2024-06-02", stepCount: 8100, heartRate: 72 },
+  { date: "2024-06-03", stepCount: 8300, heartRate: 74 },
+  { date: "2024-06-04", stepCount: 8500, heartRate: 75 },
+  { date: "2024-06-05", stepCount: 9000, heartRate: 76 },
+  { date: "2024-06-06", stepCount: 8900, heartRate: 72 },
+  { date: "2024-06-07", stepCount: 9200, heartRate: 73 },
+
+  // Add data for the last 3 days (dummy data for demonstration)
+  { date: "2024-06-08", stepCount: 9300, heartRate: 71 },
+  { date: "2024-06-09", stepCount: 9400, heartRate: 70 },
+  { date: "2024-06-10", stepCount: 9600, heartRate: 74 }
+];

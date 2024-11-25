@@ -1,4 +1,4 @@
-import { ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { ResponsiveContainer, Area, AreaChart } from "recharts";
 
 const data = [
   { value: 70 },
@@ -18,9 +18,14 @@ interface HealthcardProps {
   status: string;
 }
 
-export default function HealthCard({ title, value, unit, status }: HealthcardProps) {
+export default function HealthCard({
+  title,
+  value,
+  unit,
+  status,
+}: HealthcardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 w-full lg:w-[19rem]">
+    <div className="bg-white rounded-xl shadow-md p-4 w-full">
       <div className="flex items-center mb-2">
         <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-2">
           <svg

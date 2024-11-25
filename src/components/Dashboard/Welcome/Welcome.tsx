@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import { useNavigate } from "react-router-dom";
 
 export default function Welcome() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -46,12 +47,24 @@ export default function Welcome() {
       action: "View Overview",
     },
   ];
+  const navigate = useNavigate();
+  const handleNavigation = (title:string) => {
+    if(title === "Upcoming Appointments"){
+      navigate('/dashboard/appointments')
+    }else if(title === "Prescriptions"){
+      navigate('/dashboard/medical-records')
+    }else if(title === "Messages"){
+      navigate('/dashboard/chats')
+    }else{
+      navigate('/dashboard/vitals')
+    }
+  }
 
   return (
     <div className="w-full h-full bg-transparent pt-6 px-4 md:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
         <div className="flex flex-col gap-4">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
             Hello,
             <br />
             {user?.fullName}! 👋
@@ -82,7 +95,9 @@ export default function Welcome() {
                   </CardDescription>
                 </CardContent>
               <CardFooter>
-                <Button className="w-full py-2">{card.action}</Button>
+                <Button className="w-full py-2"
+                onClick={() => handleNavigation(card.title)}
+                >{card.action}</Button>
               </CardFooter>
               </div>
             </Card>

@@ -1,33 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
 import HealthCard from "./HealthCard";
-import { useSelector } from "react-redux";
-import {
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Area,
-  AreaChart,
-  CartesianGrid,
-} from "recharts";
-import Dropdown from "./Dropdown";
-
-interface Activity {
-  month: string;
-  dayData: Record<string, number>;
-}
-
-interface RootState {
-  activity: Activity[];
-}
+import { ActivityChart } from "./ActivityChart";
 
 const HealthDashboard: React.FC = () => {
   const height = 175;
   const weight = 70;
   const [bmi, setBmi] = useState<number>(0);
   const [status, setStatus] = useState<string>("");
-  const [selectedMonth, setSelectedMonth] = useState<string>("January");
 
   const [bodyMeasurements, setBodyMeasurements] = useState({
     prevChest: 40,
@@ -77,81 +57,20 @@ const HealthDashboard: React.FC = () => {
     bmiCalculator(height, weight);
   }, [height, weight]);
 
-  // Fetch activity data from Redux store
-  const activityData = useSelector((state: RootState) => state.activity);
-
-  const renderLineChart = (): JSX.Element | null => {
-    const selectedActivity = activityData.find(
-      (activity) => activity.month === selectedMonth
-    );
-    if (!selectedActivity) {
-      return (
-        <div className="flex items-center justify-center h-full text-gray-600">
-          No data available for {selectedMonth}.
-        </div>
-      );
-    }
-
-    const { dayData } = selectedActivity;
-
-    // Convert dayData object to array of objects for recharts
-    const data = Object.keys(dayData).map((day) => ({
-      day: parseInt(day),
-      value: dayData[day] + 1,
-    }));
-
-    return (
-      <ResponsiveContainer
-        width="100%"
-        height={250}
-        className={"mouse-pointer"}
-      >
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6C48C5" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#6C48C5" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="day" />
-          <YAxis tickCount={10} />
-          <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke="#6C48C5"
-            strokeWidth={1}
-            fill="url(#colorValue)"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    );
-  };
-
-  // Handle month selection from dropdown
-  const handleMonthSelect = (month: string): void => {
-    setSelectedMonth(month);
-  };
-
   return (
     <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8]">
-      {/* <div>
-        <button onClick={resetStore} className="bg-red-500 text-white p-2 rounded-lg mt-4 ml-4">Reset Store</button>
-      </div> */}
-      <div className="flex-1 p-4 lg:p-8 max-w-full">
-        <div className="flex justify-between items-center mb-4 lg:mb-8">
+      <div className="flex flex-col w-full h-full justify-evenly items-center px-4">
+        <div className="flex justify-between items-center w-full">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>
           <div className="flex items-center space-x-4 lg:space-x-6">
             <button className="bg-green-500 text-sm text-white px-4 py-2 rounded-md hover:bg-green-600">
               Update
             </button>
-            {/* <Search className="w-5 h-5 text-gray-500 cursor-pointer" /> */}
             <Bell className="w-5 h-5 text-gray-500 cursor-pointer" />
           </div>
         </div>
 
-        <div className="grid place-items-center md:place-items-stretch w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 mb-6 lg:mb-7">
+        <div className="flex w-full justify-between items-center gap-4">
           <HealthCard
             title={"Blood Sugar"}
             value={"75"}
@@ -172,29 +91,17 @@ const HealthDashboard: React.FC = () => {
           />
         </div>
 
-        <div className="bg-white p-4 lg:p-6 rounded-lg shadow">
-          <div className="flex justify-between items-center mb-2 lg:mb-4">
-            <h2 className="text-lg font-semibold">Activity Growth</h2>
-            <button className="flex items-center text-sm text-gray-500">
-              <Dropdown
-                handleMonthSelect={handleMonthSelect}
-                selectedMonth={selectedMonth}
-              />
-            </button>
-          </div>
-          <div className="h-48 lg:h-60 w-full bg-gray-100 rounded">
-            {renderLineChart()}
-          </div>
+        <div className="rounded-lg shadow w-full">
+            <ActivityChart />
         </div>
       </div>
-
       {/* Right Sidebar */}
-      <div className="lg:w-80 w-full bg-gray-800 p-4 lg:p-6 text-white flex flex-col space-y-6 h-full overflow-hidden">
+      <div className="lg:w-80 w-full bg-gray-800 p-4 lg:p-6 text-white flex flex-col space-y-6 h-full">
         <div className="flex flex-col flex-grow space-y-6">
           {/* BMI Calculator Section */}
           <div className="flex flex-col space-y-4">
             <h2 className="text-lg font-semibold">BMI Calculator</h2>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <InputField label="Height (cm)" value={height.toString()} />
               <InputField label="Weight (kg)" value={weight.toString()} />
             </div>
@@ -237,11 +144,9 @@ const HealthDashboard: React.FC = () => {
           <div className="flex-grow overflow-hidden">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Body Measurements</h2>
-              <p className="text-sm text-gray-400">Last updated 2 Days Ago</p>
             </div>
-            <div className="space-y-3">
-              <p className="text-sm">Inverted Triangle Body Shape</p>
-              <div className="grid grid-rows-3 gap-4">
+            <div className="space-y-1">
+              <div className="grid grid-rows-3 gap-2">
                 <MeasurementField
                   label="Chest (in)"
                   value={bodyMeasurements.chest.toString()}
