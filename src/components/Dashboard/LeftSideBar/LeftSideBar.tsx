@@ -66,25 +66,22 @@ export default function LeftSidebar() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8">
-      {/* Logo at the top */}
-      <div className="w-full flex flex-col gap-28 md:gap-10">
-        <NavLink
-          to="/dashboard/profile"
-          className="flex flex-col gap-6 items-center justify-center md:justify-start"
-        >
+    <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-2 space-y-8">
+      {/* Logo Section */}
+      <div className="w-full flex flex-col gap-12 md:gap-8">
+        <div className="flex w-full justify-center items-center p-2 gap-2 my-8">
           <img
-            src={user?.profilePicture}
-            className="rounded-full h-12 w-10 md:h-20 md:w-20"
-            alt="User"
+            src="https://res.cloudinary.com/avhixorin/image/upload/v1726237530/titleIcon_h3ehnu.png"
+            alt="MediKeep Logo"
+            className="w-6 object-cover"
           />
-          <span className="ml-2 text-lg font-medium hidden md:block font-poppins">
-            {user?.username}
-          </span>
-        </NavLink>
+          <p className="text-2xl font-bold tracking-wide text-gray-800 hidden md:block">
+            MediKeep
+          </p>
+        </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-col items-center space-y-4 w-full px-2">
+        <nav className="flex flex-col items-center w-full space-y-4 px-2">
           <SidebarLink
             to="/dashboard"
             icon={<LayoutGrid size={24} />}
@@ -115,17 +112,30 @@ export default function LeftSidebar() {
       </div>
 
       {/* Bottom Section */}
-      <div className="flex flex-col items-center space-y-4 w-full px-2">
-        <SidebarLink
-          to="/dashboard/settings"
-          icon={<Settings size={24} />}
-          label="Settings"
-        />
+      <div className="flex flex-col items-center w-full space-y-4 px-2">
         <SidebarButton
           icon={<LogOut size={24} />}
           label="Logout"
           onClick={handleLogout}
         />
+        <SidebarLink
+          to="/dashboard/settings"
+          icon={<Settings size={24} />}
+          label="Settings"
+        />
+        <div className="flex w-full items-center gap-4 p-2 bg-gray-100 border border-gray-300 rounded-md">
+          <img
+            src={user?.profilePicture}
+            alt={`${user?.username}'s profile picture`}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          <div className="flex flex-col justify-center hidden md:block">
+            <p className="text-sm font-semibold text-gray-800">
+              {user?.username}
+            </p>
+            <p className="text-xs text-gray-500">{user?.gender}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -146,7 +156,7 @@ function SidebarLink({ to, icon, label, end = false }: SidebarLinkProps) {
       className={({ isActive }) =>
         `flex items-center justify-center md:justify-start p-2 w-full rounded-lg transition-colors duration-150 ease-in-out ${
           isActive
-            ? "text-zinc-800 bg-gray-200"
+            ? "text-gray-800 bg-gray-200"
             : "text-gray-500 hover:text-gray-800 hover:bg-gray-100"
         }`
       }
@@ -166,8 +176,8 @@ interface SidebarButtonProps {
 function SidebarButton({ icon, label, onClick }: SidebarButtonProps) {
   return (
     <button
-      className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150 ease-in-out focus:outline-none"
       onClick={onClick}
+      className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full rounded-lg transition-colors duration-150 ease-in-out hover:text-gray-800 hover:bg-gray-100 focus:outline-none"
     >
       {icon}
       <span className="ml-3 hidden md:block">{label}</span>
