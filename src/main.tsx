@@ -107,6 +107,7 @@ const router = createBrowserRouter(
             </Suspense>
           }
         />
+          
           <Route
             path="appointments"
             element={
@@ -115,6 +116,7 @@ const router = createBrowserRouter(
               </Suspense>
             }
           />
+          
           <Route
           path="chats"
           element={

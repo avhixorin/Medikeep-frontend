@@ -13,6 +13,7 @@ import { Search, Plus } from "lucide-react";
 import { SettingsNav } from "./SettingsNav/SettingsNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import useTheme from "@/hooks/useTheme";
 
 const navItems = [
   { href: "/settings/general", title: "General" },
@@ -27,6 +28,7 @@ const navItems = [
 
 export default function SettingsPage() {
   const { user } = useSelector((state: RootState) => state.auth);
+  const { theme, toggleTheme } = useTheme();
   return (
     <div className="min-h-screen bg-transparent">
       <header className="flex items-center justify-between border-b px-4 py-3 md:px-6">
@@ -144,7 +146,10 @@ export default function SettingsPage() {
                   <Label>Theme</Label>
                   <div>Light / Dark</div>
                 </div>
-                <Switch />
+                <Switch
+                  checked={theme === "dark"}
+                  onCheckedChange={toggleTheme} // Correct handler for Switch
+                />
               </div>
 
               {/* Time Zone Setting */}

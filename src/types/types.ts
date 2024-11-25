@@ -8,6 +8,7 @@ export type User = {
   dateOfBirth: Date;
   gender: string;
   phone: string;
+  theme: "light" | "dark";
   role: string;
   medicalLicenseNumber?: string;
   specialization?: string;

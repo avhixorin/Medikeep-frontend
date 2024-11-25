@@ -35,6 +35,11 @@ const authSlice = createSlice({
         setAuthUser: (state, action: PayloadAction<User>) => {
             state.user = action.payload;
         },
+        setUserTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
+            if (state.user) {
+                state.user.theme = action.payload;
+            }
+        },
         clearAuthUser: (state) => {
             state.user = null;
         },
@@ -47,5 +52,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setAuthUser, clearAuthUser } = authSlice.actions;
+export const { setAuthUser, setUserTheme, clearAuthUser } = authSlice.actions;
 export default authSlice.reducer;

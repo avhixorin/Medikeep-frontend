@@ -1,114 +1,124 @@
-import React, { useState } from "react";
-import AppointmentCard from "./AppointmentCard";
-import { AiOutlineCaretDown, AiOutlineCaretUp } from "react-icons/ai";
+'use client'
 
-// Sample names for patients and doctors
-const patientNames = [
-  "Rita",
-  "John",
-  "Alice",
-  "Bob",
-  "Eve",
-  "Charlie",
-  "Grace",
-  "David",
-  "Sophia",
-  "James",
-];
-
-const timeSlots = [
-  "12:30 PM - 12:45 PM",
-  "12:45 PM - 1:00 PM",
-  "1:00 PM - 1:15 PM",
-  "12:30 PM - 1:00 PM",
-  "1:00 PM - 1:30 PM",
-  "1:30 PM - 2:00 PM",
-  "1:15 PM - 1:30 PM",
-  "1:10 PM - 1:30 PM",
-  "1:30 PM - 1:50 PM",
-  "1:50 PM - 2:10 PM",
-];
-
-const imgSrcs = [
-  "https://randomuser.me/api/portraits/women/41.jpg",
-  "https://randomuser.me/api/portraits/women/42.jpg",
-  "https://randomuser.me/api/portraits/women/43.jpg",
-  "https://randomuser.me/api/portraits/women/44.jpg",
-  "https://randomuser.me/api/portraits/women/45.jpg",
-  "https://randomuser.me/api/portraits/women/46.jpg",
-  "https://randomuser.me/api/portraits/women/47.jpg",
-  "https://randomuser.me/api/portraits/women/48.jpg",
-];
-
-// Function to get random elements from an array
-const getRandomElement = (arr: string[]): string => {
-  const randomIndex = Math.floor(Math.random() * arr.length);
-  return arr[randomIndex];
-};
+import React, { useState } from "react"
+import { format, compareAsc, parseISO } from "date-fns"
+import { CalendarIcon, SearchIcon, X } from 'lucide-react'
+import { appointments } from "@/constants/appointments"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import AppointmentCard from "./AppointmentCard"
 
 const Appointments: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState("September 27, 2024");
+  const [date, setDate] = useState<Date | undefined>()
+  const [searchQuery, setSearchQuery] = useState<string>("")
 
-  const dates = [
-    "September 25, 2024",
-    "September 26, 2024",
-    "September 27, 2024",
-    "September 28, 2024",
-    "September 29, 2024",
-  ];
+  const formattedDate = date ? format(date, "yyyy-MM-dd") : null
 
-  const [isOpen, setIsOpen] = useState(false);
+  const filteredAppointments = appointments
+    .filter(
+      (appt) =>
+        (!formattedDate || appt.date === formattedDate) &&
+        (!searchQuery || appt.patientName.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+    .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)))
+
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    filteredAppointments[0] ? parseISO(filteredAppointments[0].date) : undefined
+  )
+
+  const clearFilters = () => {
+    setDate(undefined)
+    setSearchQuery("")
+  }
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-[#fffcf8] p-10">
-      <div className="h-[25%] w-full flex flex-col justify-start gap-6">
-        <h1 className="text-2xl font-semibold text-zinc-700">Appointments</h1>
+    <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#121212]">
+      <div className="w-full flex flex-col gap-8">
+        <h1 className="text-3xl font-semibold text-zinc-700 dark:text-gray-200">Appointments</h1>
 
-        {/* Dropdown for date selection */}
-        <div className="relative w-[18%] bg-blue-300 flex flex-col items-center rounded-lg">
-          <button
-            className="w-full bg-blue-500 py-2 px-4 text-white rounded-lg border-4 border-transparent active:border-white duration-300 active:text-white-100 flex justify-between items-center"
-            onClick={() => setIsOpen((prev) => !prev)}
-          >
-            {selectedDate}
-            {isOpen ? (
-              <AiOutlineCaretUp size={14} />
-            ) : (
-              <AiOutlineCaretDown size={14} />
+        <div className="flex items-center gap-3">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-[200px] justify-start text-left font-normal bg-white text-gray-700 border-gray-300 hover:bg-gray-100",
+                  "dark:bg-zinc-900 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800",
+                  !date && "text-muted-foreground dark:text-gray-500"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                {date ? format(date, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 bg-white border-gray-300 dark:bg-zinc-900 dark:border-gray-700">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(selectedDate) => {
+                  setDate(selectedDate)
+                  setSelectedDate(selectedDate)
+                }}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+
+          <div className="relative flex-grow bg-white border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 dark:bg-zinc-900 dark:border-gray-700 dark:focus-within:ring-blue-400">
+            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+            <Input
+              placeholder="Search patients..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-10 bg-transparent text-gray-700 placeholder-gray-500 border-none outline-none dark:text-gray-200 dark:placeholder-gray-500"
+            />
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                onClick={() => setSearchQuery("")}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             )}
-          </button>
-          {isOpen && (
-            <div className="absolute left-0 top-14 w-full rounded-lg flex flex-col justify-center items-center bg-blue-500">
-              {dates.map((date, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setSelectedDate(date);
-                    setIsOpen(false);
-                  }}
-                  className="w-full text-slate-300 py-2 px-4 hover:bg-blue-600 rounded-r-lg hover:border-l-4 hover:border-white hover:text-white"
-                >
-                  {date}
-                </button>
-              ))}
-            </div>
-          )}
+          </div>
+
+          <Button
+            variant="outline"
+            onClick={clearFilters}
+            className={cn(
+              "whitespace-nowrap text-gray-700 border-gray-300 hover:bg-gray-100",
+              "dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800 dark:hover:text-gray-200",
+              !date && !searchQuery && "text-muted-foreground dark:text-gray-500"
+            )}
+            disabled={!date && !searchQuery}
+          >
+            Clear filters
+          </Button>
         </div>
       </div>
 
-      <div className="h-full w-full bg-white rounded-md flex flex-col justify-evenly p-6 gap-3 overflow-y-auto shadow-xl scrollbar-webkit">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <AppointmentCard
-            key={index}
-            Name={getRandomElement(patientNames)}
-            timeSlots={getRandomElement(timeSlots)}
-            imgSrc={getRandomElement(imgSrcs)}
-            selectedDate={selectedDate}
-          />
-        ))}
+      <div className="mt-6 flex-grow bg-white dark:bg-zinc-900 rounded-md flex flex-col p-6 gap-3 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((appointment) => (
+            <AppointmentCard
+              key={appointment.id}
+              Name={appointment.patientName}
+              timeSlots={appointment.timeSlot}
+              imgSrc={appointment.imgSrc}
+              selectedDate={parseISO(appointment.date)}
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-500 dark:text-gray-400">No appointments found.</p>
+        )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Appointments;
+export default Appointments

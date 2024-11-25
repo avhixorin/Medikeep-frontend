@@ -1,0 +1,58 @@
+export const appointments = [
+    {
+      id: 1,
+      patientName: "Rita",
+      timeSlot: "12:30 PM - 12:45 PM",
+      imgSrc: "https://randomuser.me/api/portraits/women/41.jpg",
+      date: "2024-11-25",
+    },
+    {
+      id: 2,
+      patientName: "John",
+      timeSlot: "12:45 PM - 1:00 PM",
+      imgSrc: "https://randomuser.me/api/portraits/men/42.jpg",
+      date: "2024-11-25",
+    },
+    {
+      id: 3,
+      patientName: "Alice",
+      timeSlot: "1:00 PM - 1:15 PM",
+      imgSrc: "https://randomuser.me/api/portraits/women/43.jpg",
+      date: "2024-11-25",
+    },
+    {
+      id: 4,
+      patientName: "Bob",
+      timeSlot: "1:15 PM - 1:30 PM",
+      imgSrc: "https://randomuser.me/api/portraits/men/44.jpg",
+      date: "2024-11-25",
+    },
+    {
+      id: 5,
+      patientName: "Eve",
+      timeSlot: "1:30 PM - 1:45 PM",
+      imgSrc: "https://randomuser.me/api/portraits/women/45.jpg",
+      date: "2024-11-26",
+    },
+    {
+      id: 6,
+      patientName: "Charlie",
+      timeSlot: "1:45 PM - 2:00 PM",
+      imgSrc: "https://randomuser.me/api/portraits/men/46.jpg",
+      date: "2024-11-26",
+    },
+    {
+      id: 7,
+      patientName: "Grace",
+      timeSlot: "2:00 PM - 2:15 PM",
+      imgSrc: "https://randomuser.me/api/portraits/women/47.jpg",
+      date: "2024-11-26",
+    },
+    {
+      id: 8,
+      patientName: "David",
+      timeSlot: "2:15 PM - 2:30 PM",
+      imgSrc: "https://randomuser.me/api/portraits/men/48.jpg",
+      date: "2024-11-26",
+    },
+  ];
