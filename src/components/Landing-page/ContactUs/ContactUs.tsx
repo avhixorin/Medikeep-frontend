@@ -1,7 +1,7 @@
 import React from "react";
 import { useRef, useState } from "react";
-// import emailjs from "@emailjs/browser";
-// import Swal from "sweetalert2";
+import emailjs from "@emailjs/browser";
+import Swal from "sweetalert2";
 import DNAViewer from "./Canvas/DNAViewer";
 
 const ContactUs = () => {
@@ -11,7 +11,7 @@ const ContactUs = () => {
     email: "",
     message: "",
   });
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -21,51 +21,51 @@ const ContactUs = () => {
     });
   };
 
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setLoading(true);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
 
-  //   emailjs
-  //     .send(
-  //       "service_qy1d9d6",
-  //       "template_p2xo9oe",
-  //       {
-  //         from_name: form.name,
-  //         to_name: "avhixorin",
-  //         from_email: form.email,
-  //         to_email: "ay5497368@gmail.com",
-  //         message: form.message,
-  //       },
-  //       "WXfxZnnOlNJxJqPdw"
-  //     )
-  //     .then(
-  //       () => {
-  //         setLoading(false);
-  //         Swal.fire({
-  //           text: "Thank you. I will get back to you as soon as possible.",
-  //           icon: "success",
-  //           background: "#1a1a1a",
-  //           color: "#fff",
-  //         });
+    emailjs
+      .send(
+        "service_qy1d9d6",
+        "template_p2xo9oe",
+        {
+          from_name: form.name,
+          to_name: "avhixorin",
+          from_email: form.email,
+          to_email: "ay5497368@gmail.com",
+          message: form.message,
+        },
+        "WXfxZnnOlNJxJqPdw"
+      )
+      .then(
+        () => {
+          setLoading(false);
+          Swal.fire({
+            text: "Thank you. I will get back to you as soon as possible.",
+            icon: "success",
+            background: "#1a1a1a",
+            color: "#fff",
+          });
 
-  //         setForm({
-  //           name: "",
-  //           email: "",
-  //           message: "",
-  //         });
-  //       },
-  //       (error) => {
-  //         setLoading(false);
-  //         console.error(error);
-  //         Swal.fire({
-  //           text: "Ahh, something went wrong. Please try again.",
-  //           icon: "error",
-  //           background: "#1a1a1a",
-  //           color: "#fff",
-  //         });
-  //       }
-  //     );
-  // };
+          setForm({
+            name: "",
+            email: "",
+            message: "",
+          });
+        },
+        (error) => {
+          setLoading(false);
+          console.error(error);
+          Swal.fire({
+            text: "Ahh, something went wrong. Please try again.",
+            icon: "error",
+            background: "#1a1a1a",
+            color: "#fff",
+          });
+        }
+      );
+  };
 
   return (
     <div itemID="contact-section" className="mt-12 flex flex-col gap-10 overflow-hidden py-6 bg-blue-50" id="contact">
@@ -79,7 +79,7 @@ const ContactUs = () => {
           </h3>
           <form
             ref={formRef}
-            // onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
             className="flex flex-col gap-6 w-3/4 items-center"
           >
             <label className="flex flex-col w-full">
@@ -127,8 +127,7 @@ const ContactUs = () => {
               type="submit"
               className="bg-blue-600 hover:bg-blue-500 transition py-3 px-8 rounded-lg outline-none text-white font-bold shadow-md"
             >
-              {/* {loading ? "Sending..." : "Send"} */}
-              Send
+               {loading ? "Sending..." : "Send"}
             </button>
           </form>
         </div>

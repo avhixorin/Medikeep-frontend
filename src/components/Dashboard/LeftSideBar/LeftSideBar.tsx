@@ -1,4 +1,5 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { clearAuthUser } from '@/redux/features/authSlice';
+import { RootState } from '@/redux/store/store';
 import {
   LayoutGrid,
   Calendar,
@@ -6,32 +7,33 @@ import {
   Settings,
   LogOut,
   HeartPulse,
+  User,
 } from 'lucide-react';
-import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAuthUser } from '../../../redux/features/authSlice';
-import { RootState } from '../../../redux/store/store'; // Adjust the path as necessary
+import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 export default function LeftSidebar() {
-  const dispatch = useDispatch(); // Correct usage of useDispatch
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user);
-  const navigate = useNavigate(); // Correct usage of useNavigate
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
-      const response = await fetch(logoutUrl,{
+      const response = await fetch(logoutUrl, {
         method: 'POST',
         credentials: 'include',
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         Swal.fire({
           text: errorData.message || 'Failed to log out',
           icon: 'error',
         });
-        return; // Exit if there's an error
+        return;
       }
 
       Swal.fire({
@@ -39,9 +41,8 @@ export default function LeftSidebar() {
         icon: 'success',
       });
 
-      dispatch(clearAuthUser()); 
-
-      navigate('/sign-in'); // Correct navigation after logout
+      dispatch(clearAuthUser());
+      navigate('/sign-in');
     } catch {
       Swal.fire({
         text: 'An error occurred while logging out. Please try again.',
@@ -52,11 +53,10 @@ export default function LeftSidebar() {
 
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-44 h-[100dvh] py-8 space-y-8 bg-[#f6f4f4] border-r border-gray-200">
-      
       {/* Logo at the top */}
-      <div className='w-full flex flex-col gap-28 md:gap-10'>
+      <div className="w-full flex flex-col gap-28 md:gap-10">
         <NavLink to="/dashboard/profile" className="flex flex-col gap-6 items-center justify-center md:justify-start">
-          <img src={user?.profilePicture} className='rounded-full h-12 w-10 md:h-20 md:w-20' alt="User" />
+          <img src={user?.profilePicture} className="rounded-full h-12 w-10 md:h-20 md:w-20" alt="User" />
           <span className="ml-2 text-lg font-medium hidden md:block font-poppins">{user?.username}</span>
         </NavLink>
 
@@ -66,6 +66,7 @@ export default function LeftSidebar() {
           <SidebarLink to="/dashboard/appointments" icon={<Calendar size={24} />} label="Appointments" />
           <SidebarLink to="/dashboard/chats" icon={<MessageSquare size={24} />} label="Chats" />
           <SidebarLink to="/dashboard/records" icon={<HeartPulse size={24} />} label="Records" />
+          <SidebarLink to="/dashboard/health-profile" icon={<User size={24} />} label="Health Profile" /> {/* New Section */}
         </nav>
       </div>
 
@@ -89,7 +90,7 @@ function SidebarLink({ to, icon, label, end = false }: SidebarLinkProps) {
   return (
     <NavLink
       to={to}
-      end={end} // This ensures the exact route is matched
+      end={end} 
       className={({ isActive }) =>
         `flex items-center justify-center md:justify-start p-2 w-full rounded-lg transition-colors duration-150 ease-in-out ${
           isActive ? 'text-zinc-800 bg-gray-200' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
@@ -112,7 +113,7 @@ function SidebarButton({ icon, label, onClick }: SidebarButtonProps) {
   return (
     <button
       className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150 ease-in-out focus:outline-none"
-      onClick={onClick} // Pass the onClick handler
+      onClick={onClick} 
     >
       {icon}
       <span className="ml-3 hidden md:block">{label}</span>
