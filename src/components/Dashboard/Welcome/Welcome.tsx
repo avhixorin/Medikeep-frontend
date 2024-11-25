@@ -41,7 +41,9 @@ export default function Welcome() {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            Hello, {user?.fullName}! 👋
+            Hello, 
+            <br />
+            {user?.fullName}! 👋
           </h1>
           <p className="text-muted-foreground max-w-[700px] text-lg sm:text-xl">
             {user?.role === 'Doctor'

@@ -15,11 +15,13 @@ const Dashboard: React.FC = () => {
   // }, [isAuthenticated, navigate]);
 
   return (
-    <div className="w-full max-h-[100dvh] bg-[#FFFCF8] flex">
+    <div className="w-full max-h-[100dvh] bg-[#FFFCF8] flex bg-dashboard2 bg-center bg-no-repeat bg-cover">
       <LeftSidebar />
-      <main className="flex-1 overflow-y-auto bg-dashboard2 bg-center bg-no-repeat bg-cover scrollbar-webkit">
+      <div className="flex-1 bg-transparent p-2">  
+      <main className="w-full h-full overflow-y-auto scrollbar-webkit border border-gray-300 rounded-md">
         <Outlet />
       </main>
+      </div>
     </div>
   );
 };
