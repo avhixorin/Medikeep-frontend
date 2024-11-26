@@ -27,9 +27,7 @@ export function ActivityChart() {
         
         for (let i = 0; i < numDays; i++) {
           const date = new Date();
-          date.setDate(today.getDate() - i); // Calculate the date for each entry
-        
-          // Generate random stepCount between 4,000 and 10,000
+          date.setDate(today.getDate() - i);
           const stepCount = Math.floor(Math.random() * (10000 - 4000 + 1)) + 4000;
       
           const heartRate = Math.floor(Math.random() * (80 - 60 + 1)) + 60;
@@ -44,7 +42,6 @@ export function ActivityChart() {
         return activityData;
       };
       
-      // Generate data for the last 90 days (approx 3 months)
       const generatedData = generateRandomData(90);
 
       const filteredData = generatedData.filter((item) => {
@@ -89,7 +86,7 @@ export function ActivityChart() {
                     </SelectContent>
                 </Select>
             </CardHeader>
-            <CardContent className="">
+            <CardContent className="mt-4">
                 <ChartContainer
                     config={chartConfig}
                     className="aspect-auto h-[250px] w-full"

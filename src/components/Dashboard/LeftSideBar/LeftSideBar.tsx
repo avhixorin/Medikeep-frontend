@@ -123,7 +123,8 @@ export default function LeftSidebar() {
           icon={<Settings size={24} />}
           label="Settings"
         />
-        <div className="flex w-full items-center gap-4 p-2 bg-gray-100 dark:bg-transparent border border-gray-300 rounded-md ">
+        <div className="flex w-full items-center gap-4 p-2 bg-gray-100 dark:bg-transparent border border-gray-300 rounded-md cursor-pointer dark:border-gray-700"
+        onClick={() => navigate('/dashboard/profile')}>
           <img
             src={user?.profilePicture}
             alt={`${user?.username}'s profile picture`}

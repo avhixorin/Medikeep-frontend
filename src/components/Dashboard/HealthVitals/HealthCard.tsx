@@ -25,7 +25,7 @@ export default function HealthCard({
   status,
 }: HealthcardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 w-full">
+    <div className="bg-white rounded-xl shadow-md p-4 w-full dark:bg-[#0A0A0A]">
       <div className="flex items-center mb-2">
         <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-2">
           <svg
@@ -43,11 +43,11 @@ export default function HealthCard({
             />
           </svg>
         </div>
-        <span className="text-gray-600 font-medium">{title}</span>
+        <span className="text-gray-600 font-medium dark:text-gray-300">{title}</span>
       </div>
       <div className="mb-2">
         <span className="text-3xl font-bold">{value}</span>
-        <span className="text-gray-500 ml-1">{unit}</span>
+        <span className="text-gray-500 ml-1 dark:text-gray-200">{unit}</span>
       </div>
       <div className="text-green-500 font-medium mb-4">{status}</div>
       <div className="h-16">

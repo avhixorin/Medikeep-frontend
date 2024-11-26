@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from "react"
 import { format, compareAsc, parseISO } from "date-fns"
 import { CalendarIcon, SearchIcon, X } from 'lucide-react'
@@ -46,7 +44,7 @@ const Appointments: React.FC = () => {
                 variant="outline"
                 className={cn(
                   "w-[200px] justify-start text-left font-normal bg-white text-gray-700 border-gray-300 hover:bg-gray-100",
-                  "dark:bg-zinc-900 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800",
+                  "dark:bg-[#0A0A0A] dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800",
                   !date && "text-muted-foreground dark:text-gray-500"
                 )}
               >
@@ -54,7 +52,7 @@ const Appointments: React.FC = () => {
                 {date ? format(date, "PPP") : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-white border-gray-300 dark:bg-zinc-900 dark:border-gray-700">
+            <PopoverContent className="w-auto p-0 bg-white border-gray-300 dark:bg-[#0A0A0A] dark:border-gray-700">
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -67,7 +65,7 @@ const Appointments: React.FC = () => {
             </PopoverContent>
           </Popover>
 
-          <div className="relative flex-grow bg-white border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 dark:bg-zinc-900 dark:border-gray-700 dark:focus-within:ring-blue-400">
+          <div className="relative flex-grow bg-white border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 dark:bg-[#0A0A0A] dark:border-gray-700 dark:focus-within:ring-blue-400">
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
             <Input
               placeholder="Search patients..."
@@ -102,7 +100,7 @@ const Appointments: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-6 flex-grow bg-white dark:bg-zinc-900 rounded-md flex flex-col p-6 gap-3 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
+      <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md flex flex-col p-6 gap-3 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
         {filteredAppointments.length > 0 ? (
           filteredAppointments.map((appointment) => (
             <AppointmentCard

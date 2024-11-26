@@ -58,15 +58,15 @@ const HealthDashboard: React.FC = () => {
   }, [height, weight]);
 
   return (
-    <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8]">
+    <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8] dark:bg-[#141414]">
       <div className="flex flex-col w-full h-full justify-evenly items-center px-4">
         <div className="flex justify-between items-center w-full">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>
           <div className="flex items-center space-x-4 lg:space-x-6">
-            <button className="bg-green-500 text-sm text-white px-4 py-2 rounded-md hover:bg-green-600">
+            <button className="bg-green-500 dark:bg-green-700 text-sm text-white px-4 py-2 rounded-md hover:bg-green-600">
               Update
             </button>
-            <Bell className="w-5 h-5 text-gray-500 cursor-pointer" />
+            <Bell className="w-5 h-5 text-gray-500 cursor-pointer dark:text-gray-200" />
           </div>
         </div>
 
@@ -96,7 +96,7 @@ const HealthDashboard: React.FC = () => {
         </div>
       </div>
       {/* Right Sidebar */}
-      <div className="lg:w-80 w-full bg-gray-800 p-4 lg:p-6 text-white flex flex-col space-y-6 h-full">
+      <div className="lg:w-80 w-full bg-gray-800 dark:bg-gray-950 p-4 lg:p-6 text-white flex flex-col space-y-6 h-full">
         <div className="flex flex-col flex-grow space-y-6">
           {/* BMI Calculator Section */}
           <div className="flex flex-col space-y-4">
