@@ -66,7 +66,7 @@ export default function LeftSidebar() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8">
+    <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8 dark:bg-[#0A0A0A]">
       {/* Logo Section */}
       <div className="w-full flex flex-col gap-12 md:gap-8">
         <div className="flex w-full justify-center items-center p-2 gap-2 my-8">
@@ -75,7 +75,7 @@ export default function LeftSidebar() {
             alt="MediKeep Logo"
             className="w-6 object-cover"
           />
-          <p className="text-2xl font-bold tracking-wide text-gray-800 hidden md:block">
+          <p className="text-2xl font-bold tracking-wide text-gray-800 hidden md:block dark:text-white">
             MediKeep
           </p>
         </div>
@@ -123,17 +123,17 @@ export default function LeftSidebar() {
           icon={<Settings size={24} />}
           label="Settings"
         />
-        <div className="flex w-full items-center gap-4 p-2 bg-gray-100 border border-gray-300 rounded-md">
+        <div className="flex w-full items-center gap-4 p-2 bg-gray-100 dark:bg-transparent border border-gray-300 rounded-md ">
           <img
             src={user?.profilePicture}
             alt={`${user?.username}'s profile picture`}
             className="w-10 h-10 rounded-full object-cover"
           />
           <div className="flex flex-col justify-center md:block">
-            <p className="text-sm font-semibold text-gray-800">
+            <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               {user?.username}
             </p>
-            <p className="text-xs text-gray-500">{user?.gender}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.gender}</p>
           </div>
         </div>
       </div>
@@ -156,8 +156,8 @@ function SidebarLink({ to, icon, label, end = false }: SidebarLinkProps) {
       className={({ isActive }) =>
         `flex items-center justify-center md:justify-start p-2 w-full rounded-lg transition-colors duration-150 ease-in-out ${
           isActive
-            ? "text-gray-800 bg-gray-200"
-            : "text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+            ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+            : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
         }`
       }
     >
@@ -177,7 +177,7 @@ function SidebarButton({ icon, label, onClick }: SidebarButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full rounded-lg transition-colors duration-150 ease-in-out hover:text-gray-800 hover:bg-gray-100 focus:outline-none"
+      className="flex items-center justify-center md:justify-start p-2 text-gray-500 w-full rounded-lg transition-colors duration-150 ease-in-out hover:text-gray-800 hover:bg-gray-100 focus:outline-none dark:bg-transparent dark:text-gray-500 dark:hover:text-gray-300"
     >
       {icon}
       <span className="ml-3 hidden md:block">{label}</span>

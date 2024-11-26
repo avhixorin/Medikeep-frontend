@@ -61,10 +61,10 @@ export default function Welcome() {
   }
 
   return (
-    <div className="w-full h-full bg-transparent pt-6 px-4 md:px-6 lg:px-8">
+    <div className="w-full h-full bg-transparent pt-6 px-4 md:px-6 lg:px-8 dark:bg-[#141414]">
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
         <div className="flex flex-col gap-4">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl dark:text-[#fafafa]">
             Hello,
             <br />
             {user?.fullName}! 👋
@@ -95,7 +95,8 @@ export default function Welcome() {
                   </CardDescription>
                 </CardContent>
               <CardFooter>
-                <Button className="w-full py-2"
+                <Button 
+                className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
                 onClick={() => handleNavigation(card.title)}
                 >{card.action}</Button>
               </CardFooter>
