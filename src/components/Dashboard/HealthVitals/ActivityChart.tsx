@@ -28,9 +28,9 @@ export function ActivityChart() {
         for (let i = 0; i < numDays; i++) {
           const date = new Date();
           date.setDate(today.getDate() - i);
-          const stepCount = Math.floor(Math.random() * (10000 - 4000 + 1)) + 4000;
+          const stepCount = Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1) * (10000 - 4000 + 1)) + 4000;
       
-          const heartRate = Math.floor(Math.random() * (80 - 60 + 1)) + 60;
+          const heartRate = Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1) * (80 - 60 + 1)) + 60;
       
           activityData.push({
             date: date.toISOString().split('T')[0],
