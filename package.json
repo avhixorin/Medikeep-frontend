@@ -53,13 +53,8 @@
     "socket.io-client": "^4.8.1",
     "splitting": "^1.1.0",
     "styled-components": "^6.1.13",
-<<<<<<< HEAD
     "sweetalert2": ">=11.0.0 <11.4.9",
     "tailwind-merge": "^2.5.4",
-=======
-    "sweetalert2": ">=11.0.0 <11.14.6",
-    "tailwind-merge": "^2.5.5",
->>>>>>> 5f76dee5328d88ce53c1a64c514001fd2d4e39ae
     "tailwind-scrollbar": "^3.1.0",
     "tailwindcss-animate": "^1.0.7",
     "yup": "^1.4.0"
