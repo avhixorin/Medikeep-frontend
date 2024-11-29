@@ -10,19 +10,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-export const TnC: React.FC = () => {
-  return (
-    <div className="tnc-container flex justify-start items-center">
-      <p className="text-zinc-500 dark:text-zinc-400">
-        By logging in, you accept our
-        <Link className="text-blue-500 hover:text-blue-800 ml-2" to={"/tnc"}>
-          terms and conditions
-        </Link>
-      </p>
-    </div>
-  );
-};
-
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -164,7 +151,6 @@ const SignInForm: React.FC = () => {
                   <p className="page-link">
                     <span className="page-link-label">Forgot Password?</span>
                   </p>
-                  <TnC />
                   <button className={`form-btn ${loading ? "cursor-not-allowed" : "cursor-pointer"}`} type="submit" disabled={loading}
                   
                   >

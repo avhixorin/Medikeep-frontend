@@ -1,5 +1,6 @@
 import React from 'react';
 import BackButton from '../Back-Button/BackButton';
+import { Link } from 'react-router-dom';
 
 const TermsAndConditions: React.FC = () => {
   return (
@@ -62,6 +63,19 @@ const TermsAndConditions: React.FC = () => {
       <div className='w-full flex justify-center mt-4'>
         <BackButton text={"Back"} thickness={16} />
       </div>
+    </div>
+  );
+};
+
+export const TnC: React.FC = () => {
+  return (
+    <div className="tnc-container flex justify-start items-center">
+      <p className="text-zinc-500 dark:text-zinc-400">
+        By logging in, you accept our
+        <Link className="text-blue-500 hover:text-blue-800 ml-2" to={"/tnc"}>
+          terms and conditions
+        </Link>
+      </p>
     </div>
   );
 };

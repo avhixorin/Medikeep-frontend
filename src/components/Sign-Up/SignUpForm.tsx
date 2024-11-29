@@ -19,10 +19,10 @@ import { updateUserFields } from "@/redux/features/authSlice";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Checkbox } from "../ui/checkbox";
-import { TnC } from "../Sign-In/SignInForm";
 import { testimonials } from "../Landing-page/Benefits/Testemonials/testimonials";
 import { Card, CardContent } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { TnC } from "../TnC/TnC";
 
 const SignUpA: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -97,7 +97,7 @@ const SignUpA: React.FC = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="flex flex-col lg:flex-row items-center space-x-4">
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-4">
               <label className="text-base font-medium text-gray-800">
                 Are you registering as a doctor?
               </label>
