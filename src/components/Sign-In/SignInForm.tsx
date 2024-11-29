@@ -10,7 +10,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-const TnC: React.FC = () => {
+export const TnC: React.FC = () => {
   return (
     <div className="tnc-container flex justify-start items-center">
       <p className="text-zinc-500 dark:text-zinc-400">

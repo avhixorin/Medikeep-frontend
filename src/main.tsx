@@ -6,9 +6,10 @@ import './index.css';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 import 'rsuite/dist/rsuite-no-reset.min.css';
-
+import SignUpV0 from './components/Sign-Up/SignUpV0';
 const SignInPage = lazy(() => import('./components/Sign-In/SignInForm'));
 const SignUpPage = lazy(() => import('./components/Sign-Up/SignUpForm'));
+const SignUpA = lazy(() => import('./components/Sign-Up/SignUpA'));
 const LandingPage = lazy(() => import('./components/Landing-page/LandingPage'));
 const UnauthorizedPage = lazy(() => import('./components/UnauthorizedPage/Unauthorized'));
 const DoctorAdditionalInfoForm = lazy(() => import('./components/AdditionalInfo/DoctorAddForm'));
@@ -80,6 +81,22 @@ const router = createBrowserRouter(
         element={
           <Suspense fallback={<LoadingScreen />}>
             <SignUpPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="sign"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SignUpA />
+          </Suspense>
+        }
+      />
+      <Route
+        path="signV"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SignUpV0 />
           </Suspense>
         }
       />

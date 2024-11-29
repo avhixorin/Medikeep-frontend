@@ -1,200 +1,392 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { DatePicker } from "rsuite";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import Swal from "sweetalert2";
+import React, { useState } from "react";
+import { Input } from "../ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../ui/calendar";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import Switch from "./Radio/Radio";
 import { useDispatch } from "react-redux";
-import { PhoneInput } from "react-international-phone";
-import "react-international-phone/style.css";
-import "./SignUpForm.css";
-import BackButton from "../Back-Button/BackButton";
-import { registerUser } from "@/redux/features/authSlice";
-import { AppDispatch } from "@/redux/store/store";
-import { User } from "@/types/types";
+import { updateUserFields } from "@/redux/features/authSlice";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import { Checkbox } from "../ui/checkbox";
+import { TnC } from "../Sign-In/SignInForm";
+import { testimonials } from "../Landing-page/Benefits/Testemonials/testimonials";
+import { Card, CardContent } from "../ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
+const SignUpA: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [totalSteps, setTotalSteps] = useState(2);
+  const [role, setRole] = React.useState("");
+  const dispatch = useDispatch();
+  const [formValues, setFormValues] = useState({
+    role: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    dateOfBirth: new Date(),
+    gender: "",
+    phone: "",
+  });
+  const handleRoleChange = (selectedRole: string) => {
+    setRole(selectedRole);
+    setTotalSteps(selectedRole === "Yes" ? 4 : 2);
+  };
 
-const SignUpForm: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const formik = useFormik<User>({
-    initialValues: {
-      _id: null,
-      email: "",
-      fullName: "",
-      username: "",
-      password: "",
-      role: "",
-      theme: "light",
-      gender: "",
-      dateOfBirth: new Date(),
-      phone: "",
-      availability: {
-        days: [],
-        timeSlots: [],
-      },
-      clinicalAddress: {
-        address: "",
-        city: "",
-        state: "",
-        country: "",
-        zipCode: "",
-      },
-    },
-    validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email format").required("Required"),
-      fullName: Yup.string().required("Required"),
-      username: Yup.string().max(7, "Must be 7 characters or less").required("Required"),
-      password: Yup.string().min(6, "Must be at least 6 characters").required("Required"),
-      role: Yup.string().required("Please select a role"),
-      gender: Yup.string().required("Please select a gender"),
-      dateOfBirth: Yup.date().nullable().required("Please select a date of birth"),
-      phone: Yup.string().required("Please enter your phone number"),
-    }),
-    onSubmit: async (values) => {
-      if (values.role.toLowerCase() === "doctor") {
-        navigate("/doctoraddform", { state: values });
-        return;
-      }
-      try {
-        const response = await dispatch(registerUser(values)).unwrap();
-        if (response) {
-          await Swal.fire({
-            text: "Account created successfully. Please sign in to continue.",
-            icon: "success",
-          });
-          navigate("/sign-in");
-        }
-      } catch (error) {
-        const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Form submission failed. Please try again.";
-        await Swal.fire({
-          text: errorMessage,
-          icon: "error",
-        });
-      }
-    },
+  const validationSchema = Yup.object().shape({
+    role: Yup.string().required("Role is required"),
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Last name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    dateOfBirth: Yup.date()
+      .required("Date of Birth is required")
+      .max(new Date(), "Date cannot be in the future"),
+    gender: Yup.string().required("Gender is required"),
+    phone: Yup.string()
+      .matches(/^\d{10}$/, "Invalid phone number")
+      .required("Phone number is required"),
+    password: Yup.string()
+      .min(8, "Password must be at least 8 characters")
+      .required("Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password")], "Passwords must match")
+      .required("Confirm password is required"),
   });
 
+  const handleFormSubmit = (values: typeof formValues) => {
+    console.log("Submitting form", values);
+    if (currentStep === totalSteps) {
+      dispatch(updateUserFields(values));
+    }
+  };
+
+  const handleNext = (values: typeof formValues) => {
+    setFormValues(values); // Persist current form values
+    setCurrentStep((prevStep) => Math.min(prevStep + 1, totalSteps));
+  };
+
+  const handleBack = (values: typeof formValues) => {
+    setFormValues(values);
+    setCurrentStep((prevStep) => Math.max(prevStep - 1, 1));
+  };
+
+  const renderStepForm = (
+    step: number,
+    values: typeof formValues,
+    setFieldValue: (
+      field: string,
+      value: Date | string,
+      shouldValidate?: boolean
+    ) => void
+  ) => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center space-x-4">
+              <label className="text-base font-medium text-gray-800">
+                Are you registering as a doctor?
+              </label>
+              <Switch handleChange={handleRoleChange} />
+            </div>
+
+            {/* Dynamic confirmation message */}
+            {role === "Yes" ? (
+              <p className="text-sm text-green-600">
+                Awesome! Let's set up your account as a doctor.
+              </p>
+            ) : role === "No" ? (
+              <p className="text-sm text-blue-600">
+                Great! Let's proceed with setting up your account.
+              </p>
+            ) : null}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">
+                  First Name
+                </label>
+                <Field name="firstName" as={Input} placeholder="John" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">
+                  Last Name
+                </label>
+                <Field name="lastName" as={Input} placeholder="Doe" />
+              </div>
+            </div>
+            <div className="grid grid-rows-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Email</label>
+                <Field
+                  name="email"
+                  as={Input}
+                  placeholder="johndoe@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Username</label>
+                <Field name="username" as={Input} placeholder="@johndoe" />
+              </div>
+            </div>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-6">
+              {/* Date of Birth Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">
+                  Date of Birth
+                </label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[240px] pl-3 text-left font-normal",
+                        !values.dateOfBirth && "text-muted-foreground"
+                      )}
+                    >
+                      {values.dateOfBirth ? (
+                        format(values.dateOfBirth, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        values.dateOfBirth
+                          ? new Date(values.dateOfBirth)
+                          : undefined
+                      }
+                      onSelect={(date) =>
+                        date && setFieldValue("dateOfBirth", date)
+                      }
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              {/* Gender Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">
+                  Gender
+                </label>
+                <Select
+                  value={values.gender}
+                  onValueChange={(value) => setFieldValue("gender", value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Phone Field */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">
+                Phone
+              </label>
+              <Field name="phone" as={Input} placeholder="123-456-7890" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Password</label>
+                <Field
+                  name="password"
+                  type="password"
+                  as={Input}
+                  placeholder="********"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">
+                  Confirm Password
+                </label>
+                <Field
+                  name="confirmPassword"
+                  type="password"
+                  as={Input}
+                  placeholder="********"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="terms" />
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                <TnC />
+              </label>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="relative flex justify-center items-center min-h-screen p-4 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200">
-      <div className="form-container bg-white">
-        <div className="flex flex-col items-center justify-center bg-white">
-          <div className="w-full mb-9 relative flex items-center justify-center">
-            <div className="absolute left-0">
-              <BackButton text="" thickness={20} />
+    <div className="flex min-h-screen p-6 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center">
+      <div className="w-full max-w-6xl min-h-[450px] bg-white rounded-xl shadow-lg overflow-hidden flex">
+        {/* Sidebar */}
+        <aside className="hidden md:flex flex-col justify-center items-center w-1/2 bg-gradient-to-t from-pink-400 via-light-blue-300 to-purple-600 text-white">
+          <div className="h-full w-full flex items-center justify-center">
+            <div className="w-full mx-auto bg-[#4339F2] rounded-lg shadow-lg p-8 text-white">
+              <header className="mb-8">
+                <h2 className="text-2xl font-semibold tracking-wide">
+                  MediKeep
+                </h2>
+              </header>
+
+              <div className="space-y-6 mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+                  Your Health, Simplified
+                </h1>
+                <p className="text-lg text-white/80 leading-relaxed">
+                  MediKeep is your companion for secure, organized, and
+                  accessible medical records. Join a growing community dedicated
+                  to health and wellness management.
+                </p>
+              </div>
+
+              <Card className="bg-white/10 border-none shadow-md rounded-lg overflow-hidden">
+                <CardContent className="p-6">
+                  <blockquote className="text-sm italic text-white/90 mb-4">
+                    {testimonials[currentSlide].testimonial}
+                  </blockquote>
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage
+                        src={testimonials[currentSlide].image}
+                        alt={testimonials[currentSlide].name}
+                      />
+                      <AvatarFallback>
+                        {testimonials[currentSlide].name[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="font-medium text-lg">
+                        {testimonials[currentSlide].name}
+                      </div>
+                      <div className="text-sm text-white/70">
+                        {testimonials[currentSlide].designation}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex justify-center items-center gap-3 mt-6">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`h-2 transition-all rounded-full ${
+                      index === currentSlide
+                        ? "w-6 bg-white"
+                        : "w-2 bg-white/50"
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
-            <p className="sititle font-bold text-2xl text-center w-full">Sign Up and Get Started</p>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-8">
+          {/* Progress Indicator */}
+          <div className="flex justify-between items-center mb-6">
+            {[...Array(totalSteps)].map((_, index) => (
+              <React.Fragment key={index}>
+                <div
+                  className={`w-3 h-3 rounded-full ${
+                    index + 1 <= currentStep ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                />
+                {index < totalSteps - 1 && (
+                  <div
+                    className={`flex-1 h-[2px] mx-2 ${
+                      index + 1 < currentStep ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                  />
+                )}
+              </React.Fragment>
+            ))}
           </div>
 
-          <form onSubmit={formik.handleSubmit} className="form grid gap-4 md:grid-cols-2">
-            <div className="input-group md:col-span-2">
-              <input
-                type="email"
-                {...formik.getFieldProps("email")}
-                className="sinput"
-                placeholder="Email"
-              />
-              {formik.touched.email && formik.errors.email ? <div className="error">{formik.errors.email}</div> : null}
-            </div>
+          {/* Formik Form */}
+          <Formik
+            initialValues={formValues}
+            validationSchema={validationSchema}
+            onSubmit={handleFormSubmit}
+          >
+            {({ values, setFieldValue }) => (
+              <Form className="space-y-8">
+                {/* Render Form Content */}
+                {renderStepForm(currentStep, values, setFieldValue)}
 
-            <div className="input-group md:col-span-2">
-              <input
-                type="text"
-                {...formik.getFieldProps("fullName")}
-                className="sinput"
-                placeholder="Full Name"
-              />
-              {formik.touched.fullName && formik.errors.fullName ? <div className="error">{formik.errors.fullName}</div> : null}
-            </div>
-
-            <div className="input-group">
-              <input
-                type="text"
-                {...formik.getFieldProps("username")}
-                className="sinput"
-                placeholder="Username"
-              />
-              {formik.touched.username && formik.errors.username ? <div className="error">{formik.errors.username}</div> : null}
-            </div>
-
-            <div className="input-group">
-              <input
-                type="password"
-                {...formik.getFieldProps("password")}
-                className="sinput"
-                placeholder="Password"
-              />
-              {formik.touched.password && formik.errors.password ? <div className="error">{formik.errors.password}</div> : null}
-            </div>
-
-            <div className="input-group md:col-span-2">
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-              <div className="radio-inputs">
-                <label className="radio">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="Doctor"
-                    onChange={formik.handleChange}
-                    checked={formik.values.role === "Doctor"}
-                  />
-                  <span className="name">Doctor</span>
-                </label>
-                <label className="radio">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="Patient"
-                    onChange={formik.handleChange}
-                    checked={formik.values.role === "Patient"}
-                  />
-                  <span className="name">Patient</span>
-                </label>
-              </div>
-              {formik.touched.role && formik.errors.role ? <div className="error">{formik.errors.role}</div> : null}
-            </div>
-
-            <div className="input-group md:col-span-2 flex justify-between items-center">
-              <div>
-              <DatePicker
-                value={formik.values.dateOfBirth}
-                onChange={(date) => formik.setFieldValue("dateOfBirth", date)}
-                placeholder="Date of Birth"
-                format="yyyy-MM-dd"
-                className=""
-              />
-              {formik.touched.dateOfBirth && formik.errors.dateOfBirth ? <div className="error">{String(formik.errors.dateOfBirth)}</div> : null}
-              </div>
-              <div>
-              <PhoneInput
-              defaultCountry="in"
-              value={formik.values.phone}
-              onChange={(phone) => formik.setFieldValue("phone", phone)}
-              className="no-border-input"
-            />
-            {formik.touched.phone && formik.errors.phone ? <div className="error">{formik.errors.phone}</div> : null}
-              </div>
-              
-            
-
-            
-            </div>
-            <div className="input-group md:col-span-2">
-              <button type="submit" className="form-btn">Create account</button>
-            </div>
-          </form>
-
-          <div className="w-full">
-            <p className="sign-up-label mt-4">
-              Already have an account?{" "}
-              <Link to="/sign-in" className="sign-up-link">Log in</Link>
-            </p>
-          </div>
-        </div>
+                {/* Navigation Buttons */}
+                <div className="flex justify-between">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleBack(values)}
+                    disabled={currentStep === 1}
+                    className="min-w-[100px]"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type={currentStep === totalSteps ? "submit" : "button"}
+                    onClick={() =>
+                      currentStep < totalSteps && handleNext(values)
+                    }
+                    className="min-w-[100px]"
+                  >
+                    {currentStep === totalSteps ? "Submit" : "Next"}
+                  </Button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </main>
       </div>
     </div>
   );
 };
 
-export default SignUpForm;
+export default SignUpA;

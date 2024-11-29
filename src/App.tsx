@@ -46,7 +46,7 @@ const App: React.FC = () => {
   
 
   return (
-    <div className="w-full h-full bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 dark:from-blue-800 dark:via-blue-700 dark:to-blue-900">
+    <div className="w-full h-full">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Outlet />

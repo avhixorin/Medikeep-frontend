@@ -1,14 +1,15 @@
 export type User = {
-  _id: string | null;
+  _id?: string | null;
   profilePicture?: string;
   username: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   password: string;
   email: string;
   dateOfBirth: Date;
   gender: string;
   phone: string;
-  theme: "light" | "dark";
+  theme?: "light" | "dark";
   role: string;
   medicalLicenseNumber?: string;
   specialization?: string;
