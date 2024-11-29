@@ -264,7 +264,7 @@ const SignUpA: React.FC = () => {
         {/* Sidebar */}
         <aside className="hidden md:flex flex-col justify-center items-center w-full md:w-1/2 bg-gradient-to-t from-pink-400 via-light-blue-300 to-purple-600 text-white">
           <div className="h-full w-full flex items-center justify-center">
-            <div className="w-full mx-auto bg-[#4339F2] rounded-lg shadow-lg p-8 text-white">
+            <div className="w-full h-full mx-auto bg-[#4339F2] rounded-lg shadow-lg p-8 text-white">
               <header className="mb-8">
                 <h2 className="text-2xl font-semibold tracking-wide">
                   MediKeep
