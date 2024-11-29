@@ -23,6 +23,8 @@ import { testimonials } from "../Landing-page/Benefits/Testemonials/testimonials
 import { Card, CardContent } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { TnC } from "../TnC/TnC";
+import Step3 from "./Steps/Step3";
+import Step4 from "./Steps/Step4";
 
 const SignUpA: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -253,6 +255,16 @@ const SignUpA: React.FC = () => {
             </div>
           </div>
         );
+      
+      case 3:
+        return (
+          <Step3 />
+        )
+
+      case 4:
+        return (
+          <Step4 />
+        )
       default:
         return null;
     }
