@@ -77,7 +77,7 @@ const SignUpA: React.FC = () => {
   };
 
   const handleNext = (values: typeof formValues) => {
-    setFormValues(values); // Persist current form values
+    setFormValues(values); 
     setCurrentStep((prevStep) => Math.min(prevStep + 1, totalSteps));
   };
 
