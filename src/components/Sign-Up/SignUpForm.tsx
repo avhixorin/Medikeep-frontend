@@ -129,7 +129,7 @@ const SignUpA: React.FC = () => {
                 <label className="text-sm font-semibold text-gray-700">
                   First Name
                 </label>
-                <Field name="firstName" as={Input} placeholder="John" />
+                <Field name="firstName" as={Input} placeholder="John" initialFocus/>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">
