@@ -115,7 +115,7 @@ const SignUpA: React.FC = () => {
               </p>
             ) : null}
 
-            <div className="grid grid-rows-2 md:grid-cols-2 gap-4">
+            <div className="grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">
                   First Name
@@ -149,7 +149,7 @@ const SignUpA: React.FC = () => {
       case 2:
         return (
           <div className="space-y-6">
-            <div className="grid grid-rows-2 md:grid-cols-2 gap-6">
+            <div className="grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-6">
               {/* Date of Birth Field */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">
@@ -220,7 +220,7 @@ const SignUpA: React.FC = () => {
               </label>
               <Field name="phone" as={Input} placeholder="123-456-7890" />
             </div>
-            <div className="grid grid-rows-2 md:grid-cols-2 gap-4">
+            <div className="grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-4">
               <div className="space-y-2">
                 <label className="text-sm text-gray-600">Password</label>
                 <Field
@@ -330,7 +330,7 @@ const SignUpA: React.FC = () => {
         {/* Main Content */}
         <main className="flex-1 p-8">
           {/* Progress Indicator */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex w-full justify-between items-center mb-4">
             {[...Array(totalSteps)].map((_, index) => (
               <React.Fragment key={index}>
                 <div
@@ -356,12 +356,12 @@ const SignUpA: React.FC = () => {
             onSubmit={handleFormSubmit}
           >
             {({ values, setFieldValue }) => (
-              <Form className="space-y-8">
+              <Form className="flex flex-col justify-around items-center h-full">
                 {/* Render Form Content */}
                 {renderStepForm(currentStep, values, setFieldValue)}
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between">
+                <div className="flex w-full justify-between">
                   <Button
                     variant="outline"
                     onClick={() => handleBack(values)}
