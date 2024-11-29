@@ -97,7 +97,7 @@ const SignUpA: React.FC = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col lg:flex-row items-center space-x-4">
               <label className="text-base font-medium text-gray-800">
                 Are you registering as a doctor?
               </label>
@@ -115,7 +115,7 @@ const SignUpA: React.FC = () => {
               </p>
             ) : null}
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-rows-2 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">
                   First Name
@@ -149,7 +149,7 @@ const SignUpA: React.FC = () => {
       case 2:
         return (
           <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-rows-2 md:grid-cols-2 gap-6">
               {/* Date of Birth Field */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700">
@@ -220,7 +220,7 @@ const SignUpA: React.FC = () => {
               </label>
               <Field name="phone" as={Input} placeholder="123-456-7890" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-rows-2 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm text-gray-600">Password</label>
                 <Field
@@ -260,9 +260,9 @@ const SignUpA: React.FC = () => {
 
   return (
     <div className="flex min-h-screen p-6 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center">
-      <div className="w-full max-w-6xl min-h-[450px] bg-white rounded-xl shadow-lg overflow-hidden flex">
+      <div className="w-full max-w-6xl min-h-[450px] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
         {/* Sidebar */}
-        <aside className="hidden md:flex flex-col justify-center items-center w-1/2 bg-gradient-to-t from-pink-400 via-light-blue-300 to-purple-600 text-white">
+        <aside className="hidden md:flex flex-col justify-center items-center w-full md:w-1/2 bg-gradient-to-t from-pink-400 via-light-blue-300 to-purple-600 text-white">
           <div className="h-full w-full flex items-center justify-center">
             <div className="w-full mx-auto bg-[#4339F2] rounded-lg shadow-lg p-8 text-white">
               <header className="mb-8">
@@ -330,7 +330,7 @@ const SignUpA: React.FC = () => {
         {/* Main Content */}
         <main className="flex-1 p-8">
           {/* Progress Indicator */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-8">
             {[...Array(totalSteps)].map((_, index) => (
               <React.Fragment key={index}>
                 <div
