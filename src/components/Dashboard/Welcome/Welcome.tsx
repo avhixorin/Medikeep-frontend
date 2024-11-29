@@ -67,7 +67,7 @@ export default function Welcome() {
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl dark:text-[#fafafa]">
             Hello,
             <br />
-            {user?.fullName}! 👋
+            {user?.firstName}! 👋
           </h1>
           <p className="text-muted-foreground max-w-[700px] text-base sm:text-lg md:text-xl">
             {user?.role === "Doctor"

@@ -33,7 +33,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-transparent">
       <header className="flex items-center justify-between border-b px-4 py-3 md:px-6">
         <div>
-          <h1 className="text-lg font-semibold">{user?.fullName}</h1>
+          <h1 className="text-lg font-semibold">{user?.firstName}</h1>
           <p className="text-sm text-muted-foreground">
             Manage your details and personal preferences here.
           </p>
@@ -90,7 +90,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <Label>Name</Label>
-                  <div>{user?.fullName}</div>
+                  <div>{user?.firstName}</div>
                 </div>
                 <Button variant="outline" size="sm">
                   Edit

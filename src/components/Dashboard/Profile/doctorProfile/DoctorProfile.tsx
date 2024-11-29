@@ -35,9 +35,6 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
   const cancelUpload = () => {
     setUploadClicked(false);
   }
-
-  const firstName = user?.fullName.split(" ")[0];
-  const lastName = user?.fullName.split(" ")[1];
   const clinicAffiliation = user?.clinicAffiliation?.join(", ");
 
   return (
@@ -58,7 +55,7 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
             </Avatar>
             <div className="text-center md:text-left">
               <CardTitle className="text-2xl md:text-3xl font-bold">
-                {user?.fullName|| "No user"}
+                {user?.firstName|| "No user"}
               </CardTitle>
               <span className="text-white text-lg">{user?.specialization}</span>
             </div>
@@ -70,14 +67,14 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
               icon={<UserIcon className="text-gray-400" />}
               label="First Name"
               id="firstName"
-              defaultValue={firstName || ""}
+              defaultValue={user?.firstName || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
               icon={<UserIcon className="text-gray-400" />}
               label="Last Name"
               id="lastName"
-              defaultValue={lastName || ""}
+              defaultValue={user?.lastName || ""}
               isEditing={isEditing}
             />
             <InputWithIcon
@@ -171,14 +168,6 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
                   isEditing={isEditing}
                   isTextarea
                 />
-                {/* <InputWithIcon
-                  icon={<CalendarIcon className="text-gray-400" />}
-                  label="Consultation Hours"
-                  id="hours"
-                  defaultValue={clinicHours || ""}
-                  isEditing={isEditing}
-                  isTextarea
-                /> */}
               </div>
             </TabsContent>
             <TabsContent value="professional">
