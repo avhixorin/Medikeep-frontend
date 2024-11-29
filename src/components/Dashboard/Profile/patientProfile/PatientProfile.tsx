@@ -28,8 +28,6 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ user }) => {
   const cancelUpload = () => {
     setUploadClicked(false);
   }
-  const firstName = user?.fullName.split(" ")[0];
-  const lastName = user?.fullName.split(" ")[1];
 
   return (
     <Card className="min-h-screen bg-gradient-to-r from-blue-500 to-green-300 p-6 md:p-10">
@@ -44,7 +42,7 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ user }) => {
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div>
-            <CardTitle>{user?.fullName}</CardTitle>
+            <CardTitle>{user?.firstName}</CardTitle>
             <CardDescription>Patient ID: {user?._id}</CardDescription>
           </div>
         </div>
@@ -64,7 +62,7 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ user }) => {
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
                     id="firstName"
-                    defaultValue={firstName || ""}
+                    defaultValue={user?.firstName || ""}
                     readOnly={!isEditing}
                   />
                 </div>
@@ -72,7 +70,7 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ user }) => {
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
                     id="lastName"
-                    defaultValue={lastName || ""}
+                    defaultValue={user?.lastName || ""}
                     readOnly={!isEditing}
                   />
                 </div>
