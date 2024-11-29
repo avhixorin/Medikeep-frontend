@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -48,7 +48,14 @@ const SignUpA: React.FC = () => {
     setRole(selectedRole);
     setTotalSteps(selectedRole === "Yes" ? 4 : 2);
   };
-
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prevSlide) =>
+        prevSlide === testimonials.length - 1 ? 0 : prevSlide + 1
+      );
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
   const validationSchema = Yup.object().shape({
     role: Yup.string().required("Role is required"),
     firstName: Yup.string().required("First name is required"),
@@ -77,7 +84,7 @@ const SignUpA: React.FC = () => {
   };
 
   const handleNext = (values: typeof formValues) => {
-    setFormValues(values); 
+    setFormValues(values);
     setCurrentStep((prevStep) => Math.min(prevStep + 1, totalSteps));
   };
 
@@ -255,16 +262,12 @@ const SignUpA: React.FC = () => {
             </div>
           </div>
         );
-      
+
       case 3:
-        return (
-          <Step3 />
-        )
+        return <Step3 />;
 
       case 4:
-        return (
-          <Step4 />
-        )
+        return <Step4 />;
       default:
         return null;
     }
@@ -310,7 +313,7 @@ const SignUpA: React.FC = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium text-lg">
+                      <div className="font-medium text-lg text-white-100">
                         {testimonials[currentSlide].name}
                       </div>
                       <div className="text-sm text-white/70">
