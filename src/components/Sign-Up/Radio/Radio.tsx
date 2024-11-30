@@ -1,6 +1,12 @@
 import styled from "styled-components";
 
-const Switch = ({ handleChange }:{handleChange:(value: string) => void}) => {
+const Switch = ({
+  isDoctor,
+  handleRoleChange,
+}: {
+  isDoctor: string;
+  handleRoleChange: (role:string) => void;
+}) => {
   return (
     <StyledWrapper>
       <div className="radio-inputs">
@@ -8,8 +14,9 @@ const Switch = ({ handleChange }:{handleChange:(value: string) => void}) => {
           <input
             type="radio"
             name="role"
-            value="Yes"
-            onChange={() => handleChange("Yes")}
+            value="doctor"
+            checked={ isDoctor === "Yes"}
+            onChange={() => handleRoleChange("Yes")}
           />
           <span className="name">Yes</span>
         </label>
@@ -17,8 +24,9 @@ const Switch = ({ handleChange }:{handleChange:(value: string) => void}) => {
           <input
             type="radio"
             name="role"
-            value="No"
-            onChange={() => handleChange("No")}
+            value="patient"
+            checked={ isDoctor === "No"}
+            onChange={() => handleRoleChange("No")}
           />
           <span className="name">No</span>
         </label>

@@ -1,21 +1,23 @@
 export type User = {
+  role: string;
   _id?: string | null;
   profilePicture?: string;
   username: string;
   firstName: string;
   lastName: string;
   password: string;
+  confirmPassword?: string;
   email: string;
   dateOfBirth: Date;
   gender: string;
   phone: string;
   theme?: "light" | "dark";
-  role: string;
   medicalLicenseNumber?: string;
   specialization?: string;
   yearsOfExperience?: number;
   clinicAffiliation?: string[];
   patients?: string[];
+  acceptedTerms?: boolean;
   consultations?: {
     patientId: string;
     date: Date;
