@@ -81,7 +81,7 @@ const Sidebar: React.FC<{ currentSlide: number; setCurrentSlide: (index: number)
                 <AvatarFallback>{testimonials[currentSlide].name[0]}</AvatarFallback>
               </Avatar>
               <div>
-                <div className="font-medium text-lg">{testimonials[currentSlide].name}</div>
+                <div className="font-medium text-lg text-white">{testimonials[currentSlide].name}</div>
                 <div className="text-sm text-white/70">{testimonials[currentSlide].designation}</div>
               </div>
             </div>
