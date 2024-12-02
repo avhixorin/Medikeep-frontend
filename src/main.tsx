@@ -8,9 +8,9 @@ import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 const SignInPage = lazy(() => import('./components/Sign-In/SignInForm'));
 const SignUpPage = lazy(() => import('./components/Sign-Up/SignUpForm'));
+const ForgotPasswordPage = lazy(() => import('./components/Forgot/Forget'));
 const LandingPage = lazy(() => import('./components/Landing-page/LandingPage'));
 const UnauthorizedPage = lazy(() => import('./components/UnauthorizedPage/Unauthorized'));
-const DoctorAdditionalInfoForm = lazy(() => import('./components/AdditionalInfo/DoctorAddForm'));
 const TermsConditionsPage = lazy(() => import('./components/TnC/TnC'));
 const AboutUsPage = lazy(() => import('./components/AboutUs/About'));
 const ErrorBoundary = lazy(() => import('./components/ErrorBoundary/Error'));
@@ -83,10 +83,10 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="doctor-additional-info"
+        path="forgot?"
         element={
           <Suspense fallback={<LoadingScreen />}>
-            <DoctorAdditionalInfoForm />
+            <ForgotPasswordPage />
           </Suspense>
         }
       />
