@@ -172,7 +172,7 @@ const SignUpA: React.FC = () => {
                     handleRoleChange={handleRoleChange}
                   />
                 )}
-                {currentStep === 2 && <Step2 formValues={values} isDoctor={isDoctor} setFieldValues={setFieldValue} />}
+                {currentStep === 2 && <Step2 formValues={values} isDoctor={isDoctor} setFieldValues={setFieldValue} currentStep={currentStep} totalSteps={isDoctor === "Yes" ? 3 : 2} />}
                 {currentStep === 3 && <Step3 formValues={values} setFieldValues={setFieldValue} />}
 
                 <div className="flex w-full justify-between mt-4">

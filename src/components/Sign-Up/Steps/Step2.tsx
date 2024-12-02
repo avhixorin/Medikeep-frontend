@@ -28,12 +28,16 @@ type Step2Props = {
     value: string | boolean | number | Date,
     shouldValidate?: boolean
   ) => Promise<void | FormikErrors<User>>;
+  currentStep: number;
+  totalSteps: number;
 };
 
 const Step2: React.FC<Step2Props> = ({
   formValues,
   setFieldValues,
   isDoctor,
+  currentStep,
+  totalSteps,
 }) => {
   return (
     <div className="space-y-4 w-full">
@@ -132,7 +136,7 @@ const Step2: React.FC<Step2Props> = ({
       </div>
 
       {/* Password and Confirm Password */}
-      {isDoctor === "No" && (
+      {isDoctor === "No" && currentStep === totalSteps && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Password */}
