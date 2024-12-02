@@ -20,7 +20,7 @@ const Step1: React.FC<Step1Props> = ({
   handleRoleChange,
 }) => {
   return (
-    <div className="space-y-8">
+    <div className="w-full space-y-8">
       {/* Role Selection */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
         <label className="text-base font-medium text-gray-800">

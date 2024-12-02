@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignInForm.css";
-import BackButton from "../Back-Button/BackButton";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "../../redux/features/authSlice";
 import { Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -53,7 +54,9 @@ const SignInForm: React.FC = () => {
         navigate("/dashboard");
       }
     } catch (error: unknown) {
-      toast.error((error as Error).message || "An error occurred while logging in");
+      toast.error(
+        (error as Error).message || "An error occurred while logging in"
+      );
     } finally {
       setLoading(false);
     }
@@ -64,10 +67,7 @@ const SignInForm: React.FC = () => {
       <div className="flex items-center justify-center col-span-1 lg:p-8">
         <div className="lform-container w-[75%] flex justify-center items-center">
           <div className="w-full">
-            <div className="w-full mb-9 relative flex items-center justify-center">
-              <div className="absolute left-0">
-                <BackButton text={""} thickness={20} />
-              </div>
+            <div className="w-full mb-9 flex items-center justify-center">
               <p className="sititle text-center w-full">Welcome back</p>
             </div>
             <Formik
@@ -78,12 +78,14 @@ const SignInForm: React.FC = () => {
               {() => (
                 <Form className="form flex flex-col gap-4">
                   {/* Email Field */}
-                  <div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-gray-700">
+                      Email<span className="text-red-500">*</span>
+                    </label>
                     <Field
-                      type="email"
                       name="email"
-                      className="sinput"
-                      placeholder="Email"
+                      as={Input}
+                      placeholder="johndoe@example.com"
                     />
                     <ErrorMessage
                       name="email"
@@ -93,12 +95,15 @@ const SignInForm: React.FC = () => {
                   </div>
 
                   {/* Password Field */}
-                  <div className="w-full relative">
+                  <div className="w-full relative space-y-2">
+                  <label className="text-sm font-semibold text-gray-700">
+                      Password<span className="text-red-500">*</span>
+                    </label>
                     <Field
                       type={showPassword ? "text" : "password"}
                       name="password"
-                      className="sinput"
-                      placeholder="Password"
+                      as={Input}
+                      placeholder="********"
                     />
                     <ErrorMessage
                       name="password"
@@ -106,7 +111,7 @@ const SignInForm: React.FC = () => {
                       className="text-red-500 text-sm"
                     />
                     <div
-                      className="absolute right-4 top-4 cursor"
+                      className="absolute right-4 top-9 cursor"
                       aria-label="Toggle password visibility"
                       onClick={() => setShowPassword((prev) => !prev)}
                     >
@@ -143,15 +148,16 @@ const SignInForm: React.FC = () => {
                   <p className="page-link">
                     <span className="page-link-label">Forgot Password?</span>
                   </p>
-                  <button
-                    className={`form-btn ${
+                  
+                  <Button
+                    className={`${
                       loading ? "cursor-not-allowed" : "cursor-pointer"
                     }`}
                     type="submit"
                     disabled={loading}
                   >
                     {loading ? "Logging in..." : "Log in"}
-                  </button>
+                  </Button>
                 </Form>
               )}
             </Formik>

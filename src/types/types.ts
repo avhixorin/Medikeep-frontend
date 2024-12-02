@@ -8,7 +8,7 @@ export type User = {
   password: string;
   confirmPassword?: string;
   email: string;
-  dateOfBirth: Date;
+  dateOfBirth: Date | null;
   gender: string;
   phone: string;
   theme?: "light" | "dark";
