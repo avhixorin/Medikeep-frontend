@@ -180,13 +180,12 @@ const Step2: React.FC<Step2Props> = ({
             </div>
           </div>
           <div className="flex w-full items-center space-x-2">
-            <Field
+            <Checkbox
               name="acceptedTerms"
-              as={Checkbox}
-              value={formValues.acceptedTerms}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFieldValues("acceptedTerms", e.target.checked)
-              }
+              checked={formValues.acceptedTerms}
+              onCheckedChange={(checked) => {
+                setFieldValues("acceptedTerms", checked); // Update with the checked state directly
+              }}
             />
 
             <label

@@ -120,15 +120,13 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
         </div>
       </div>
       <div className="flex w-full items-center space-x-2">
-        <Field
-          name="acceptedTerms"
-          as={Checkbox}
-          checked={formValues.acceptedTerms}
-          onChange={() => {
-            setFieldValues("acceptedTerms", !formValues.acceptedTerms);
-            console.log("Accepted Terms: ", formValues.acceptedTerms);
-          }}
-        />
+      <Checkbox
+              name="acceptedTerms"
+              checked={formValues.acceptedTerms}
+              onCheckedChange={(checked) => {
+                setFieldValues("acceptedTerms", checked);
+              }}
+            />
 
         <label
           htmlFor="terms"

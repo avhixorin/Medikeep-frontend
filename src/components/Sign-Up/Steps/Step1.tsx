@@ -1,8 +1,8 @@
-import Switch from "../Radio/Radio";
 import { ErrorMessage, Field, FormikErrors } from "formik";
 import { Input } from "@/components/ui/input";
 import { User } from "@/types/types";
 import React from "react";
+import { Switch } from "@/components/ui/switch";
 
 type Step1Props = {
   isDoctor: string;
@@ -26,7 +26,15 @@ const Step1: React.FC<Step1Props> = ({
         <label className="text-base font-medium text-gray-800">
           Are you registering as a doctor?
         </label>
-        <Switch isDoctor={isDoctor} handleRoleChange={handleRoleChange} />
+        <Switch
+          checked={isDoctor === "Yes"}
+          name="role"
+          onCheckedChange={(checked) => {
+            const role = checked ? "Yes" : "No";
+            handleRoleChange(role);
+            setFieldValues("role", role === "Yes" ? "Doctor" : "Patient");
+          }}
+        />
       </div>
       {isDoctor === "Yes" ? (
         <p className="text-sm text-green-600">
@@ -91,7 +99,7 @@ const Step1: React.FC<Step1Props> = ({
           as={Input}
           placeholder="johndoe@example.com"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFieldValues("email", e.target.value )
+            setFieldValues("email", e.target.value)
           }
         />
         <ErrorMessage
@@ -111,7 +119,7 @@ const Step1: React.FC<Step1Props> = ({
           as={Input}
           placeholder="@johndoe"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFieldValues("username", e.target.value )
+            setFieldValues("username", e.target.value)
           }
         />
         <ErrorMessage

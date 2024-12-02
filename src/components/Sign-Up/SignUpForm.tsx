@@ -14,7 +14,7 @@ import { User } from "@/types/types";
 
 // Constants
 const initialFormValues: User = {
-  role: "",
+  role: "Patient",
   firstName: "",
   lastName: "",
   email: "",
@@ -51,10 +51,10 @@ const validationSchema = Yup.object().shape({
 });
 
 // Helper Components
-const Sidebar: React.FC<{ currentSlide: number; setCurrentSlide: (index: number) => void }> = ({
-  currentSlide,
-  setCurrentSlide,
-}) => (
+const Sidebar: React.FC<{
+  currentSlide: number;
+  setCurrentSlide: (index: number) => void;
+}> = ({ currentSlide, setCurrentSlide }) => (
   <aside className="hidden md:flex flex-col justify-center items-center w-full md:w-1/2 bg-gradient-to-t from-pink-400 via-light-blue-300 to-purple-600 text-white">
     <div className="h-full w-full flex items-center justify-center">
       <div className="w-full h-full mx-auto bg-[#4339F2] rounded-lg shadow-lg p-8 text-white">
@@ -66,8 +66,9 @@ const Sidebar: React.FC<{ currentSlide: number; setCurrentSlide: (index: number)
             Your Health, Simplified
           </h1>
           <p className="text-lg text-white/80 leading-relaxed">
-            MediKeep is your companion for secure, organized, and accessible medical records.
-            Join a growing community dedicated to health and wellness management.
+            MediKeep is your companion for secure, organized, and accessible
+            medical records. Join a growing community dedicated to health and
+            wellness management.
           </p>
         </div>
         <Card className="bg-white/10 border-none shadow-md rounded-lg overflow-hidden">
@@ -77,12 +78,21 @@ const Sidebar: React.FC<{ currentSlide: number; setCurrentSlide: (index: number)
             </blockquote>
             <div className="flex items-center gap-4">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={testimonials[currentSlide].image} alt={testimonials[currentSlide].name} />
-                <AvatarFallback>{testimonials[currentSlide].name[0]}</AvatarFallback>
+                <AvatarImage
+                  src={testimonials[currentSlide].image}
+                  alt={testimonials[currentSlide].name}
+                />
+                <AvatarFallback>
+                  {testimonials[currentSlide].name[0]}
+                </AvatarFallback>
               </Avatar>
               <div>
-                <div className="font-medium text-lg text-white">{testimonials[currentSlide].name}</div>
-                <div className="text-sm text-white/70">{testimonials[currentSlide].designation}</div>
+                <div className="font-medium text-lg text-white">
+                  {testimonials[currentSlide].name}
+                </div>
+                <div className="text-sm text-white/70">
+                  {testimonials[currentSlide].designation}
+                </div>
               </div>
             </div>
           </CardContent>
@@ -104,10 +114,10 @@ const Sidebar: React.FC<{ currentSlide: number; setCurrentSlide: (index: number)
   </aside>
 );
 
-const ProgressIndicator: React.FC<{ currentStep: number; totalSteps: number }> = ({
-  currentStep,
-  totalSteps,
-}) => (
+const ProgressIndicator: React.FC<{
+  currentStep: number;
+  totalSteps: number;
+}> = ({ currentStep, totalSteps }) => (
   <div className="flex w-full justify-between items-center mb-4">
     {[...Array(totalSteps)].map((_, index) => (
       <React.Fragment key={index}>
@@ -139,15 +149,18 @@ const SignUpA: React.FC = () => {
     setIsDoctor(selectedRole);
   };
 
-  const handleFormSubmit = (values: User) => {
-    if (currentStep === (isDoctor === "Yes" ? 3 : 2)) {
+  const handleFormSubmit = (values: User, totalSteps: number) => {
+    if (currentStep === totalSteps) {
       dispatch(updateUserFields(values));
     }
+    console.log("Form Values submitted successfully: ", values);
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+      setCurrentSlide((prev) =>
+        prev === testimonials.length - 1 ? 0 : prev + 1
+      );
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -155,13 +168,21 @@ const SignUpA: React.FC = () => {
   return (
     <div className="flex min-h-screen p-6 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center">
       <div className="w-full max-w-6xl min-h-[450px] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
-        <Sidebar currentSlide={currentSlide} setCurrentSlide={setCurrentSlide} />
+        <Sidebar
+          currentSlide={currentSlide}
+          setCurrentSlide={setCurrentSlide}
+        />
         <main className="flex-1 p-8">
-          <ProgressIndicator currentStep={currentStep} totalSteps={isDoctor === "Yes" ? 3 : 2} />
+          <ProgressIndicator
+            currentStep={currentStep}
+            totalSteps={isDoctor === "Yes" ? 3 : 2}
+          />
           <Formik
             initialValues={initialFormValues}
             validationSchema={validationSchema}
-            onSubmit={handleFormSubmit}
+            onSubmit={(values) =>
+              handleFormSubmit(values, isDoctor === "Yes" ? 3 : 2)
+            }
           >
             {({ values, setFieldValue }) => (
               <Form className="flex flex-col justify-around items-center h-full w-full">
@@ -172,22 +193,47 @@ const SignUpA: React.FC = () => {
                     handleRoleChange={handleRoleChange}
                   />
                 )}
-                {currentStep === 2 && <Step2 formValues={values} isDoctor={isDoctor} setFieldValues={setFieldValue} currentStep={currentStep} totalSteps={isDoctor === "Yes" ? 3 : 2} />}
-                {currentStep === 3 && <Step3 formValues={values} setFieldValues={setFieldValue} />}
+                {currentStep === 2 && (
+                  <Step2
+                    formValues={values}
+                    isDoctor={isDoctor}
+                    setFieldValues={setFieldValue}
+                    currentStep={currentStep}
+                    totalSteps={isDoctor === "Yes" ? 3 : 2}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <Step3 formValues={values} setFieldValues={setFieldValue} />
+                )}
 
                 <div className="flex w-full justify-between mt-4">
                   <Button
                     type="button"
-                    onClick={() => setCurrentStep((prev) => Math.max(prev - 1, 1))}
+                    onClick={() =>
+                      setCurrentStep((prev) => Math.max(prev - 1, 1))
+                    }
                     disabled={currentStep === 1}
                   >
                     Back
                   </Button>
                   <Button
-                    type={currentStep === (isDoctor === "Yes" ? 3 : 2) ? "submit" : "button"}
-                    onClick={() => setCurrentStep((prev) => Math.min(prev + 1, 3))}
+                    type={
+                      currentStep === (isDoctor === "Yes" ? 3 : 2)
+                        ? "submit"
+                        : "button"
+                    }
+                    onClick={() => {
+                      if (isDoctor === "No" && currentStep === 2) {
+                        return;
+                      }
+                      setCurrentStep((prev) =>
+                        Math.min(prev + 1, isDoctor === "Yes" ? 3 : 2)
+                      ); 
+                    }}
                   >
-                    {currentStep === (isDoctor === "Yes" ? 3 : 2) ? "Submit" : "Next"}
+                    {currentStep === (isDoctor === "Yes" ? 3 : 2)
+                      ? "Submit"
+                      : "Next"}
                   </Button>
                 </div>
               </Form>
