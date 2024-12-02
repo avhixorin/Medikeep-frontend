@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignInForm.css";
-import Swal from "sweetalert2";
 import BackButton from "../Back-Button/BackButton";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "../../redux/features/authSlice";
 import { Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import toast from "react-hot-toast";
 
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -32,7 +32,6 @@ const SignInForm: React.FC = () => {
     setLoading(true);
     try {
       const loginUrl = import.meta.env.VITE_SIGN_IN_URL;
-      console.log("loginUrl", loginUrl);
       const response = await fetch(loginUrl, {
         method: "POST",
         headers: {
@@ -49,19 +48,12 @@ const SignInForm: React.FC = () => {
 
       const data = await response.json();
       if (data?.statusCode === 200) {
-        await Swal.fire({
-          text: data.message,
-          icon: "success",
-        });
-
+        toast.success("Logged in successfully");
         dispatch(setAuthUser(data.data));
         navigate("/dashboard");
       }
     } catch (error: unknown) {
-      Swal.fire({
-        text: (error as Error).message,
-        icon: "error",
-      });
+      toast.error((error as Error).message || "An error occurred while logging in");
     } finally {
       setLoading(false);
     }
@@ -151,8 +143,12 @@ const SignInForm: React.FC = () => {
                   <p className="page-link">
                     <span className="page-link-label">Forgot Password?</span>
                   </p>
-                  <button className={`form-btn ${loading ? "cursor-not-allowed" : "cursor-pointer"}`} type="submit" disabled={loading}
-                  
+                  <button
+                    className={`form-btn ${
+                      loading ? "cursor-not-allowed" : "cursor-pointer"
+                    }`}
+                    type="submit"
+                    disabled={loading}
                   >
                     {loading ? "Logging in..." : "Log in"}
                   </button>
@@ -168,8 +164,8 @@ const SignInForm: React.FC = () => {
             </p>
             {/* <div className="buttons-container mt-3">
               <div className="google-login-button"> */}
-                {/* Google Login Button */}
-              {/* </div>
+            {/* Google Login Button */}
+            {/* </div>
             </div> */}
           </div>
         </div>

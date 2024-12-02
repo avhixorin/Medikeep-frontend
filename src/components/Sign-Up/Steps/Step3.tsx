@@ -50,7 +50,6 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
             value={formValues.specialization || ""}
             onValueChange={(value) => {
               setFieldValues("specialization", value);
-              console.log("Selected Specialization: ", value);
             }}
           >
             <SelectTrigger className="w-full">
@@ -82,12 +81,6 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
           placeholder="5"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setFieldValues("yearsOfExperience", e.target.value);
-            console.log("Selected Years of Experience: ", e.target.value);
-            console.log(
-              "Years of Experience set in the form ",
-              formValues.yearsOfExperience
-            );
-            console.log("Form Values in years of experience: ", formValues);
           }}
         />
       </div>

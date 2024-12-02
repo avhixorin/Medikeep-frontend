@@ -4,52 +4,19 @@ import store from "./redux/store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Outlet } from "react-router-dom";
 import { persistStore } from "redux-persist";
+import { Toaster } from "react-hot-toast";
 
 const persistor = persistStore(store);
 
 const App: React.FC = () => {
-  // useEffect(() => {
-  //   const lenis = new Lenis();
-    
-  
-  //   let animationFrameId: number;
-  
-  //   function raf(time: number) {
-  //     lenis.raf(time);
-  //     animationFrameId = requestAnimationFrame(raf);
-  //   }
-  
-  //   animationFrameId = requestAnimationFrame(raf);
-  
-  //   // Handle pausing Lenis on scrollable areas
-  //   const handleMouseEnter = (e: Event) => {
-  //     if ((e.target as HTMLElement).closest(".scroll-exclude")) {
-  //       lenis.stop(); // Pause Lenis scrolling
-  //     }
-  //   };
-  
-  //   const handleMouseLeave = (e: Event) => {
-  //     if ((e.target as HTMLElement).closest(".scroll-exclude")) {
-  //       lenis.start(); // Resume Lenis scrolling
-  //     }
-  //   };
-  
-  //   document.addEventListener("mouseenter", handleMouseEnter, true);
-  //   document.addEventListener("mouseleave", handleMouseLeave, true);
-  
-  //   return () => {
-  //     cancelAnimationFrame(animationFrameId);
-  //     document.removeEventListener("mouseenter", handleMouseEnter, true);
-  //     document.removeEventListener("mouseleave", handleMouseLeave, true);
-  //   };
-  // }, []);
-  
-
   return (
     <div className="w-full h-full">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Outlet />
+          <Toaster
+            position="top-center"
+          />
         </PersistGate>
       </Provider>
     </div>

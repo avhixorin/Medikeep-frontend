@@ -11,10 +11,11 @@ import Step2 from "./Steps/Step2";
 import Step3 from "./Steps/Step3";
 import { Button } from "../ui/button";
 import { User } from "@/types/types";
+import useSubmitForm from "@/utils/submitForm";
 
 // Constants
 const initialFormValues: User = {
-  role: "Patient",
+  role: "patient",
   firstName: "",
   lastName: "",
   email: "",
@@ -148,12 +149,14 @@ const SignUpA: React.FC = () => {
   const handleRoleChange = (selectedRole: string) => {
     setIsDoctor(selectedRole);
   };
-
-  const handleFormSubmit = (values: User, totalSteps: number) => {
+  const { submitForm } = useSubmitForm();
+  const handleFormSubmit = async (values: User, totalSteps: number) => {
     if (currentStep === totalSteps) {
       dispatch(updateUserFields(values));
     }
-    console.log("Form Values submitted successfully: ", values);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...filteredValues } = values;
+    await submitForm(filteredValues);
   };
 
   useEffect(() => {
@@ -222,13 +225,14 @@ const SignUpA: React.FC = () => {
                         ? "submit"
                         : "button"
                     }
-                    onClick={() => {
-                      if (isDoctor === "No" && currentStep === 2) {
+                    onClick={(e) => {
+                      if (currentStep === (isDoctor === "Yes" ? 3 : 2)) {
                         return;
                       }
+                      e.preventDefault(); 
                       setCurrentStep((prev) =>
                         Math.min(prev + 1, isDoctor === "Yes" ? 3 : 2)
-                      ); 
+                      );
                     }}
                   >
                     {currentStep === (isDoctor === "Yes" ? 3 : 2)

@@ -57,7 +57,6 @@ export function ActivityChart() {
         startDate.setDate(startDate.getDate() - daysToSubtract)
         return date >= startDate
     })
-      console.log(generatedData);
       
     return (
         <Card>

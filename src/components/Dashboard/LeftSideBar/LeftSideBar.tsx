@@ -9,10 +9,10 @@ import {
   HeartPulse,
   User,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 
 export default function LeftSidebar() {
   const dispatch = useDispatch();
@@ -20,15 +20,22 @@ export default function LeftSidebar() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you really want to log out? You will need to log in again to access your account.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, log out",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
-    });
+
+    const result = await toast.promise(
+      new Promise<{ isConfirmed: boolean }>((resolve, reject) => {
+        const confirmed = window.confirm("Are you sure? You will be logged out.");
+        if (confirmed) {
+          resolve({ isConfirmed: true });
+        } else {
+          reject({ isConfirmed: false });
+        }
+      }),
+      {
+        loading: "Logging out...",
+        success: "Logged out successfully",
+        error: "An error occurred while logging out. Please try again.",
+      }
+    );
 
     if (result.isConfirmed) {
       try {
@@ -40,25 +47,15 @@ export default function LeftSidebar() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          Swal.fire({
-            text: errorData.message || "Failed to log out",
-            icon: "error",
-          });
+          toast.error(errorData.message || "Failed to log out");
           return;
         }
-
-        Swal.fire({
-          text: "Logged out successfully",
-          icon: "success",
-        });
+        toast.success("Logged out successfully");
 
         dispatch(clearAuthUser());
         navigate("/sign-in");
       } catch {
-        Swal.fire({
-          text: "An error occurred while logging out. Please try again.",
-          icon: "error",
-        });
+        toast.error("An error occurred while logging out. Please try again.");
       }
     } else {
       console.log("User canceled logout");

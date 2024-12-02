@@ -184,7 +184,7 @@ const Step2: React.FC<Step2Props> = ({
               name="acceptedTerms"
               checked={formValues.acceptedTerms}
               onCheckedChange={(checked) => {
-                setFieldValues("acceptedTerms", checked); // Update with the checked state directly
+                setFieldValues("acceptedTerms", checked);
               }}
             />
 

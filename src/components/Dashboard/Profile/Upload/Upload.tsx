@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { setAuthUser } from "../../../../redux/features/authSlice";
 import { useDispatch } from "react-redux";
-import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 interface UploadProps {
   cancelUpload: () => void;
@@ -20,13 +20,12 @@ const Upload: React.FC<UploadProps> = ({ cancelUpload, setUploadClicked }) => {
 
     if (file) {
       try {
-        // Use FormData to send file in the body of the request
         const formData = new FormData();
         formData.append("avatar", file); 
 
         const response = await fetch("http://localhost:3000/api/v1/users/upload", {
           method: "POST",
-          credentials: "include", // Send cookies if needed
+          credentials: "include", 
           body: formData,
         });
 
@@ -36,27 +35,20 @@ const Upload: React.FC<UploadProps> = ({ cancelUpload, setUploadClicked }) => {
 
         const data = await response.json();
         dispatch(setAuthUser(data.data));
-        console.log(data);
         setUploadClicked(false);
         fileInput.value = "";
         
-        Swal.fire({
-          text: "File uploaded successfully",
-          icon: "success",
-        });
+        toast.success("File uploaded successfully");
 
       } catch (error) {
         console.log("Error during file upload:", error);
-        Swal.fire({
-          text: "Error during file upload. Please try again.",
-          icon: "error",
-        });
+        toast.error("Error during file upload. Please try again.");
       } finally {
-        setIsUploading(false); // Ensure uploading state is reset
+        setIsUploading(false); 
       }
     } else {
       alert("No file selected");
-      setIsUploading(false); // Reset if no file is selected
+      setIsUploading(false);
     }
   };
 

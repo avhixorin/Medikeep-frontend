@@ -1,8 +1,8 @@
 import React from "react";
 import { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
-import Swal from "sweetalert2";
 import DNAViewer from "./Canvas/DNAViewer";
+import toast from "react-hot-toast";
 
 const ContactUs = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -41,13 +41,7 @@ const ContactUs = () => {
       .then(
         () => {
           setLoading(false);
-          Swal.fire({
-            text: "Thank you. I will get back to you as soon as possible.",
-            icon: "success",
-            background: "#1a1a1a",
-            color: "#fff",
-          });
-
+          toast.success("Message sent successfully");
           setForm({
             name: "",
             email: "",
@@ -57,12 +51,7 @@ const ContactUs = () => {
         (error) => {
           setLoading(false);
           console.error(error);
-          Swal.fire({
-            text: "Ahh, something went wrong. Please try again.",
-            icon: "error",
-            background: "#1a1a1a",
-            color: "#fff",
-          });
+          toast.error("Failed to send message");
         }
       );
   };

@@ -32,7 +32,7 @@ const Step1: React.FC<Step1Props> = ({
           onCheckedChange={(checked) => {
             const role = checked ? "Yes" : "No";
             handleRoleChange(role);
-            setFieldValues("role", role === "Yes" ? "Doctor" : "Patient");
+            setFieldValues("role", role === "Yes" ? "doctor" : "patient");
           }}
         />
       </div>

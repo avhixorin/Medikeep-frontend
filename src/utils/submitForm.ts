@@ -1,26 +1,39 @@
 import { User } from "@/types/types";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const submitForm = async (formData: User) => {
+const useSubmitForm = () => {
+  const navigate = useNavigate();
+
+  const submitForm = async (formData: User) => {
     try {
       const registerUrl: string = import.meta.env.VITE_SIGN_UP_URL;
+
       const response = await fetch(registerUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const errorMessage = await response.text();
-        throw new Error(errorMessage || 'Something went wrong');
+        throw new Error(errorMessage || "Something went wrong");
       }
-      console.log("Response",response)
-    return response.json();
+
+      toast.success("User registered successfully");
+      navigate("/sign-in");
+
+      return response.json();
     } catch (error) {
       console.error(error);
+      toast.error(error instanceof Error ? error.message : "An error occurred");
       throw error;
     }
   };
 
-export default submitForm;
+  return { submitForm };
+};
+
+export default useSubmitForm;

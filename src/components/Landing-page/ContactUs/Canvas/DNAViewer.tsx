@@ -30,9 +30,6 @@ const DNA: React.FC = () => {
       const boxCenter = boundingBox.getCenter(new THREE.Vector3());
       groupRef.current.position.sub(boxCenter);
 
-      // Debugging: Log the model's bounding box and position
-      console.log('Bounding Box:', boundingBox);
-      console.log('Model Position:', groupRef.current.position);
     }
   }, [scene]);
 
