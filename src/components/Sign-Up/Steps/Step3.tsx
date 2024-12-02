@@ -15,15 +15,14 @@ import React from "react";
 
 type Step3Props = {
   formValues: User;
-setFieldValues: (
-  field: string,
-  value: string | boolean | number | Date,
-  shouldValidate?: boolean
-) => Promise<void | FormikErrors<User>>;
+  setFieldValues: (
+    field: string,
+    value: string | boolean | number | Date,
+    shouldValidate?: boolean
+  ) => Promise<void | FormikErrors<User>>;
 };
 
-const Step3: React.FC<Step3Props> = ({formValues,setFieldValues}) => {
-  
+const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
   return (
     <div className="space-y-6 w-full">
       <div className="grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-6">
@@ -32,8 +31,13 @@ const Step3: React.FC<Step3Props> = ({formValues,setFieldValues}) => {
           <label className="text-sm font-semibold text-gray-700">
             Medical License Number
           </label>
-          <Field name="medicalLicenseNumber" as={Input} placeholder="A123456" 
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFieldValues("medicalLicenseNumber", e.target.value)}
+          <Field
+            name="medicalLicenseNumber"
+            as={Input}
+            placeholder="A123456"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFieldValues("medicalLicenseNumber", e.target.value)
+            }
           />
         </div>
 
@@ -43,16 +47,11 @@ const Step3: React.FC<Step3Props> = ({formValues,setFieldValues}) => {
             Specialization
           </label>
           <Select
-          name="specialization"
-          value={formValues.specialization}
-          onValueChange={(value) => 
-            {
-              setFieldValues("specialization", value)
-              console.log("Selected Specialization: ", value)
-              console.log("Specialization set in the form ", formValues.specialization)
-              console.log("Form Values in specialization: ", formValues)
-            }
-          }
+            value={formValues.specialization || ""}
+            onValueChange={(value) => {
+              setFieldValues("specialization", value);
+              console.log("Selected Specialization: ", value);
+            }}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Specialization" />
@@ -77,13 +76,19 @@ const Step3: React.FC<Step3Props> = ({formValues,setFieldValues}) => {
         <label className="text-sm font-semibold text-gray-700">
           Years of Experience
         </label>
-        <Field name="yearsOfExperience" as={Input} placeholder="5" 
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setFieldValues("yearsOfExperience", e.target.value)
-          console.log("Selected Years of Experience: ", e.target.value)
-          console.log("Years of Experience set in the form ", formValues.yearsOfExperience)
-          console.log("Form Values in years of experience: ", formValues)
-        }}
+        <Field
+          name="yearsOfExperience"
+          as={Input}
+          placeholder="5"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setFieldValues("yearsOfExperience", e.target.value);
+            console.log("Selected Years of Experience: ", e.target.value);
+            console.log(
+              "Years of Experience set in the form ",
+              formValues.yearsOfExperience
+            );
+            console.log("Form Values in years of experience: ", formValues);
+          }}
         />
       </div>
 
@@ -96,7 +101,9 @@ const Step3: React.FC<Step3Props> = ({formValues,setFieldValues}) => {
             type="password"
             as={Input}
             placeholder="********"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFieldValues("password", e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFieldValues("password", e.target.value)
+            }
           />
         </div>
         <div className="space-y-2">
@@ -106,22 +113,23 @@ const Step3: React.FC<Step3Props> = ({formValues,setFieldValues}) => {
             type="password"
             as={Input}
             placeholder="********"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFieldValues("confirmPassword", e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFieldValues("confirmPassword", e.target.value)
+            }
           />
         </div>
       </div>
       <div className="flex w-full items-center space-x-2">
-        <Field 
-        name="acceptedTerms"
-        as={Checkbox}
-        value={formValues.acceptedTerms}
-        onChange={() => {
-          setFieldValues("acceptedTerms", !formValues.acceptedTerms)
-          console.log("Selected Terms: ", formValues.acceptedTerms)
-          console.log("Terms set in the form ", formValues.acceptedTerms)
-          console.log("Form Values in terms: ", formValues)
-        }}
+        <Field
+          name="acceptedTerms"
+          as={Checkbox}
+          checked={formValues.acceptedTerms}
+          onChange={() => {
+            setFieldValues("acceptedTerms", !formValues.acceptedTerms);
+            console.log("Accepted Terms: ", formValues.acceptedTerms);
+          }}
         />
+
         <label
           htmlFor="terms"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

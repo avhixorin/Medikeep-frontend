@@ -21,7 +21,7 @@ import { ErrorMessage, Field, FormikErrors } from "formik";
 import { CalendarIcon } from "lucide-react";
 
 type Step2Props = {
-    formValues: User;
+  formValues: User;
   isDoctor: string;
   setFieldValues: (
     field: string,
@@ -50,8 +50,7 @@ const Step2: React.FC<Step2Props> = ({
           <PopoverTrigger asChild>
             <Button
               type="button"
-              name="dateOfBirth"
-              variant={"outline"}
+              variant="outline"
               className="w-full pl-3 text-left font-normal"
             >
               {formValues.dateOfBirth ? (
@@ -70,9 +69,9 @@ const Step2: React.FC<Step2Props> = ({
                   ? new Date(formValues.dateOfBirth)
                   : undefined
               }
-              onSelect={(date) =>
-                date && setFieldValues("dateOfBirth", date)
-              }
+              onSelect={(date) => {
+                if (date) setFieldValues("dateOfBirth", date); // Update Formik field manually
+              }}
               disabled={(date) =>
                 date > new Date() || date < new Date("1900-01-01")
               }
@@ -92,22 +91,21 @@ const Step2: React.FC<Step2Props> = ({
         <label className="text-sm font-semibold text-gray-700">
           Gender<span className="text-red-500">*</span>
         </label>
-        <Select
-          name="gender"
-          value={formValues.gender}
-          onValueChange={(value) =>
-            setFieldValues( "gender", value )
-          }
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select Gender" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Male">Male</SelectItem>
-            <SelectItem value="Female">Female</SelectItem>
-            <SelectItem value="Other">Other</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <Select
+            value={formValues.gender}
+            onValueChange={(value) => setFieldValues("gender", value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select Gender" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Male">Male</SelectItem>
+              <SelectItem value="Female">Female</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <ErrorMessage
           name="gender"
           component="div"
@@ -125,7 +123,7 @@ const Step2: React.FC<Step2Props> = ({
           as={Input}
           placeholder="123-456-7890"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFieldValues("phone", e.target.value )
+            setFieldValues("phone", e.target.value)
           }
         />
         <ErrorMessage
@@ -150,7 +148,7 @@ const Step2: React.FC<Step2Props> = ({
                 as={Input}
                 placeholder="********"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setFieldValues("password", e.target.value )
+                  setFieldValues("password", e.target.value)
                 }
               />
               <ErrorMessage
@@ -171,7 +169,7 @@ const Step2: React.FC<Step2Props> = ({
                 as={Input}
                 placeholder="********"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setFieldValues("confirmPassword", e.target.value)
+                  setFieldValues("confirmPassword", e.target.value)
                 }
               />
               <ErrorMessage
@@ -187,10 +185,10 @@ const Step2: React.FC<Step2Props> = ({
               as={Checkbox}
               value={formValues.acceptedTerms}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFieldValues(
-                  "acceptedTerms", e.target.checked)
+                setFieldValues("acceptedTerms", e.target.checked)
               }
             />
+
             <label
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
