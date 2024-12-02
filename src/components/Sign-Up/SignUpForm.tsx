@@ -12,6 +12,7 @@ import Step3 from "./Steps/Step3";
 import { Button } from "../ui/button";
 import { User } from "@/types/types";
 import useSubmitForm from "@/utils/submitForm";
+import { Link } from "react-router-dom";
 
 // Constants
 const initialFormValues: User = {
@@ -169,83 +170,98 @@ const SignUpA: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen p-6 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center">
-      <div className="w-full max-w-6xl min-h-[450px] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
-        <Sidebar
-          currentSlide={currentSlide}
-          setCurrentSlide={setCurrentSlide}
-        />
-        <main className="flex-1 p-8">
-          <ProgressIndicator
-            currentStep={currentStep}
-            totalSteps={isDoctor === "Yes" ? 3 : 2}
-          />
-          <Formik
-            initialValues={initialFormValues}
-            validationSchema={validationSchema}
-            onSubmit={(values) =>
-              handleFormSubmit(values, isDoctor === "Yes" ? 3 : 2)
-            }
-          >
-            {({ values, setFieldValue }) => (
-              <Form className="flex flex-col justify-around items-center h-full w-full">
-                {currentStep === 1 && (
-                  <Step1
-                    isDoctor={isDoctor}
-                    setFieldValues={setFieldValue}
-                    handleRoleChange={handleRoleChange}
-                  />
-                )}
-                {currentStep === 2 && (
-                  <Step2
-                    formValues={values}
-                    isDoctor={isDoctor}
-                    setFieldValues={setFieldValue}
-                    currentStep={currentStep}
-                    totalSteps={isDoctor === "Yes" ? 3 : 2}
-                  />
-                )}
-                {currentStep === 3 && (
-                  <Step3 formValues={values} setFieldValues={setFieldValue} />
-                )}
+    <div className="flex min-h-screen px-6 py-8 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center overflow-hidden">
+  <div className="w-full max-w-6xl min-h-[480px] bg-white rounded-xl shadow-lg flex flex-col md:flex-row">
+    <Sidebar
+      currentSlide={currentSlide}
+      setCurrentSlide={setCurrentSlide}
+    />
+    <main className="flex-1 p-8">
+      <ProgressIndicator
+        currentStep={currentStep}
+        totalSteps={isDoctor === "Yes" ? 3 : 2}
+      />
 
-                <div className="flex w-full justify-between mt-4">
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      setCurrentStep((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentStep === 1}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    type={
-                      currentStep === (isDoctor === "Yes" ? 3 : 2)
-                        ? "submit"
-                        : "button"
-                    }
-                    onClick={(e) => {
-                      if (currentStep === (isDoctor === "Yes" ? 3 : 2)) {
-                        return;
-                      }
-                      e.preventDefault(); 
-                      setCurrentStep((prev) =>
-                        Math.min(prev + 1, isDoctor === "Yes" ? 3 : 2)
-                      );
-                    }}
-                  >
-                    {currentStep === (isDoctor === "Yes" ? 3 : 2)
-                      ? "Submit"
-                      : "Next"}
-                  </Button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </main>
+      {/* Already Have an Account Section */}
+      <div className="text-center mb-6 w-full flex justify-end">
+        <p className="text-gray-600">
+          Already have an account?{" "}
+          <Link
+            to="/sign-in"
+            className="text-blue-500 font-semibold hover:underline"
+          >
+            Sign in instead
+          </Link>
+        </p>
       </div>
-    </div>
+
+      <Formik
+        initialValues={initialFormValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) =>
+          handleFormSubmit(values, isDoctor === "Yes" ? 3 : 2)
+        }
+      >
+        {({ values, setFieldValue }) => (
+          <Form className="flex flex-col items-center h-full w-full space-y-6">
+            {currentStep === 1 && (
+              <Step1
+                isDoctor={isDoctor}
+                setFieldValues={setFieldValue}
+                handleRoleChange={handleRoleChange}
+              />
+            )}
+            {currentStep === 2 && (
+              <Step2
+                formValues={values}
+                isDoctor={isDoctor}
+                setFieldValues={setFieldValue}
+                currentStep={currentStep}
+                totalSteps={isDoctor === "Yes" ? 3 : 2}
+              />
+            )}
+            {currentStep === 3 && (
+              <Step3 formValues={values} setFieldValues={setFieldValue} />
+            )}
+
+            <div className="flex w-full justify-between mt-4">
+              <Button
+                type="button"
+                onClick={() =>
+                  setCurrentStep((prev) => Math.max(prev - 1, 1))
+                }
+                disabled={currentStep === 1}
+              >
+                Back
+              </Button>
+              <Button
+                type={
+                  currentStep === (isDoctor === "Yes" ? 3 : 2)
+                    ? "submit"
+                    : "button"
+                }
+                onClick={(e) => {
+                  if (currentStep === (isDoctor === "Yes" ? 3 : 2)) {
+                    return;
+                  }
+                  e.preventDefault();
+                  setCurrentStep((prev) =>
+                    Math.min(prev + 1, isDoctor === "Yes" ? 3 : 2)
+                  );
+                }}
+              >
+                {currentStep === (isDoctor === "Yes" ? 3 : 2)
+                  ? "Submit"
+                  : "Next"}
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </main>
+  </div>
+</div>
+
   );
 };
 
