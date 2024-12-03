@@ -37,6 +37,9 @@ export default function LeftSidebar() {
         const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
         const response = await fetch(logoutUrl, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           credentials: "include",
         });
 
