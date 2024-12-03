@@ -9,6 +9,7 @@ import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 import useForgot from "@/hooks/useForgot";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Forget = () => {
   const [credentialsTrue, setCredentialsTrue] = useState(false);
@@ -35,36 +36,31 @@ const Forget = () => {
         .oneOf([Yup.ref("password")], "Passwords must match"),
     }),
   });
-  const { forgot } = useForgot();
+  const navigate = useNavigate();
+  const { verifyUser, resetPassword } = useForgot();
   const handleFormSubmit = async (values: {
     email: string;
     dateOfBirth: Date | null;
     password: string;
   }) => {
-    try {
-      if (!credentialsTrue) {
-        const { verificationData } = await forgot(
-          values.email,
-          values.dateOfBirth!
-        );
-
-        if (verificationData.statusCode === 200) {
-          setCredentialsTrue(true); 
-        }
-      } else {
-        const { passwordUpdateData } = await forgot(
-          values.email,
-          values.dateOfBirth!,
-          values.password
-        );
-
-        if (passwordUpdateData.statusCode === 200) {
-          toast.success("Password updated successfully.");
-        }
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "An error occurred");
+    const { email, dateOfBirth, password } = values;
+    if(!credentialsTrue){
+    const verificationData = await verifyUser(email, dateOfBirth!);
+    if (verificationData.statusCode !== 200) {
+      toast.error("Verification failed. Please check your details.");
+      return;
     }
+  }
+    setCredentialsTrue(true);
+    if(credentialsTrue){
+      const passwordUpdateData = await resetPassword(email, dateOfBirth!, password);
+    if (passwordUpdateData.statusCode !== 200) {
+      toast.error("Password update failed. Please try again.");
+      return;
+    }
+      navigate("/sign-in");
+    }
+
   };
 
   return (
