@@ -22,8 +22,9 @@ const Upload: React.FC<UploadProps> = ({ cancelUpload, setUploadClicked }) => {
       try {
         const formData = new FormData();
         formData.append("avatar", file); 
-
-        const response = await fetch("http://localhost:3000/api/v1/users/upload", {
+        const uploadUrl = import.meta.env.VITE_AVATAR_UPLOAD_URL;
+        console.log("uploadUrl", uploadUrl);
+        const response = await fetch(uploadUrl, {
           method: "POST",
           credentials: "include", 
           body: formData,

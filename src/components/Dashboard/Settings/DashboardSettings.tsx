@@ -14,6 +14,8 @@ import { SettingsNav } from "./SettingsNav/SettingsNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import useTheme from "@/hooks/useTheme";
+import Upload from "../Profile/Upload/Upload";
+import { useState } from "react";
 
 const navItems = [
   { href: "/settings/general", title: "General" },
@@ -29,8 +31,14 @@ const navItems = [
 export default function SettingsPage() {
   const { user } = useSelector((state: RootState) => state.auth);
   const { theme, toggleTheme } = useTheme();
+  const [uploadClicked, setUploadClicked] = useState(false);
+
+  const cancelUpload = () => {
+    setUploadClicked(false);
+  }
   return (
     <div className="min-h-screen bg-transparent">
+      {uploadClicked && <Upload cancelUpload={cancelUpload} setUploadClicked={setUploadClicked} />}
       <header className="flex items-center justify-between border-b px-4 py-3 md:px-6">
         <div>
           <h1 className="text-lg font-semibold">{user?.firstName}</h1>
@@ -82,7 +90,9 @@ export default function SettingsPage() {
                     />
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm"
+                onClick={() => setUploadClicked(true)}
+                >
                   Edit
                 </Button>
               </div>
