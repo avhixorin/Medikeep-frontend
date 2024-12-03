@@ -152,7 +152,7 @@ const Forget = () => {
                   {/* Password Fields */}
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700">
-                      Password<span className="text-red-500">*</span>
+                      New Password<span className="text-red-500">*</span>
                     </label>
                     <Field
                       name="password"
@@ -170,7 +170,7 @@ const Forget = () => {
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700">
-                      Confirm Password<span className="text-red-500">*</span>
+                      Confirm New Password<span className="text-red-500">*</span>
                     </label>
                     <Field
                       name="confirmPassword"
