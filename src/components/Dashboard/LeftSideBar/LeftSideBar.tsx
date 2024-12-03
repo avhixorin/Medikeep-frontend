@@ -15,48 +15,55 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function LeftSidebar() {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you really want to log out? You will need to log in again to access your account.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, log out",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
-    });
+const handleLogout = async () => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "Do you really want to log out? You will need to log in again to access your account.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, log out",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  });
 
-    if (result.isConfirmed) {
-      try {
-        const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
-        const response = await fetch(logoutUrl, {
-          method: "GET",
+  if (result.isConfirmed) {
+    try {
+      const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
+
+      const response = await axios.post(
+        logoutUrl,
+        {},
+        {
+          withCredentials: true, 
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          toast.error(errorData.message || "Failed to log out");
-          return;
         }
+      );
+
+      if (response.status === 200) {
         dispatch(clearAuthUser());
-        setTimeout(() => navigate("/sign-in"), 0); 
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : "An error occurred");
+        toast.success("Logged out successfully.");
+        setTimeout(() => navigate("/sign-in"), 0);
+      } else {
+        toast.error(response.data.message || "Failed to log out.");
       }
-    } else {
-      console.log("User canceled logout");
+    } catch (error) {
+      console.error(error);
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     }
-  };
+  } else {
+    console.log("User canceled logout");
+  }
+};
+
 
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8 dark:bg-[#0A0A0A]">
