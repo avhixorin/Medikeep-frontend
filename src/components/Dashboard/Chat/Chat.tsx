@@ -132,7 +132,7 @@ const Chat: React.FC = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="pl-10 pr-10 bg-transparent text-gray-700 placeholder-gray-500 border-none outline-none dark:text-gray-200 dark:placeholder-gray-500"
+              className="pl-10 pr-10 bg-transparent text-white placeholder-white border-none outline-none dark:text-gray-200 dark:placeholder-gray-500"
             />
             <Button
             onClick={handleSendMessage}

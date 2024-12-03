@@ -1,41 +1,48 @@
-import React, { useState } from "react"
-import { format, compareAsc, parseISO } from "date-fns"
-import { CalendarIcon, SearchIcon, X } from 'lucide-react'
-import { appointments } from "@/constants/appointments"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import AppointmentCard from "./AppointmentCard"
+import React, { useState } from "react";
+import { format, compareAsc, parseISO } from "date-fns";
+import { CalendarIcon, SearchIcon, X } from "lucide-react";
+import { appointments } from "@/constants/appointments";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import AppointmentCard from "./AppointmentCard";
 
 const Appointments: React.FC = () => {
-  const [date, setDate] = useState<Date | undefined>()
-  const [searchQuery, setSearchQuery] = useState<string>("")
+  const [date, setDate] = useState<Date | undefined>();
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const formattedDate = date ? format(date, "yyyy-MM-dd") : null
+  const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
 
   const filteredAppointments = appointments
     .filter(
       (appt) =>
         (!formattedDate || appt.date === formattedDate) &&
-        (!searchQuery || appt.patientName.toLowerCase().includes(searchQuery.toLowerCase()))
+        (!searchQuery ||
+          appt.patientName.toLowerCase().includes(searchQuery.toLowerCase()))
     )
-    .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)))
+    .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)));
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     filteredAppointments[0] ? parseISO(filteredAppointments[0].date) : undefined
-  )
+  );
 
   const clearFilters = () => {
-    setDate(undefined)
-    setSearchQuery("")
-  }
+    setDate(undefined);
+    setSearchQuery("");
+  };
 
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#121212]">
       <div className="w-full flex flex-col gap-8">
-        <h1 className="text-3xl font-semibold text-zinc-700 dark:text-gray-200">Appointments</h1>
+        <h1 className="text-3xl font-semibold text-zinc-700 dark:text-gray-200">
+          Appointments
+        </h1>
 
         <div className="flex items-center gap-3">
           <Popover>
@@ -57,8 +64,8 @@ const Appointments: React.FC = () => {
                 mode="single"
                 selected={selectedDate}
                 onSelect={(selectedDate) => {
-                  setDate(selectedDate)
-                  setSelectedDate(selectedDate)
+                  setDate(selectedDate);
+                  setSelectedDate(selectedDate);
                 }}
                 initialFocus
               />
@@ -91,7 +98,9 @@ const Appointments: React.FC = () => {
             className={cn(
               "whitespace-nowrap text-gray-700 border-gray-300 hover:bg-gray-100",
               "dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800 dark:hover:text-gray-200",
-              !date && !searchQuery && "text-muted-foreground dark:text-gray-500"
+              !date &&
+                !searchQuery &&
+                "text-muted-foreground dark:text-gray-500"
             )}
             disabled={!date && !searchQuery}
           >
@@ -100,23 +109,27 @@ const Appointments: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md flex flex-col p-6 gap-3 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
+      <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md p-6 overflow-y-auto overflow-x-hidden shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
         {filteredAppointments.length > 0 ? (
-          filteredAppointments.map((appointment) => (
-            <AppointmentCard
-              key={appointment.id}
-              Name={appointment.patientName}
-              timeSlots={appointment.timeSlot}
-              imgSrc={appointment.imgSrc}
-              selectedDate={parseISO(appointment.date)}
-            />
-          ))
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-6">
+            {filteredAppointments.map((appointment) => (
+              <AppointmentCard
+                key={appointment.id}
+                Name={appointment.patientName}
+                timeSlots={appointment.timeSlot}
+                imgSrc={appointment.imgSrc}
+                selectedDate={parseISO(appointment.date)}
+              />
+            ))}
+          </div>
         ) : (
-          <p className="text-center text-gray-500 dark:text-gray-400">No appointments found.</p>
+          <p className="text-center text-gray-500 dark:text-gray-400">
+            No appointments found.
+          </p>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Appointments
+export default Appointments;
