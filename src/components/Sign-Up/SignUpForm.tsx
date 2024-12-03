@@ -23,7 +23,7 @@ const initialFormValues: User = {
   username: "",
   password: "",
   confirmPassword: "",
-  dateOfBirth: null,
+  dateOfBirth: "",
   gender: "",
   phone: "",
   medicalLicenseNumber: "",

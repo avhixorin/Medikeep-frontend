@@ -54,7 +54,7 @@ const Step2: React.FC<Step2Props> = ({
               className="w-full pl-3 text-left font-normal"
             >
               {formValues.dateOfBirth ? (
-                format(formValues.dateOfBirth, "PPP")
+                format(new Date(formValues.dateOfBirth), "dd-MM-yyyy")
               ) : (
                 <span>Pick a date</span>
               )}
@@ -70,7 +70,10 @@ const Step2: React.FC<Step2Props> = ({
                   : undefined
               }
               onSelect={(date) => {
-                if (date) setFieldValues("dateOfBirth", date); // Update Formik field manually
+                if (date) {
+                  const formattedDate = format(date, "dd-MM-yyyy");
+                  setFieldValues("dateOfBirth", formattedDate);
+                }
               }}
               disabled={(date) =>
                 date > new Date() || date < new Date("1900-01-01")

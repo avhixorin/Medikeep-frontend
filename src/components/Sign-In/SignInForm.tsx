@@ -146,7 +146,9 @@ const SignInForm: React.FC = () => {
                   </div>
 
                   <p className="page-link">
-                    <span className="page-link-label">Forgot Password?</span>
+                    <span className="page-link-label"
+                    onClick={() => navigate("/forgot?")}
+                    >Forgot Password?</span>
                   </p>
                   
                   <Button

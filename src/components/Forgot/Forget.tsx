@@ -7,6 +7,8 @@ import { Button } from "../ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
+import useForgot from "@/hooks/useForgot";
+import toast from "react-hot-toast";
 
 const Forget = () => {
   const [credentialsTrue, setCredentialsTrue] = useState(false);
@@ -33,15 +35,35 @@ const Forget = () => {
         .oneOf([Yup.ref("password")], "Passwords must match"),
     }),
   });
+  const { forgot } = useForgot();
+  const handleFormSubmit = async (values: {
+    email: string;
+    dateOfBirth: Date | null;
+    password: string;
+  }) => {
+    try {
+      if (!credentialsTrue) {
+        const { verificationData } = await forgot(
+          values.email,
+          values.dateOfBirth!
+        );
 
-  const handleFormSubmit = (values: { email: string; dateOfBirth: Date | null; password: string; confirmPassword: string }) => {
-    console.log(values);
-    if (!credentialsTrue) {
-      // Validate credentials logic here
-      setCredentialsTrue(true);
-    } else {
-      // Submit new password logic here
-      console.log("Password updated successfully.");
+        if (verificationData.statusCode === 200) {
+          setCredentialsTrue(true); 
+        }
+      } else {
+        const { passwordUpdateData } = await forgot(
+          values.email,
+          values.dateOfBirth!,
+          values.password
+        );
+
+        if (passwordUpdateData.statusCode === 200) {
+          toast.success("Password updated successfully.");
+        }
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     }
   };
 
