@@ -9,6 +9,8 @@ import {
   HeartPulse,
   User,
 } from "lucide-react";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -20,20 +22,15 @@ export default function LeftSidebar() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const result = await toast.promise(
-      new Promise<{ isConfirmed: boolean }>((resolve, reject) => {
-        const confirmed = window.confirm(
-          "Are you sure? You will be logged out."
-        );
-        if (confirmed) resolve({ isConfirmed: true });
-        else reject({ isConfirmed: false });
-      }),
-      {
-        loading: "Logging out...",
-        success: "Logged out successfully",
-        error: "An error occurred while logging out. Please try again.",
-      }
-    );
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to log out? You will need to log in again to access your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, log out",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
 
     if (result.isConfirmed) {
       try {
