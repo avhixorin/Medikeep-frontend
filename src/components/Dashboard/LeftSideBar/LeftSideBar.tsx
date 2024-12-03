@@ -69,7 +69,9 @@ const handleLogout = async () => {
     <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8 dark:bg-[#0A0A0A]">
       {/* Logo Section */}
       <div className="w-full flex flex-col gap-12 md:gap-8">
-        <div className="flex w-full justify-center items-center p-2 gap-2 my-8">
+        <div className="flex w-full justify-center items-center p-2 gap-2 my-8 cursor-pointer"
+        onClick={() => navigate("/dashboard")}
+        >
           <img
             src="https://res.cloudinary.com/avhixorin/image/upload/v1726237530/titleIcon_h3ehnu.png"
             alt="MediKeep Logo"
