@@ -35,11 +35,11 @@ const SignInForm: React.FC = () => {
       const loginUrl = import.meta.env.VITE_SIGN_IN_URL;
       const response = await fetch(loginUrl, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
-        credentials: "include",
+        body: JSON.stringify(values)
       });
 
       if (!response.ok) {
