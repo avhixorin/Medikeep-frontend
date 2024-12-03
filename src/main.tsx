@@ -83,7 +83,7 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="forgot?"
+        path="forgot"
         element={
           <Suspense fallback={<LoadingScreen />}>
             <ForgotPasswordPage />
