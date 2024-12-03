@@ -20,15 +20,13 @@ export default function LeftSidebar() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-
     const result = await toast.promise(
       new Promise<{ isConfirmed: boolean }>((resolve, reject) => {
-        const confirmed = window.confirm("Are you sure? You will be logged out.");
-        if (confirmed) {
-          resolve({ isConfirmed: true });
-        } else {
-          reject({ isConfirmed: false });
-        }
+        const confirmed = window.confirm(
+          "Are you sure? You will be logged out."
+        );
+        if (confirmed) resolve({ isConfirmed: true });
+        else reject({ isConfirmed: false });
       }),
       {
         loading: "Logging out...",
@@ -50,12 +48,10 @@ export default function LeftSidebar() {
           toast.error(errorData.message || "Failed to log out");
           return;
         }
-        toast.success("Logged out successfully");
-
         dispatch(clearAuthUser());
-        navigate("/sign-in");
-      } catch {
-        toast.error("An error occurred while logging out. Please try again.");
+        setTimeout(() => navigate("/sign-in"), 0); 
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "An error occurred");
       }
     } else {
       console.log("User canceled logout");
@@ -120,8 +116,10 @@ export default function LeftSidebar() {
           icon={<Settings size={24} />}
           label="Settings"
         />
-        <div className="flex w-full items-center gap-4 p-2 bg-gray-100 dark:bg-transparent border border-gray-300 rounded-md cursor-pointer dark:border-gray-700"
-        onClick={() => navigate('/dashboard/profile')}>
+        <div
+          className="flex w-full items-center gap-4 p-2 bg-gray-100 dark:bg-transparent border border-gray-300 rounded-md cursor-pointer dark:border-gray-700"
+          onClick={() => navigate("/dashboard/profile")}
+        >
           <img
             src={user?.profilePicture}
             alt={`${user?.username}'s profile picture`}
@@ -131,7 +129,9 @@ export default function LeftSidebar() {
             <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               {user?.username}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.gender}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {user?.gender}
+            </p>
           </div>
         </div>
       </div>
