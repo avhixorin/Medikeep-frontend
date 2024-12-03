@@ -4,7 +4,7 @@ import { format } from "date-fns";
 const useForgot = () => {
   const verifyUser = async (email: string, dateOfBirth: Date) => {
     try {
-      const forgetUrl1 = import.meta.env.VITE_FORGOT_URL;
+      const forgetUrl1 = import.meta.env.VITE_FORGOT_URL1;
 
       const verificationResponse = await fetch(forgetUrl1, {
         method: "POST",
