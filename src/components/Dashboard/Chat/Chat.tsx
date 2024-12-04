@@ -6,6 +6,9 @@ import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useSockets from "@/hooks/useSockets";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
+import useAllUsers from "@/hooks/useAllUsers";
 
 const randomNames = [
   "Dr. Jane Doe",
@@ -41,7 +44,11 @@ const Chat: React.FC = () => {
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const socket = useSockets();
-
+  const { allUsers } = useSelector((state:RootState) => state);
+  const { fetchAllUsers } = useAllUsers();
+  if(allUsers.users.length == 0){
+    fetchAllUsers();
+  }
   useEffect(() => {
     if (socket) {
       socket.emit("joinRoom", { roomId: "12345" });
