@@ -9,6 +9,7 @@ import useSockets from "@/hooks/useSockets";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import useAllUsers from "@/hooks/useAllUsers";
+import SearchBox from "./SearchBox/SearchBox";
 
 const randomNames = [
   "Dr. Jane Doe",
@@ -40,6 +41,7 @@ const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
 const Chat: React.FC = () => {
   const [isOnline] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -89,7 +91,9 @@ const Chat: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-[#fffcf8] dark:bg-[#141414] p-8">
-
+      {
+        isSearching && <SearchBox setIsSearching={setIsSearching} />
+      }
 
       {/* Connections Section */}
       <div className="h-[25%] w-full flex flex-col justify-start gap-6">
@@ -105,7 +109,7 @@ const Chat: React.FC = () => {
           </div>
           <button
             className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
-            
+            onClick={() => setIsSearching(true)}
           >
             Add Connections
           </button>
