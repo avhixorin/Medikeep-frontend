@@ -1,6 +1,6 @@
 import { combineReducers, configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authSlice from "../features/authSlice";
-import { allUsersSlice } from "../features/allUsersSlice";
+import allUsersSlice from "../features/allUsersSlice";
 import {
   persistReducer,
   FLUSH,
