@@ -1,4 +1,6 @@
+import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 import { io, Socket } from "socket.io-client";
 
 const useSockets = () => {
@@ -15,6 +17,7 @@ const useSockets = () => {
         autoConnect: false, 
         reconnectionAttempts: 5, 
         transports: ["websocket"],
+        withCredentials: true,
       });
     }
     return socket.current;
@@ -26,15 +29,16 @@ const useSockets = () => {
     if (!socketInstance.connected) {
       socketInstance.connect();
 
-      socketInstance.on("connect", () => {
+      socketInstance.on(SOCKET_EVENTS.CONNECT, () => {
         console.log("Connected to the socket server:", socketInstance.id);
       });
 
-      socketInstance.on("connect_error", (err) => {
+      socketInstance.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
         console.error("Socket connection error:", err);
+        toast.error("Failed to connect to the server.");
       });
 
-      socketInstance.on("disconnect", (reason) => {
+      socketInstance.on(SOCKET_EVENTS.DISCONNECT, (reason) => {
         console.log("Disconnected from the socket server:", reason);
       });
     }

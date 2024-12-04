@@ -1,6 +1,7 @@
 export enum SOCKET_EVENTS {
-    CONNECT = "connect",
+    CONNECT = "connection",
     DISCONNECT = "disconnect",
+    CONNECT_ERROR = "connect_error",
     JOIN_ROOM = "join_room",
     LEAVE_ROOM = "leave_room",
     MESSAGE = "message",
@@ -8,6 +9,7 @@ export enum SOCKET_EVENTS {
     GET_ROOMS = "get_rooms",
     ROOMS = "rooms",
     GET_USERS = "get_users",
+    GET_USERS_RESPONSE = "get_users_response",
     USERS = "users",
     USER_CONNECTED = "user_connected",
     USER_DISCONNECTED = "user_disconnected",

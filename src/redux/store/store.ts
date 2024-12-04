@@ -1,6 +1,6 @@
 import { combineReducers, configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authSlice from "../features/authSlice";
-
+import { allUsersSlice } from "../features/allUsersSlice";
 import {
   persistReducer,
   FLUSH,
@@ -19,14 +19,13 @@ const persistConfig = {
   storage,
 };
 
-// Combine reducers
 const rootReducer = combineReducers({
   auth: authSlice,
+  allUsers: allUsersSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Configure store
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -37,7 +36,6 @@ const store = configureStore({
     }),
 });
 
-// Types for state and dispatch
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
