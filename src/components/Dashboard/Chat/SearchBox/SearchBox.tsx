@@ -43,12 +43,12 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
       }
     };
 
-    socket.on(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
+    socket?.on(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
 
     return () => {
-      socket.off(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
+      socket?.off(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
     };
-  }, [socket]);
+  }, [socket, isConnected]);
 
   const handleConnect = (userId: string) => {
     if (!socket) {
