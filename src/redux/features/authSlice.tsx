@@ -69,6 +69,22 @@ const authSlice = createSlice({
         }
       }
     },
+    addConnectionRequest: (state, action: PayloadAction<User>) => {
+      if (state.user) {
+        if (state.user.connectionRequests) {
+          state.user.connectionRequests.push(action.payload);
+        }
+      }
+    },
+    removeConnectionRequest: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        if (state.user.connectionRequests) {
+          state.user.connectionRequests = state.user.connectionRequests.filter(
+            (request) => request._id !== action.payload
+          );
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action) => {
@@ -77,6 +93,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthUser, setUserTheme, clearAuthUser, updateUserFields, addConnection, removeConnection } =
+export const { setAuthUser, setUserTheme, clearAuthUser, updateUserFields, addConnection, removeConnection, addConnectionRequest, removeConnectionRequest } =
   authSlice.actions;
 export default authSlice.reducer;

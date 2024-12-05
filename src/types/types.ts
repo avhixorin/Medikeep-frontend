@@ -69,4 +69,5 @@ export type notification = {
   type: string;
   message: string;
   read: boolean;
+  from?: User;
 }

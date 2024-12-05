@@ -1,4 +1,5 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import { addConnectionRequest } from "@/redux/features/authSlice";
 import { addNotification } from "@/redux/features/notificationsSlice";
 import { notification } from "@/types/types";
 import { useEffect, useState } from "react";
@@ -43,7 +44,13 @@ const useSockets = () => {
       socketInstance.on(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION, (data: notification) => {
         toast.success(data.message);
         dispatch(addNotification(data));
+        dispatch(addConnectionRequest(data.from!));
       })
+
+      socketInstance.on(SOCKET_EVENTS.NOTIFICATION, (data: notification) => {
+        toast.success(data.message);
+        dispatch(addNotification(data));
+      });
 
       socketInstance.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
         console.error("Socket connection error:", err);

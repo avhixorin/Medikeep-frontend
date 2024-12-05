@@ -2,6 +2,7 @@ export enum SOCKET_EVENTS {
     CONNECT = "connect",
     DISCONNECT = "disconnect",
     CONNECT_ERROR = "connect_error",
+    NOTIFICATION = "notification",
     JOIN_ROOM = "join_room",
     LEAVE_ROOM = "leave_room",
     MESSAGE = "message",

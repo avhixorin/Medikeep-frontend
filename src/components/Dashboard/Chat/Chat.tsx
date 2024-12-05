@@ -11,10 +11,12 @@ import { RootState } from "@/redux/store/store";
 import useAllUsers from "@/hooks/useAllUsers";
 import SearchBox from "./SearchBox/SearchBox";
 import { User } from "@/types/types";
+import ManageConnections from "./ManageConnections/ManageConnections";
 
 const Chat: React.FC = () => {
   const [isOnline] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
+  const [isManagingConnections, setIsManagingConnections] = useState(false);
   const [message, setMessage] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [chatHistory, setChatHistory] = useState<string[]>([]);
@@ -52,6 +54,7 @@ const Chat: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-[#fffcf8] dark:bg-[#141414] p-8">
+      {isManagingConnections && (<ManageConnections setIsManagingConnections={setIsManagingConnections} />)}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
 
       {/* Connections Section */}
@@ -66,12 +69,20 @@ const Chat: React.FC = () => {
               className="stroke-[#3f3f46] dark:stroke-gray-200"
             />
           </div>
+          <div>
+          <button
+            className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+            onClick={() => setIsManagingConnections(true)}
+          >
+            Manage Connection Requests
+          </button>
           <button
             className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
             onClick={() => setIsSearching(true)}
           >
             Add Connections
           </button>
+          </div>
         </div>
 
         <div className="w-full flex justify-start items-center gap-6 overflow-x-auto whitespace-nowrap scrollbar-webkit">
