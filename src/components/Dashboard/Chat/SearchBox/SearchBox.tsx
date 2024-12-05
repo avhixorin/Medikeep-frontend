@@ -38,7 +38,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
         toast.success(data.message);
         setConnectionStates((prev) => ({ ...prev, [to]: "sent" }));
       } else {
-        toast.error("Connection request failed.");
+        toast.error(data.message);
         setConnectionStates((prev) => ({ ...prev, [to]: "idle" }));
       }
     };

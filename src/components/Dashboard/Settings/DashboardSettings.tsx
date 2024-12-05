@@ -158,7 +158,7 @@ export default function SettingsPage() {
                 </div>
                 <Switch
                   checked={theme === "dark"}
-                  onCheckedChange={toggleTheme} // Correct handler for Switch
+                  onCheckedChange={toggleTheme}
                 />
               </div>
 

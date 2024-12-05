@@ -10,45 +10,20 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import useAllUsers from "@/hooks/useAllUsers";
 import SearchBox from "./SearchBox/SearchBox";
-
-const randomNames = [
-  "Dr. Jane Doe",
-  "Dr. John Smith",
-  "Dr. Emily Johnson",
-  "Dr. Michael Brown",
-  "Dr. Sarah Davis",
-  "Dr. David Wilson",
-  "Dr. Lisa Miller",
-  "Dr. James Garcia",
-  "Dr. Mary Martinez",
-  "Dr. Robert Hernandez",
-];
-
-const randomImages = [
-  "https://randomuser.me/api/portraits/women/48.jpg",
-  "https://randomuser.me/api/portraits/women/49.jpg",
-  "https://randomuser.me/api/portraits/women/50.jpg",
-  "https://randomuser.me/api/portraits/women/46.jpg",
-  "https://randomuser.me/api/portraits/women/52.jpg",
-  "https://randomuser.me/api/portraits/men/43.jpg",
-  "https://randomuser.me/api/portraits/men/44.jpg",
-  "https://randomuser.me/api/portraits/men/45.jpg",
-  "https://randomuser.me/api/portraits/men/46.jpg",
-  "https://randomuser.me/api/portraits/men/47.jpg",
-];
-
-const getRandomInt = (max: number) => Math.floor(Math.random() * max);
+import { User } from "@/types/types";
 
 const Chat: React.FC = () => {
   const [isOnline] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [message, setMessage] = useState("");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
-  const allUsers = useSelector((state:RootState) => state.allUsers);
+  const allUsers = useSelector((state: RootState) => state.allUsers);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { fetchAllUsers } = useAllUsers();
-  if(allUsers.users.length == 0){
+  if (allUsers.users.length == 0) {
     fetchAllUsers();
   }
 
@@ -77,9 +52,7 @@ const Chat: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-[#fffcf8] dark:bg-[#141414] p-8">
-      {
-        isSearching && <SearchBox setIsSearching={setIsSearching} />
-      }
+      {isSearching && <SearchBox setIsSearching={setIsSearching} />}
 
       {/* Connections Section */}
       <div className="h-[25%] w-full flex flex-col justify-start gap-6">
@@ -102,10 +75,10 @@ const Chat: React.FC = () => {
         </div>
 
         <div className="w-full flex justify-start items-center gap-6 overflow-x-auto whitespace-nowrap scrollbar-webkit">
-          {randomImages.map((imgSrc) => (
+          {user?.connections?.map((user) => (
             <img
-              key={imgSrc}
-              src={imgSrc}
+              key={user._id}
+              src={user.profilePicture || "https://randomuser.me/api/portraits"}
               alt=""
               className="w-10 h-10 rounded-full cursor-pointer"
             />
@@ -117,60 +90,70 @@ const Chat: React.FC = () => {
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex overflow-hidden shadow-xl">
         {/* Sidebar */}
         <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col justify-start overflow-y-auto scrollbar-webkit">
-          {Array.from({ length: 10 }).map((_, index) => (
+          {user?.connections?.map((user) => (
             <ChatCard
-              key={index}
-              name={randomNames[getRandomInt(randomNames.length)]}
-              imgSrc={randomImages[getRandomInt(randomImages.length)]}
+              key={user._id}
+              user={user}
+              setSelectedUser={setSelectedUser}
             />
           ))}
         </aside>
 
         {/* Main Chat */}
         <main className="flex flex-col h-full w-full">
-          {/* Header */}
-          <header className="w-full py-2 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200">
-            <div className="flex gap-6 items-center">
-              <img
-                src="https://randomuser.me/api/portraits/women/48.jpg"
-                className="rounded-full w-10 h-10"
-                alt=""
-              />
-              <h3 className="font-medium text-lg">{randomNames[0]}</h3>
-            </div>
-            <h3 className={isOnline ? "text-[#d7d0d0]" : "text-slate-400"}>
-              {isOnline ? "Active now" : "Last online: 12:53 AM"}
-            </h3>
-          </header>
+          {selectedUser ? (
+            <>
+              {/* Header */}
+              <header className="w-full py-2 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200">
+                <div className="flex gap-6 items-center">
+                  <img
+                    src={selectedUser.profilePicture || "https://randomuser.me/api/portraits"}
+                    className="rounded-full w-10 h-10"
+                    alt=""
+                  />
+                  <h3 className="font-medium text-lg">{selectedUser.username}</h3>
+                </div>
+                <h3 className={isOnline ? "text-[#d7d0d0]" : "text-slate-400"}>
+                  {isOnline ? "Active now" : "Last online: 12:53 AM"}
+                </h3>
+              </header>
 
-          {/* Chat Messages */}
-          <div
-            className="flex-grow w-full overflow-y-auto p-4 scrollbar-webkit dark:bg-[#1e0e1a]"
-            ref={chatContainerRef}
-          >
-            {chatHistory.map((msg, index) => (
-              <div key={index} className="flex justify-end mb-2">
-                <Bubble message={msg} />
+              {/* Chat Messages */}
+              <div
+                className="flex-grow w-full overflow-y-auto p-4 scrollbar-webkit dark:bg-[#1e0e1a]"
+                ref={chatContainerRef}
+              >
+                {chatHistory.map((msg, index) => (
+                  <div key={index} className="flex justify-end mb-2">
+                    <Bubble message={msg} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          {/* Input Section */}
-          <footer className="w-full py-2 px-4 flex items-center gap-2 bg-[#00A884] text-slate-200 dark:bg-[#0A0A0A]">
-            <Input
-              placeholder="Type your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="pl-10 pr-10 bg-transparent text-white placeholder-white border-none outline-none dark:text-gray-200 dark:placeholder-gray-500"
-            />
-            <Button
-              onClick={handleSendMessage}
-              className="dark:bg-[#212121] dark:text-gray-200 dark:hover:bg-[#2d2d2d] dark:hover:text-gray-300"
-            >
-              Send
-            </Button>
-          </footer>
+              {/* Input Section */}
+              <footer className="w-full py-2 px-4 flex items-center gap-2 bg-[#00A884] text-slate-200 dark:bg-[#0A0A0A]">
+                <Input
+                  placeholder="Type your message..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="pl-10 pr-10 bg-transparent text-white placeholder-white border-none outline-none dark:text-gray-200 dark:placeholder-gray-500"
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  className="dark:bg-[#212121] dark:text-gray-200 dark:hover:bg-[#2d2d2d] dark:hover:text-gray-300"
+                >
+                  Send
+                </Button>
+              </footer>
+            </>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                Select a user to start chatting
+              </h1>
+            </div>
+          )}
         </main>
       </div>
     </div>
@@ -178,4 +161,3 @@ const Chat: React.FC = () => {
 };
 
 export default Chat;
-
