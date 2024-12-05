@@ -11,6 +11,7 @@ export enum SOCKET_EVENTS {
     GET_USERS = "get_users",
     GET_USERS_RESPONSE = "get_users_response",
     USERS = "users",
+    CONNECT_USER = "connect_user",
     USER_CONNECTED = "user_connected",
     USER_DISCONNECTED = "user_disconnected",
     USER_JOINED = "user_joined",

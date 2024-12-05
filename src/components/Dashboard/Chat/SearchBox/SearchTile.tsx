@@ -1,16 +1,22 @@
-import React from "react";
-
 type SearchTileProps = {
   profileImage: string;
   username: string;
   role: string;
   onConnect: () => void;
+  isDisabled: boolean;
+  connectState: "idle" | "connecting" | "sent";
 };
 
-const SearchTile: React.FC<SearchTileProps> = ({ profileImage, username, role, onConnect }) => {
+const SearchTile: React.FC<SearchTileProps> = ({
+  profileImage,
+  username,
+  role,
+  onConnect,
+  isDisabled,
+  connectState,
+}) => {
   return (
-    <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 w-full max-w-md space-x-4 hover:shadow-lg transition-shadow">
-
+    <div className="w-full flex items-center gap-4 py-3 px-4 bg-white/20 backdrop-blur-md dark:bg-transparent transform transition-transform duration-200 hover:scale-[1.02] border-b border-black/30 dark:border-white/30 text-zinc-700 cursor-pointer hover:bg-white/50 dark:hover:bg-black/10 hover:border-l-2 hover:border-black/20 hover:dark:border-white/20">
       <img
         src={profileImage}
         alt={`${username}'s profile`}
@@ -24,9 +30,16 @@ const SearchTile: React.FC<SearchTileProps> = ({ profileImage, username, role, o
 
       <button
         onClick={onConnect}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-300 transition-all"
+        disabled={isDisabled}
+        className={`px-4 py-2 rounded-lg shadow transition-all ${
+          connectState === "connecting"
+            ? "bg-yellow-500 text-white"
+            : connectState === "sent"
+            ? "bg-green-500 text-white"
+            : "bg-blue-500 text-white hover:bg-blue-600"
+        }`}
       >
-        Connect
+        {connectState === "connecting" ? "Connecting..." : connectState === "sent" ? "Sent" : "Connect"}
       </button>
     </div>
   );
