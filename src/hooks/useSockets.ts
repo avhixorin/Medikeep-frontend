@@ -1,26 +1,28 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
+let sharedSocket: Socket | null = null;
+
 const useSockets = () => {
-  const socket = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   const initializeSocket = (): Socket => {
-    if (!socket.current) {
+    if (!sharedSocket) {
       const socketURL = import.meta.env.VITE_SOCKET_URL;
       if (!socketURL) {
         throw new Error("Socket URL is not defined in the environment variables.");
       }
 
-      socket.current = io(socketURL, {
+      sharedSocket = io(socketURL, {
         autoConnect: false,
         reconnectionAttempts: 5,
         transports: ["websocket"],
         withCredentials: true,
       });
     }
-    return socket.current;
+
+    return sharedSocket;
   };
 
   useEffect(() => {
@@ -46,14 +48,14 @@ const useSockets = () => {
     }
 
     return () => {
-      if (socketInstance.connected) {
-        socketInstance.disconnect();
+
+      if (sharedSocket?.connected) {
+        console.log("Socket remains connected as it is shared globally.");
       }
     };
   }, []);
 
-  // Ensure socket is initialized before returning
-  return { socket: socket.current, isConnected };
+  return { socket: sharedSocket, isConnected };
 };
 
 export default useSockets;

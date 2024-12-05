@@ -45,35 +45,21 @@ const Chat: React.FC = () => {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const socket = useSockets();
-  const { allUsers } = useSelector((state:RootState) => state);
+  useSockets();
+  const allUsers = useSelector((state:RootState) => state.allUsers);
   const { fetchAllUsers } = useAllUsers();
   if(allUsers.users.length == 0){
     fetchAllUsers();
   }
-  useEffect(() => {
-    if (socket) {
-      socket.emit("joinRoom", { roomId: "12345" });
-
-      socket.on("message", (data) => {
-        console.log("Received message:", data);
-        setChatHistory((prev) => [...prev, data.message]);
-      });
-
-      return () => {
-        socket.off("message");
-      };
-    }
-  }, [socket]);
 
   const handleSendMessage = () => {
-    if (message.trim() === "" || !socket) return;
+    // if (message.trim() === "" || !socket) return;
 
-    const newMessage = message.trim();
-    socket.emit("sendMessage", { message: newMessage, roomId: "12345" });
+    // const newMessage = message.trim();
+    // socket?.emit("sendMessage", { message: newMessage, roomId: "12345" });
 
-    setChatHistory((prev) => [...prev, newMessage]);
-    setMessage("");
+    // setChatHistory((prev) => [...prev, newMessage]);
+    // setMessage("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

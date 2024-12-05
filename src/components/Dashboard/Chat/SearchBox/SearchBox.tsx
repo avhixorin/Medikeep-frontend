@@ -13,54 +13,56 @@ type SearchBoxProps = {
 };
 
 const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
-  const { allUsers } = useSelector((state: RootState) => state);
+  const allUsers = useSelector((state: RootState) => state.allUsers);
+  const { socket, isConnected } = useSockets();
+  const { user } = useSelector((state: RootState) => state.auth);
+
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [connectionStates, setConnectionStates] = useState<{
     [key: string]: "idle" | "connecting" | "sent";
   }>({});
-  const { socket, isConnected } = useSockets(); 
-  const { user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    const handleConnectionResponse = (data: connectionResponse) => {
-      console.log("The response data is: ", data);
-
-      if (data.statusCode === 200) {
-        toast.success("Connection request sent!");
-        setConnectionStates((prev) => ({ ...prev, [data.data.to]: "sent" }));
-      } else {
-        toast.error("Connection request failed.");
-        setConnectionStates((prev) => ({ ...prev, [data.data.to]: "idle" }));
-      }
-    };
-
-    socket?.on(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
-
-    return () => {
-      socket?.off(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
-    };
-  }, [socket]);
-
-  const filteredUsers = allUsers.users.filter((user: User) =>
-    user.username.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleConnect = (userId: string) => {
-    if (!userId || !socket) return;
-
-    if (!isConnected) {
-      toast.error("Socket is not connected. Please try again.");
+    if (!socket && !isConnected) {
+      toast.error("Socket is not initialized. Please refresh the page.");
       return;
     }
 
-    if (typeof socket.emit !== "function") {
-      toast.error("Socket emit function is not available.");
+    const handleConnectionResponse = (data: connectionResponse) => {
+      console.log("The response data is: ", data);
+
+      const { statusCode, data: responseData } = data;
+      const { to } = responseData;
+
+      if (statusCode === 200) {
+        toast.success("Connection request sent!");
+        setConnectionStates((prev) => ({ ...prev, [to]: "sent" }));
+      } else {
+        toast.error("Connection request failed.");
+        setConnectionStates((prev) => ({ ...prev, [to]: "idle" }));
+      }
+    };
+
+    socket.on(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
+
+    return () => {
+      socket.off(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
+    };
+  }, [socket]);
+
+  const handleConnect = (userId: string) => {
+    if (!socket) {
+      toast.error("Socket is not initialized. Please refresh the page.");
       return;
     }
 
     setConnectionStates((prev) => ({ ...prev, [userId]: "connecting" }));
     socket.emit(SOCKET_EVENTS.CONNECT_USER, { from: user, to: userId });
   };
+
+  const filteredUsers = allUsers.users.filter((user: User) =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-white/10 backdrop-blur z-50 flex items-center justify-center">
@@ -94,7 +96,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
                     profileImage={user.profilePicture || "https://randomuser.me/api/portraits"}
                     username={user.username}
                     role={user.role}
-                    onConnect={() => handleConnect(user._id!)}
+                    onConnect={() => user._id && handleConnect(user._id)}
                     isDisabled={isDisabled}
                     connectState={connectionState}
                   />
