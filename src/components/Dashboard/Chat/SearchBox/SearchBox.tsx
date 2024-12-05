@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { User } from "@/types/types";
@@ -6,6 +6,7 @@ import SearchTile from "./SearchTile";
 import { Input } from "@/components/ui/input";
 import useSockets from "@/hooks/useSockets";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import toast from "react-hot-toast";
 
 type SearchBoxProps = {
   setIsSearching: (isSearching: boolean) => void;
@@ -20,6 +21,27 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
   const socket = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
 
+  // Handle incoming connection response
+  useEffect(() => {
+    const handleConnectionResponse = (data: { error?: string; userId: string }) => {
+      const { error, userId } = data;
+
+      if (error) {
+        toast.error(error);
+        setConnectionStates((prev) => ({ ...prev, [userId]: "idle" }));
+      } else {
+        toast.success("Connection request sent!");
+        setConnectionStates((prev) => ({ ...prev, [userId]: "sent" }));
+      }
+    };
+
+    socket?.on(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
+
+    return () => {
+      socket?.off(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
+    };
+  }, [socket]);
+
   const filteredUsers = allUsers.users.filter((user: User) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -28,13 +50,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
     if (!userId) return;
 
     setConnectionStates((prev) => ({ ...prev, [userId]: "connecting" }));
-    socket?.emit(
-      SOCKET_EVENTS.CONNECT_USER,
-      { from: user, to: userId },
-      () => {
-        setConnectionStates((prev) => ({ ...prev, [userId]: "sent" }));
-      }
-    );
+    socket?.emit(SOCKET_EVENTS.CONNECT_USER, { from: user, to: userId });
   };
 
   return (
