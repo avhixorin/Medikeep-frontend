@@ -1,10 +1,10 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { useEffect, useRef } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
 const useSockets = () => {
   const socket = useRef<Socket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   const initializeSocket = (): Socket => {
     if (!socket.current) {
@@ -14,8 +14,8 @@ const useSockets = () => {
       }
 
       socket.current = io(socketURL, {
-        autoConnect: false, 
-        reconnectionAttempts: 5, 
+        autoConnect: false,
+        reconnectionAttempts: 5,
         transports: ["websocket"],
         withCredentials: true,
       });
@@ -30,16 +30,18 @@ const useSockets = () => {
       socketInstance.connect();
 
       socketInstance.on(SOCKET_EVENTS.CONNECT, () => {
+        setIsConnected(true);
         console.log("Connected to the socket server:", socketInstance.id);
       });
 
       socketInstance.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
         console.error("Socket connection error:", err);
-        toast.error("Failed to connect to the server.");
+        setIsConnected(false);
       });
 
-      socketInstance.on(SOCKET_EVENTS.DISCONNECT, (reason) => {
-        console.log("Disconnected from the socket server:", reason);
+      socketInstance.on(SOCKET_EVENTS.DISCONNECT, () => {
+        setIsConnected(false);
+        console.log("Disconnected from the socket server.");
       });
     }
 
@@ -50,7 +52,8 @@ const useSockets = () => {
     };
   }, []);
 
-  return socket.current; 
+  // Ensure socket is initialized before returning
+  return { socket: socket.current, isConnected };
 };
 
 export default useSockets;

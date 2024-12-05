@@ -49,3 +49,11 @@ export type Activity = {
   month: string;
   dayData: DayData;
 };
+
+export type connectionResponse = {
+  statusCode: number;
+  message: string;
+  data: {
+    to: string;
+  }
+}
