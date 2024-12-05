@@ -1,12 +1,16 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import { addNotification } from "@/redux/features/notificationsSlice";
+import { notification } from "@/types/types";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { io, Socket } from "socket.io-client";
 
 let sharedSocket: Socket | null = null;
 
 const useSockets = () => {
   const [isConnected, setIsConnected] = useState(false);
-
+  const dispatch = useDispatch();
   const initializeSocket = (): Socket => {
     if (!sharedSocket) {
       const socketURL = import.meta.env.VITE_SOCKET_URL;
@@ -36,6 +40,11 @@ const useSockets = () => {
         console.log("Connected to the socket server:", socketInstance.id);
       });
 
+      socketInstance.on(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION, (data: notification) => {
+        toast.success(data.message);
+        dispatch(addNotification(data));
+      })
+
       socketInstance.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
         console.error("Socket connection error:", err);
         setIsConnected(false);
@@ -53,7 +62,7 @@ const useSockets = () => {
         console.log("Socket remains connected as it is shared globally.");
       }
     };
-  }, []);
+  }, [dispatch]);
 
   return { socket: sharedSocket, isConnected };
 };

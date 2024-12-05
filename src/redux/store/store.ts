@@ -1,6 +1,7 @@
 import { combineReducers, configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authSlice from "../features/authSlice";
 import allUsersSlice from "../features/allUsersSlice";
+import notificationsSlice from "../features/notificationsSlice"
 import {
   persistReducer,
   FLUSH,
@@ -22,6 +23,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authSlice,
   allUsers: allUsersSlice,
+  notifications: notificationsSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

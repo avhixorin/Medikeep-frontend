@@ -11,6 +11,13 @@ export type User = {
   dateOfBirth: string;
   gender: string;
   phone: string;
+  connections?: User[];
+  connectionRequests?: User[];
+  notifications?: {
+    type: string;
+    message: string;
+    read: boolean;
+  }[];
   theme?: "light" | "dark";
   medicalLicenseNumber?: string;
   specialization?: string;
@@ -56,4 +63,10 @@ export type connectionResponse = {
   data: {
     to: string;
   }
+}
+
+export type notification = {
+  type: string;
+  message: string;
+  read: boolean;
 }
