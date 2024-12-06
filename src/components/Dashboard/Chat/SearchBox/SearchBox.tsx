@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-
 import { Input } from "@/components/ui/input";
 import SearchTile from "./SearchTile";
-
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import useSockets from "@/hooks/useSockets";
-
-import { addNotification } from "@/redux/features/notificationsSlice";
-import { addConnectionRequest } from "@/redux/features/authSlice";
-
 import { RootState } from "@/redux/store/store";
-import { connectionResponse, notification, User } from "@/types/types";
+import { connectionResponse, User } from "@/types/types";
 
 type SearchBoxProps = {
   setIsSearching: (isSearching: boolean) => void;
@@ -50,21 +44,12 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
       }
     };
 
-    const handleNewConnectionNotification = (data: notification) => {
-      toast.success(data.message);
-      dispatch(addNotification(data));
-      dispatch(addConnectionRequest(data.from!));
-    };
 
     socket.on(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
     
 
     return () => {
       socket.off(SOCKET_EVENTS.CONNECT_USER_RESPONSE, handleConnectionResponse);
-      socket.off(
-        SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION,
-        handleNewConnectionNotification
-      );
     };
   }, [socket, dispatch]);
 

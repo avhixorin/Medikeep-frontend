@@ -1,6 +1,7 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import { addConnection, addConnectionRequest, removeConnectionRequest } from "@/redux/features/authSlice";
 import { addNotification } from "@/redux/features/notificationsSlice";
-import { notification } from "@/types/types";
+import { acceptConnectionResponse, notification, rejectConnectionResponse } from "@/types/types";
 import { useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -29,24 +30,65 @@ const initializeSocket = (): Socket => {
 const useSockets = () => {
   const dispatch = useDispatch();
 
-  const setupSocketListeners = useCallback((socket: Socket) => {
-    socket.on(SOCKET_EVENTS.CONNECT, () => {
-      console.log("Connected to the socket server:", socket.id);
-    });
-
-    socket.on(SOCKET_EVENTS.NOTIFICATION, (data: notification) => {
-      toast.success(data.message);
-      dispatch(addNotification(data));
-    });
-
-    socket.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
-      console.error("Socket connection error:", err);
-    });
-
-    socket.on(SOCKET_EVENTS.DISCONNECT, () => {
-      console.log("Disconnected from the socket server.");
-    });
+  const handleNewConnectionNotification = useCallback((data: notification) => {
+    console.log("Received NEW_CONNECTION_NOTIFICATION:", data);
+    toast.success(data.message);
+    dispatch(addConnectionRequest(data.from!));
   }, [dispatch]);
+
+  const handleAcceptConnectionResponse = useCallback((data: acceptConnectionResponse) => {
+    console.log("Received ACCEPT_CONNECTION_RESPONSE:", data);
+    toast.success(data.message);
+    dispatch(addConnection(data.data.requester));
+    dispatch(removeConnectionRequest(data.data.requester._id!));
+  }, [dispatch]);
+
+  const handleRejectConnectionResponse = useCallback((data: rejectConnectionResponse) => {
+    console.log("Received REJECT_CONNECTION_RESPONSE:", data);
+    toast.error(data.message);
+    dispatch(removeConnectionRequest(data.data.requesterId));
+  }, [dispatch]);
+
+  const setupSocketListeners = useCallback((socket: Socket) => {
+    if (!socket.hasListeners(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION)) {
+      socket.on(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION, handleNewConnectionNotification);
+    }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.ACCEPT_CONNECTION_RESPONSE)) {
+      socket.on(SOCKET_EVENTS.ACCEPT_CONNECTION_RESPONSE, handleAcceptConnectionResponse);
+    }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.REJECT_CONNECTION_RESPONSE)) {
+      socket.on(SOCKET_EVENTS.REJECT_CONNECTION_RESPONSE, handleRejectConnectionResponse);
+    }
+
+    socket.on(SOCKET_EVENTS.REJECT_CONNECTION_RESPONSE, handleRejectConnectionResponse);
+
+    if (!socket.hasListeners(SOCKET_EVENTS.NOTIFICATION)) {
+      socket.on(SOCKET_EVENTS.NOTIFICATION, (data: notification) => {
+        toast.success(data.message);
+        dispatch(addNotification(data));
+      });
+    }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.CONNECT)) {
+      socket.on(SOCKET_EVENTS.CONNECT, () => {
+        console.log("Connected to the socket server:", socket.id);
+      });
+    }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.CONNECT_ERROR)) {
+      socket.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
+        console.error("Socket connection error:", err);
+      });
+    }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.DISCONNECT)) {
+      socket.on(SOCKET_EVENTS.DISCONNECT, () => {
+        console.log("Disconnected from the socket server.");
+      });
+    }
+  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse]);
 
   useEffect(() => {
     const socket = initializeSocket();
@@ -60,7 +102,7 @@ const useSockets = () => {
       if (sharedSocket?.connected) {
         console.log("Socket remains connected as it is shared globally.");
       } else {
-        sharedSocket?.off(); 
+        sharedSocket?.off();
       }
     };
   }, [setupSocketListeners]);
