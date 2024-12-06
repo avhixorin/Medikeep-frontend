@@ -1,77 +1,71 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { addConnectionRequest } from "@/redux/features/authSlice";
 import { addNotification } from "@/redux/features/notificationsSlice";
 import { notification } from "@/types/types";
-import { useEffect, useState } from "react";
+import { useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { io, Socket } from "socket.io-client";
 
 let sharedSocket: Socket | null = null;
 
-const useSockets = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const dispatch = useDispatch();
-  const initializeSocket = (): Socket => {
-    if (!sharedSocket) {
-      const socketURL = import.meta.env.VITE_SOCKET_URL;
-      if (!socketURL) {
-        throw new Error("Socket URL is not defined in the environment variables.");
-      }
-
-      sharedSocket = io(socketURL, {
-        autoConnect: false,
-        reconnectionAttempts: 5,
-        transports: ["websocket"],
-        withCredentials: true,
-      });
+const initializeSocket = (): Socket => {
+  if (!sharedSocket) {
+    const socketURL = import.meta.env.VITE_SOCKET_URL;
+    if (!socketURL) {
+      throw new Error("Socket URL is not defined in the environment variables.");
     }
 
-    return sharedSocket;
-  };
+    sharedSocket = io(socketURL, {
+      autoConnect: false,
+      reconnectionAttempts: 5,
+      transports: ["websocket"],
+      withCredentials: true,
+    });
+  }
+
+  return sharedSocket;
+};
+
+const useSockets = () => {
+  const dispatch = useDispatch();
+
+  const setupSocketListeners = useCallback((socket: Socket) => {
+    socket.on(SOCKET_EVENTS.CONNECT, () => {
+      console.log("Connected to the socket server:", socket.id);
+    });
+
+    socket.on(SOCKET_EVENTS.NOTIFICATION, (data: notification) => {
+      toast.success(data.message);
+      dispatch(addNotification(data));
+    });
+
+    socket.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
+      console.error("Socket connection error:", err);
+    });
+
+    socket.on(SOCKET_EVENTS.DISCONNECT, () => {
+      console.log("Disconnected from the socket server.");
+    });
+  }, [dispatch]);
 
   useEffect(() => {
-    const socketInstance = initializeSocket();
+    const socket = initializeSocket();
 
-    if (!socketInstance.connected) {
-      socketInstance.connect();
-
-      socketInstance.on(SOCKET_EVENTS.CONNECT, () => {
-        setIsConnected(true);
-        console.log("Connected to the socket server:", socketInstance.id);
-      });
-
-      socketInstance.on(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION, (data: notification) => {
-        toast.success(data.message);
-        dispatch(addNotification(data));
-        dispatch(addConnectionRequest(data.from!));
-      })
-
-      socketInstance.on(SOCKET_EVENTS.NOTIFICATION, (data: notification) => {
-        toast.success(data.message);
-        dispatch(addNotification(data));
-      });
-
-      socketInstance.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
-        console.error("Socket connection error:", err);
-        setIsConnected(false);
-      });
-
-      socketInstance.on(SOCKET_EVENTS.DISCONNECT, () => {
-        setIsConnected(false);
-        console.log("Disconnected from the socket server.");
-      });
+    if (!socket.connected) {
+      socket.connect();
+      setupSocketListeners(socket);
     }
 
     return () => {
-
       if (sharedSocket?.connected) {
         console.log("Socket remains connected as it is shared globally.");
+      } else {
+        sharedSocket?.off(); 
       }
     };
-  }, [dispatch]);
+  }, [setupSocketListeners]);
 
-  return { socket: sharedSocket, isConnected };
+  return { socket: sharedSocket };
 };
 
 export default useSockets;

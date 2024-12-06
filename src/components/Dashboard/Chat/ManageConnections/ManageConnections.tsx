@@ -1,3 +1,5 @@
+import { SOCKET_EVENTS } from '@/constants/socketEvents';
+import useSockets from '@/hooks/useSockets';
 import { RootState } from '@/redux/store/store';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -9,9 +11,23 @@ type ManageConnectionsProps = {
 const ManageConnections: React.FC<ManageConnectionsProps> = ({
   setIsManagingConnections,
 }) => {
-  const connectionRequests = useSelector(
-    (state: RootState) => state.auth.user?.connectionRequests
+  const { socket } = useSockets();
+
+  const user = useSelector(
+    (state: RootState) => state.auth.user
   );
+
+  const handleAcceptConnection = (requestId: string) => {
+    if(!socket) return;
+    console.log("Accepting connection request with id:", requestId);
+    socket.emit(SOCKET_EVENTS.ACCEPT_CONNECTION, { accepterId : user?._id,requestId });
+  };
+
+  const handleDeclineConnection = (requestId: string) => {
+    if(!socket) return;
+    console.log("Declining connection request with id:", requestId);
+    socket.emit(SOCKET_EVENTS.REJECT_CONNECTION, { rejecterId : user?._id,requestId });
+  };
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center">
@@ -28,9 +44,9 @@ const ManageConnections: React.FC<ManageConnectionsProps> = ({
           Manage Connection Requests
         </h2>
 
-        {connectionRequests && connectionRequests.length > 0 ? (
+        {user?.connectionRequests && user?.connectionRequests.length > 0 ? (
           <ul className="space-y-3 max-h-[300px] overflow-y-auto">
-            {connectionRequests.map((request) => (
+            {user?.connectionRequests.map((request) => (
               <li
                 key={request._id}
                 className="flex items-center justify-between bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow-sm"
@@ -44,10 +60,14 @@ const ManageConnections: React.FC<ManageConnectionsProps> = ({
                   </p>
                 </div>
                 <div className="flex space-x-2">
-                  <button className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors">
+                  <button className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                  onClick={() => handleAcceptConnection(request._id!)}
+                  >
                     Accept
                   </button>
-                  <button className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                  <button className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                  onClick={() => handleDeclineConnection(request._id!)}
+                  >
                     Decline
                   </button>
                 </div>

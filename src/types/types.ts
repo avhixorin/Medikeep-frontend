@@ -71,3 +71,19 @@ export type notification = {
   read: boolean;
   from?: User;
 }
+
+export type acceptConnectionResponse = {
+  statusCode: number;
+  message: string;
+  data: {
+    requester: User;
+  }
+}
+
+export type rejectConnectionResponse = {
+  statusCode: number;
+  message: string;
+  data: {
+    requesterId: string;
+  }
+}
