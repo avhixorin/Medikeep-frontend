@@ -87,3 +87,13 @@ export type rejectConnectionResponse = {
     requesterId: string;
   }
 }
+
+export type AcceptedConnection = {
+  message: string;
+  accepter: User;
+}
+
+export type RejectedConnection = {
+  message: string;
+  rejecterId: string;
+}

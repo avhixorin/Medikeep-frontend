@@ -1,7 +1,7 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { addConnection, addConnectionRequest, removeConnectionRequest } from "@/redux/features/authSlice";
 import { addNotification } from "@/redux/features/notificationsSlice";
-import { acceptConnectionResponse, notification, rejectConnectionResponse } from "@/types/types";
+import { acceptConnectionResponse, AcceptedConnection, notification, rejectConnectionResponse, RejectedConnection } from "@/types/types";
 import { useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -43,10 +43,21 @@ const useSockets = () => {
     dispatch(removeConnectionRequest(data.data.requester._id!));
   }, [dispatch]);
 
+  const handleAcceptedConnection = useCallback((data: AcceptedConnection) => {
+    toast.success(data.message);
+    dispatch(addConnection(data.accepter));
+    dispatch(removeConnectionRequest(data.accepter._id!));
+  }, [dispatch]);
+
   const handleRejectConnectionResponse = useCallback((data: rejectConnectionResponse) => {
     console.log("Received REJECT_CONNECTION_RESPONSE:", data);
     toast.error(data.message);
     dispatch(removeConnectionRequest(data.data.requesterId));
+  }, [dispatch]);
+
+  const handleRejectedConnection = useCallback((data: RejectedConnection) => {
+    toast.error(data.message);
+    dispatch(removeConnectionRequest(data.rejecterId));
   }, [dispatch]);
 
   const setupSocketListeners = useCallback((socket: Socket) => {
@@ -54,15 +65,21 @@ const useSockets = () => {
       socket.on(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION, handleNewConnectionNotification);
     }
 
+    if (!socket.hasListeners(SOCKET_EVENTS.ACCEPTED_CONNECTION)) {
+      socket.on(SOCKET_EVENTS.ACCEPTED_CONNECTION, handleAcceptedConnection);
+    }
+
     if (!socket.hasListeners(SOCKET_EVENTS.ACCEPT_CONNECTION_RESPONSE)) {
       socket.on(SOCKET_EVENTS.ACCEPT_CONNECTION_RESPONSE, handleAcceptConnectionResponse);
+    }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.REJECTED_CONNECTION)) {
+      socket.on(SOCKET_EVENTS.REJECTED_CONNECTION, handleRejectedConnection);
     }
 
     if (!socket.hasListeners(SOCKET_EVENTS.REJECT_CONNECTION_RESPONSE)) {
       socket.on(SOCKET_EVENTS.REJECT_CONNECTION_RESPONSE, handleRejectConnectionResponse);
     }
-
-    socket.on(SOCKET_EVENTS.REJECT_CONNECTION_RESPONSE, handleRejectConnectionResponse);
 
     if (!socket.hasListeners(SOCKET_EVENTS.NOTIFICATION)) {
       socket.on(SOCKET_EVENTS.NOTIFICATION, (data: notification) => {
@@ -88,7 +105,7 @@ const useSockets = () => {
         console.log("Disconnected from the socket server.");
       });
     }
-  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse]);
+  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection]);
 
   useEffect(() => {
     const socket = initializeSocket();

@@ -2,7 +2,6 @@ import { setAllUsers } from "@/redux/features/allUsersSlice";
 import axios from "axios"
 import { useDispatch } from "react-redux";
 
-
 const useAllUsers = () => {
     const dispatch = useDispatch();
     const fetchAllUsersUrl = import.meta.env.VITE_FETCH_ALL_USERS_URL
