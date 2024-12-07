@@ -134,13 +134,16 @@ const handleLogout = async () => {
             alt={`${user?.username}'s profile picture`}
             className="w-10 h-10 rounded-full object-cover"
           />
-          <div className="flex flex-col justify-center md:block">
+          <div className="hidden md:block">
+            <div className="w-full h-full flex flex-col justify-center ">
+
             <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               {user?.username}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               {user?.gender}
             </p>
+            </div>
           </div>
         </div>
       </div>

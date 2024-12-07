@@ -103,6 +103,7 @@ export default {
   	}
   },
   plugins: [
+	require('daisyui'),
     function ({ addUtilities }) {
       const newUtilities = {
         ".scrollbar-thin": {

@@ -97,3 +97,9 @@ export type RejectedConnection = {
   message: string;
   rejecterId: string;
 }
+
+export type PrivateMessage = {
+  messageId: string;
+  message: string;
+  sender: User;
+}

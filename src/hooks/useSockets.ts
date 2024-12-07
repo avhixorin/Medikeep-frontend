@@ -1,12 +1,12 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { addConnection, addConnectionRequest, removeConnectionRequest } from "@/redux/features/authSlice";
+import { addFriendMessage } from "@/redux/features/messageSlice";
 import { addNotification } from "@/redux/features/notificationsSlice";
-import { acceptConnectionResponse, AcceptedConnection, notification, rejectConnectionResponse, RejectedConnection } from "@/types/types";
+import { acceptConnectionResponse, AcceptedConnection, notification, PrivateMessage, rejectConnectionResponse, RejectedConnection } from "@/types/types";
 import { useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { io, Socket } from "socket.io-client";
-
 let sharedSocket: Socket | null = null;
 
 const initializeSocket = (): Socket => {
@@ -55,6 +55,12 @@ const useSockets = () => {
     dispatch(removeConnectionRequest(data.data.requesterId));
   }, [dispatch]);
 
+  const handleNewPrivateMessage = useCallback((data: PrivateMessage) => {
+    console.log("Received new private message:", data);
+    toast.success("New message received!");
+    dispatch(addFriendMessage(data));
+  }, [dispatch]);
+
   const handleRejectedConnection = useCallback((data: RejectedConnection) => {
     toast.error(data.message);
     dispatch(removeConnectionRequest(data.rejecterId));
@@ -88,6 +94,10 @@ const useSockets = () => {
       });
     }
 
+    if (!socket.hasListeners(SOCKET_EVENTS.NEW_PRIVATE_MESSAGE)) {
+      socket.on(SOCKET_EVENTS.NEW_PRIVATE_MESSAGE, handleNewPrivateMessage);
+    }
+
     if (!socket.hasListeners(SOCKET_EVENTS.CONNECT)) {
       socket.on(SOCKET_EVENTS.CONNECT, () => {
         console.log("Connected to the socket server:", socket.id);
@@ -105,7 +115,7 @@ const useSockets = () => {
         console.log("Disconnected from the socket server.");
       });
     }
-  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection]);
+  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage]);
 
   useEffect(() => {
     const socket = initializeSocket();
