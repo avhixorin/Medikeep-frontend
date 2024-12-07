@@ -44,7 +44,7 @@ const Hero: React.FC = () => {
         </div>
       </div>
       <div className="relative hidden w-1/2 px-4 md:block">
-        <div className="relative w-full h-full overflow-y-hidden">
+        <div className="relative w-full h-full overflow-hidden">
           <motion.img
             src="https://res.cloudinary.com/avhixorin/image/upload/v1724770945/doctor_hy22hh.png"
             alt="doctor"

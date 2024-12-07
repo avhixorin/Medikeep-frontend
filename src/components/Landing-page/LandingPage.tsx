@@ -21,7 +21,7 @@ const LandingPage: React.FC = () => {
     dispatch(clearNotifications());
   });
   return (
-    <div>
+    <div className='bg-white scrollbar-webkit'>
       <NavBar />
       <Hero />
       <Features />
