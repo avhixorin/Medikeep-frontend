@@ -8,13 +8,14 @@ interface BubbleProps {
 
 const Bubble: React.FC<BubbleProps> = ({ msg, currentUserId }) => {
   const isSentByCurrentUser = msg.sender._id === currentUserId;
+
   return (
     <div
       className={`chat ${
         isSentByCurrentUser ? "chat-end" : "chat-start"
       }`}
     >
-      {!isSentByCurrentUser && (
+      {/* {!isSentByCurrentUser && (
         <div className="chat-image avatar">
           <div className="w-10 rounded-full">
             <img
@@ -26,7 +27,7 @@ const Bubble: React.FC<BubbleProps> = ({ msg, currentUserId }) => {
             />
           </div>
         </div>
-      )}
+      )} */}
       <div
         className={`chat-bubble ${
           isSentByCurrentUser

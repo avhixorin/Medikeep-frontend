@@ -14,7 +14,7 @@ const ChatCard: React.FC<Props> = ({ user }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className={`w-full flex py-3 px-4 gap-4 items-center justify-around bg-white hover:bg-gray-100 dark:bg-[#1A1A1D] dark:hover:bg-[#212121] transition-colors duration-300 border-b border-gray-300 cursor-pointer ${selectedUser?._id === user._id ? 'bg-red-200 dark:bg-[#212121] border-gray-400' : ''}`}
+    <div className={`w-full flex py-3 px-4 gap-4 items-center justify-around hover:bg-gray-100  dark:hover:bg-[#212121] transition-colors duration-300 border-b  cursor-pointer ${selectedUser?._id === user._id ? 'bg-red-100 dark:bg-[#212121] border-gray-400 hover:bg-red-200' : 'bg-white dark:bg-[#1A1A1D] border-gray-300'}`}
     onClick={() => dispatch(setSelectedUser(user))}
     >
 
