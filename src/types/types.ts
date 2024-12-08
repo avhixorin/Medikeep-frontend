@@ -18,6 +18,9 @@ export type User = {
     message: string;
     read: boolean;
   }[];
+  messages? : {
+    [friendId: string]: PrivateMessage[];
+  };
   theme?: "light" | "dark";
   medicalLicenseNumber?: string;
   specialization?: string;

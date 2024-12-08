@@ -28,6 +28,7 @@ const Chat: React.FC = () => {
   const messages = useSelector((state: RootState) =>
     selectedUser?._id && state.messages.chatHistory ? state.messages.chatHistory[selectedUser._id] || [] : []
   );
+  const chatHistory = useSelector((state: RootState) => state.messages.chatHistory);
   const dispatch = useDispatch();
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -53,6 +54,8 @@ const Chat: React.FC = () => {
       messageId,
     });
     setMessage("");
+    console.log("The chat history is", chatHistory);
+    console.log("The messages of the in the user are", user?.messages);
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
