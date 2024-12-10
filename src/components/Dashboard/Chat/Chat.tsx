@@ -99,7 +99,7 @@ const Chat: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex gap-6 overflow-x-auto whitespace-nowrap scrollbar-webkit">
+        <div className="flex gap-6 whitespace-nowrap flex-wrap">
           {user?.connections?.map((connUser) => (
             <img
               key={connUser._id}
