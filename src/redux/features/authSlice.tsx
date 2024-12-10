@@ -1,4 +1,4 @@
-import { PrivateMessage, User } from "@/types/types";
+import { User } from "@/types/types";
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -77,78 +77,6 @@ const authSlice = createSlice({
         );
       }
     },
-    addMyMessage: (
-      state,
-      action: PayloadAction<{
-        message: string;
-        to: User;
-        messageId: string;
-        sender: User;
-      }>
-    ) => {
-      const { to } = action.payload;
-      if (state.user) {
-        state.user.messages = state.user.messages || {};
-        state.user.messages = {};
-        if (!state.user.messages![to._id!]) {
-          state.user.messages[to._id!] = [];
-        }
-        state.user.messages[to._id!].push({
-          messageId: action.payload.messageId,
-          message: action.payload.message,
-          sender: action.payload.sender,
-        });
-      }
-    },
-    addFriendMessage: (state, action: PayloadAction<PrivateMessage>) => {
-      if (state.user) {
-        state.user.messages = state.user.messages || {};
-        const chat = state.user.messages[action.payload.sender._id!];
-        if (chat) {
-          chat.push({
-            messageId: action.payload.messageId,
-            message: action.payload.message,
-            sender: action.payload.sender!,
-          });
-        } else {
-          state.user.messages[action.payload.sender._id!] = [
-            {
-              messageId: action.payload.messageId,
-              message: action.payload.message,
-              sender: action.payload.sender!,
-            },
-          ];
-        }
-      }
-    },
-    removeMessagesOfUser: (state, action: PayloadAction<string>) => {
-      if (state.user && state.user.messages) {
-        delete state.user.messages[action.payload];
-      }
-    },
-    clearMessagesOfUser: (state, action: PayloadAction<string>) => {
-      if (state.user && state.user.messages) {
-        const chat = state.user.messages[action.payload];
-        if (chat) {
-          state.user.messages[action.payload] = [];
-        }
-      }
-    },
-    deleteSpecificMessage: (
-      state,
-      action: PayloadAction<{ friendId: string; messageId: string }>
-    ) => {
-      if (state.user && state.user.messages) {
-        const chat = Object.values(state.user.messages).find(
-          (msgArray) => msgArray.some((msg) => msg.sender._id === action.payload.friendId)
-        );
-        if (chat) {
-          state.user.messages[action.payload.friendId] = chat.filter(
-            (msg) => msg.messageId !== action.payload.messageId
-          );
-        }
-      }
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action) => {
@@ -166,11 +94,6 @@ export const {
   removeConnection,
   addConnectionRequest,
   removeConnectionRequest,
-  addMyMessage,
-  addFriendMessage,
-  removeMessagesOfUser,
-  clearMessagesOfUser,
-  deleteSpecificMessage,
 } = authSlice.actions;
 
 export default authSlice.reducer;

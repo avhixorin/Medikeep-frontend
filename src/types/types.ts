@@ -18,9 +18,7 @@ export type User = {
     message: string;
     read: boolean;
   }[];
-  messages? : {
-    [friendId: string]: PrivateMessage[];
-  };
+  messages? : Messages;
   theme?: "light" | "dark";
   medicalLicenseNumber?: string;
   specialization?: string;
@@ -106,3 +104,14 @@ export type PrivateMessage = {
   message: string;
   sender: User;
 }
+
+export type Messages = {
+  friendId: string;
+  chatHistory: PrivateMessage[];
+}[]
+
+export type MessageState = {
+  chatHistories: {
+    [friendId: string]: PrivateMessage[];
+  };
+};

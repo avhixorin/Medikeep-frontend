@@ -7,12 +7,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useNavigate } from "react-router-dom";
+import { setChatHistory } from "@/redux/features/messageSlice";
 
 export default function Welcome() {
   const { user } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  if (user && user.messages) {
+    dispatch(setChatHistory(user.messages));
+  }
   const cards = [
     {
       title: "Upcoming Appointments",

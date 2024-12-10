@@ -1,60 +1,69 @@
-import { PrivateMessage, User } from "@/types/types";
+import { Messages, MessageState, PrivateMessage, User } from "@/types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type MessageState = {
-  chatHistory: {
-    [friendId: string]: PrivateMessage[];
-  };
-};
-
 const initialState: MessageState = {
-  chatHistory: {},
+  chatHistories: {},
 };
-
 
 const messageSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-    addMyMessage: (state, action: PayloadAction<{message: string, to: User, messageId: string, sender: User}>) => {
-      const { to } = action.payload;
-      if (!state?.chatHistory[to._id!]) {
-        state.chatHistory[to._id!] = [];
+    setChatHistory: (state, action: PayloadAction<Messages>) => {
+      if (action.payload.length === 0) {
+        console.warn("Payload is empty, no action taken.");
+        return;
       }
-      state.chatHistory[to._id!].push({
-        messageId: action.payload.messageId,
-        message: action.payload.message,
-        sender: action.payload.sender,
+      action.payload.forEach((message) => {
+        if(!state.chatHistories) {
+          state.chatHistories = {}
+        }
+        if (!state.chatHistories[message.friendId]) {
+          state.chatHistories[message.friendId] = [];
+        }
+        state.chatHistories[message.friendId] = message.chatHistory;
       });
     },
-    addFriendMessage: (
-      state,
-      action: PayloadAction<PrivateMessage>
-    ) => {
-      const { sender } = action.payload;
-      if (!state?.chatHistory[sender._id!]) {
-        state.chatHistory[sender._id!] = []; 
+
+    addMyMessage: (state, action: PayloadAction<{ message: string; to: User; messageId: string; sender: User }>) => {
+      const { to, messageId, message, sender } = action.payload;
+      if (!state.chatHistories[to._id!]) {
+        state.chatHistories[to._id!] = [];
       }
-      state.chatHistory[sender._id!].push(action.payload); 
+      state.chatHistories[to._id!].push({
+        messageId,
+        message,
+        sender,
+      });
     },
+
+    addFriendMessage: (state, action: PayloadAction<PrivateMessage>) => {
+      const { sender } = action.payload;
+      if (!state.chatHistories[sender._id!]) {
+        state.chatHistories[sender._id!] = [];
+      }
+      state.chatHistories[sender._id!].push(action.payload);
+    },
+
     removeMessagesOfUser: (state, action: PayloadAction<string>) => {
-      delete state.chatHistory[action.payload];
+      delete state.chatHistories[action.payload];
     },
+
     clearAllMessages: () => {
       return initialState;
     },
+
     clearMessagesOfUser: (state, action: PayloadAction<string>) => {
-      if (state.chatHistory[action.payload]) {
-        state.chatHistory[action.payload] = [];
+      const userId = action.payload;
+      if (state.chatHistories[userId]) {
+        state.chatHistories[userId] = [];
       }
     },
-    deleteSpecificMessage: (
-      state,
-      action: PayloadAction<{ friendId: string; messageId: string }>
-    ) => {
+
+    deleteSpecificMessage: (state, action: PayloadAction<{ friendId: string; messageId: string }>) => {
       const { friendId, messageId } = action.payload;
-      if (state.chatHistory[friendId]) {
-        state.chatHistory[friendId] = state.chatHistory[friendId].filter(
+      if (state.chatHistories[friendId]) {
+        state.chatHistories[friendId] = state.chatHistories[friendId].filter(
           (message) => message.messageId !== messageId
         );
       }
@@ -69,6 +78,7 @@ export const {
   clearAllMessages,
   clearMessagesOfUser,
   deleteSpecificMessage,
+  setChatHistory,
 } = messageSlice.actions;
 
 export default messageSlice.reducer;

@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import toast from "react-hot-toast";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import "./SignInForm.css"
+import "./SignInForm.css";
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,7 +38,7 @@ const SignInForm: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify(values),
       });
 
       if (!response.ok) {
@@ -49,7 +49,9 @@ const SignInForm: React.FC = () => {
       const data = await response.json();
       if (data?.statusCode === 200) {
         toast.success("Logged in successfully");
+        if(data.data){
         dispatch(setAuthUser(data.data));
+        }
         navigate("/dashboard");
       }
     } catch (error: unknown) {
@@ -95,7 +97,7 @@ const SignInForm: React.FC = () => {
 
                   {/* Password Field */}
                   <div className="w-full relative space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">
+                    <label className="text-sm font-semibold text-gray-700">
                       Password<span className="text-red-500">*</span>
                     </label>
                     <Field
@@ -145,11 +147,14 @@ const SignInForm: React.FC = () => {
                   </div>
 
                   <p className="page-link">
-                    <span className="page-link-label"
-                    onClick={() => navigate("/forgot")}
-                    >Forgot Password?</span>
+                    <span
+                      className="page-link-label"
+                      onClick={() => navigate("/forgot")}
+                    >
+                      Forgot Password?
+                    </span>
                   </p>
-                  
+
                   <Button
                     className={`${
                       loading ? "cursor-not-allowed" : "cursor-pointer"
