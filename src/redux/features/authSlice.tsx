@@ -1,28 +1,5 @@
 import { User } from "@/types/types";
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
-
-// Async thunk for user registration
-export const registerUser = createAsyncThunk<
-  User,
-  User,
-  { rejectValue: string }
->("auth/registerUser", async (userData, { rejectWithValue }) => {
-  try {
-    const registerUrl = import.meta.env.VITE_SIGN_UP_URL;
-    const response = await axios.post(registerUrl, userData);
-    return response.data;
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    return rejectWithValue(
-      typeof axiosError.response?.data === "string"
-        ? axiosError.response.data
-        : axiosError.message
-    );
-  }
-});
-
-// Auth state interface
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface AuthState {
   user: User | null;
 }
@@ -77,11 +54,6 @@ const authSlice = createSlice({
         );
       }
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(registerUser.fulfilled, (state, action) => {
-      state.user = action.payload;
-    });
   },
 });
 
