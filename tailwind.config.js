@@ -107,22 +107,22 @@ export default {
     function ({ addUtilities }) {
       const newUtilities = {
         ".scrollbar-thin": {
-          scrollbarWidth: "thin !important",
-          scrollbarColor: "rgb(193, 193, 193) transparent !important",
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgb(193, 193, 193) transparent",
         },
         ".scrollbar-webkit": {
           "&::-webkit-scrollbar": {
-            width: "5px !important" ,
+            width: "5px" ,
           },
           "&::-webkit-scrollbar:hover": {
-            width: "10px !important",
+            width: "10px",
           },
           "&::-webkit-scrollbar-track": {
-            background: "transparent !important",
+            background: "transparent",
           },
           "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "rgb(193, 193, 193) !important",
-            borderRadius: "20px !important",
+            backgroundColor: "rgb(193, 193, 193)",
+            borderRadius: "20px",
           },
         },
       };
