@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, compareAsc, parseISO } from "date-fns";
 import { CalendarIcon, SearchIcon, X } from "lucide-react";
-import { appointments } from "@/constants/appointments";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -10,20 +9,27 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import AppointmentCardMobile from "./AppointmentCards/AppointmentCardMobile";
 import AppointmentCard from "./AppointmentCards/AppointmentCard";
 import HandleCallScreen from "./HandleCallScreen/HandleCallScreen";
+import { RootState } from "@/redux/store/store";
+import { useSelector } from "react-redux";
 const DoctorAppointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-  const [selectedAppointment, setSelectedAppointment] = useState(appointments[0]);
   const [isAppointmentOnline, setIsAppointmentOnline] = useState(false);
+  const appointments = useSelector((state: RootState) => state.auth.user?.appointments || []);
+  const [selectedAppointment, setSelectedAppointment] = useState(appointments[0]);
   const filteredAppointments = appointments
     .filter(
       (appt) =>
         (!formattedDate || appt.date === formattedDate) &&
-        (!searchQuery || appt.patientName.toLowerCase().includes(searchQuery.toLowerCase()))
+        (!searchQuery || `${appt.patient.firstName} ${appt.patient.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()))
     )
-    .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)));
+    .sort((a, b) => {
+      const dateA = a.date ? parseISO(a.date) : new Date(0);
+      const dateB = b.date ? parseISO(b.date) : new Date(0);
+      return compareAsc(dateA, dateB);
+    });
 
   const clearFilters = () => {
     setDate(undefined);
@@ -129,12 +135,12 @@ const DoctorAppointments: React.FC = () => {
             {filteredAppointments.map((appointment) =>
               isMobile ? (
                 <AppointmentCardMobile
-                  key={appointment.id}
-                  profilePicture={appointment.imgSrc}
-                  fullName={appointment.patientName}
-                  age={calcAge(appointment.date)}
+                  key={appointment._id}
+                  profilePicture={appointment.patient.profilePicture || ""}
+                  fullName={`${appointment.patient.firstName} ${appointment.patient.lastName}`}
+                  age={calcAge(appointment.patient.dateOfBirth)}
                   appointmentDate={appointment.date}
-                  appointmentTime={appointment.timeSlot}
+                  appointmentTime={appointment.time}
                   onStartSession={() => {
                     setSelectedAppointment(appointment);
                     setIsAppointmentOnline(true);
@@ -144,12 +150,12 @@ const DoctorAppointments: React.FC = () => {
                 />
               ) : (
                 <AppointmentCard
-                  key={appointment.id}
-                  profilePicture={appointment.imgSrc}
-                  fullName={appointment.patientName}
-                  age={calcAge(appointment.date)}
+                  key={appointment._id}
+                  profilePicture={appointment.patient?.profilePicture || ""}
+                  fullName={appointment.patient?.firstName + " " + appointment.patient?.lastName}
+                  age={calcAge(appointment.patient?.dateOfBirth)}
                   appointmentDate={appointment.date}
-                  appointmentTime={appointment.timeSlot}
+                  appointmentTime={appointment.time}
                   onStartSession={() => {
                     setSelectedAppointment(appointment);
                     setIsAppointmentOnline(true);

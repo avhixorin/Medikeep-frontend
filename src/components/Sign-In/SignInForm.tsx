@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setAuthUser } from "../../redux/features/authSlice";
+import { clearAuthUser, setAuthUser } from "../../redux/features/authSlice";
 import { Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -10,6 +10,10 @@ import toast from "react-hot-toast";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import "./SignInForm.css";
+import { resetAllUsers } from "@/redux/features/allUsersSlice";
+import { clearAllMessages } from "@/redux/features/messageSlice";
+import { clearNotifications } from "@/redux/features/notificationsSlice";
+import { clearSelectedUser } from "@/redux/features/selectedUserSlice";
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,6 +66,13 @@ const SignInForm: React.FC = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+      dispatch(resetAllUsers());
+    dispatch(clearAuthUser());
+    dispatch(clearAllMessages());
+    dispatch(clearNotifications());
+    dispatch(clearSelectedUser());
+  }, [dispatch]);
 
   return (
     <div className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200">

@@ -1,3 +1,4 @@
+import { Appointment } from "@/types/types";
 import {
   Mic,
   MicOff,
@@ -12,13 +13,7 @@ import React, { useState } from "react";
 
 type HandleScreenProps = {
   setIsAppointmentOnline: (value: boolean) => void;
-  appointment: {
-    id: number;
-    patientName: string;
-    timeSlot: string;
-    date: string;
-    imgSrc: string;
-  };
+  appointment: Appointment;
 };
 
 const HandleCallScreen: React.FC<HandleScreenProps> = ({
@@ -52,15 +47,15 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
             Appointment Details
           </h2>
           <img
-            src={appointment.imgSrc}
-            alt={appointment.patientName}
+            src={appointment.patient.profilePicture}
+            alt={appointment.patient.username}
             className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-700"
           />
           <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-            {appointment.patientName}
+            {appointment.patient.username}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {appointment.date} at {appointment.timeSlot}
+            {appointment.date} at {appointment.time}
           </p>
           <button className="mt-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
             View Medical History
