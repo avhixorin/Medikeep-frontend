@@ -71,8 +71,12 @@ const useSockets = () => {
     message: string;
     data: Appointment;
   }) => {
-    toast.error(data.message);
+    if(data.statusCode === 200) {
+    toast.success(data.message);
     dispatch(addAppointment(data.data));
+    }else{
+      toast.error(data.message);
+    }
   }, [dispatch]);
 
   const handleNewAppointmentRequest = useCallback((data: {

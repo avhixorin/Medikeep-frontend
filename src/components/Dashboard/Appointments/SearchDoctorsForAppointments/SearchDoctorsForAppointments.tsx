@@ -3,8 +3,7 @@ import { AppointmentStatus, User } from "@/types/types";
 import { useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import useSockets from "@/hooks/useSockets";
-import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import AppointmentForm from "../AppointmentForm";
 
 const SearchDoctorsForAppointments = ({
   setIsSchedulingAppointment,
@@ -15,9 +14,9 @@ const SearchDoctorsForAppointments = ({
   const [appointmentStatuses, setAppointmentStatuses] = useState<{
     [doctorId: string]: AppointmentStatus;
   }>({});
-  const { socket } = useSockets();
+  const [requestedDoctors, setRequestedDoctors] = useState<User>();
+  const [isRequesting, setIsRequesting] = useState(false);
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
-  const user = useSelector((state: RootState) => state.auth.user);
   const doctors = allUsers.filter(
     (user: User) =>
       user.role === "doctor" &&
@@ -25,24 +24,24 @@ const SearchDoctorsForAppointments = ({
         .toLowerCase()
         .includes(searchQuery.toLowerCase())
   );
-  const handleRequest = (doctorId: string) => {
-    setAppointmentStatuses((prevStatuses) => ({
-      ...prevStatuses,
-      [doctorId]: AppointmentStatus.REQUESTED,
-    }));
-    socket?.emit(SOCKET_EVENTS.REQUEST_APPOINTMENT, {
-        patient: user?._id,
-        doctor: doctorId,
-        status: AppointmentStatus.REQUESTED,
-        date: new Date().toISOString(),
-        time: new Date().toISOString(),
-        reason: "Checkup",
-    })
+  const handleRequest = (doctor: User) => {
+    setIsRequesting(true);
+    setRequestedDoctors(doctor);
   };
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center">
-      <div className="relative rounded-lg bg-white dark:bg-[#1e293b] shadow-md p-6 max-w-lg w-[90%]">
+      {
+        isRequesting && (
+          <AppointmentForm 
+          doctorName={`${requestedDoctors?.firstName} ${requestedDoctors?.lastName}`}
+          doctorId={requestedDoctors?._id || ""}
+          onCancel={() => setIsRequesting(false)}
+          setAppointmentStatuses={setAppointmentStatuses}
+          />
+        )
+      }
+      <div className="relative rounded-lg bg-white dark:bg-[#1e293b] shadow-md p-6 max-w-2xl w-[90%]">
         {/* Close Button */}
         <button
           onClick={() => setIsSchedulingAppointment(false)}
@@ -83,8 +82,13 @@ const SearchDoctorsForAppointments = ({
                     {`${doctor.firstName} ${doctor.lastName}`}
                   </h3>
                 </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
+                    {doctor.specialization || "N/A"}
+                  </h3>
+                </div>
                 <button
-                  onClick={() => handleRequest(doctor._id!)}
+                  onClick={() => handleRequest(doctor)}
                   className={`px-4 py-2 rounded-lg shadow transition-all ${
                     appointmentStatuses[doctor._id!] === AppointmentStatus.REQUESTED
                       ? "bg-green-500 text-white"
