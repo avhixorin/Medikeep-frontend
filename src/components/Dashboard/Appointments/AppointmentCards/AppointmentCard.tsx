@@ -1,28 +1,63 @@
-import React from "react";
+import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import useSockets from "@/hooks/useSockets";
+import { removeAppointment } from "@/redux/features/authSlice";
+import { Appointment } from "@/types/types";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 
 interface Props {
+  appointment: Appointment;
   fullName: string;
   appointmentTime: string;
   profilePicture: string;
   appointmentDate: string;
   age: number;
   onStartSession: () => void;
-  onReschedule: () => void;
-  onCancel: () => void;
 }
 
 const AppointmentCard: React.FC<Props> = ({
+  appointment,
   fullName,
   appointmentTime,
   profilePicture,
   appointmentDate,
   age,
-  onReschedule,
-  onCancel,
   onStartSession,
 }) => {
+  const [isRescheduling, setIsRescheduling] = React.useState(false);
+  const [date, setDate] = useState<string | undefined>(undefined);
+  const [time, setTime] = useState("");
+  const [reason, setReason] = useState("");
+  const { socket } = useSockets();
+  const dispatch = useDispatch();
+  const handleReschedule = () => {
+    setIsRescheduling(true);
+  };
+  const handleCancel = () => {
+    socket?.emit(SOCKET_EVENTS.CANCELLED_APPOINTMENT, {
+      appointmentId: appointment._id
+    });
+    dispatch(
+      removeAppointment(appointment._id)
+    );
+    toast.success(`You have successfully cancelled the appointment with ${fullName}`);
+  };
   return (
     <div className="w-full rounded-lg text-black dark:text-gray-200 bg-white dark:bg-gray-800 py-3 px-6 flex flex-wrap md:flex-nowrap justify-between items-center font-poppins border border-gray-300 dark:border-gray-700 space-y-4 md:space-y-0">
+      {isRescheduling ? (
+        <RescheduleForm
+          date={date}
+          time={time}
+          reason={reason}
+          setDate={setDate}
+          setTime={setTime}
+          setReason={setReason}
+          appointment={appointment}
+          setIsRescheduling={setIsRescheduling}
+        />
+      ) : null}
       {/* Profile Image */}
       <div className="flex-shrink-0">
         <img
@@ -54,7 +89,7 @@ const AppointmentCard: React.FC<Props> = ({
 
       {/* Action Buttons */}
       <div className="flex space-x-4">
-      <button
+        <button
           className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 rounded-md py-2 px-4 text-sm text-white transition-colors"
           aria-label="Start Online Session"
           onClick={onStartSession}
@@ -64,14 +99,14 @@ const AppointmentCard: React.FC<Props> = ({
         <button
           className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 rounded-md py-2 px-4 text-sm text-white transition-colors"
           aria-label="Reschedule Appointment"
-          onClick={onReschedule}
+          onClick={handleReschedule}
         >
           Reschedule
         </button>
         <button
           className="bg-red-500 hover:bg-red-600 rounded-md py-2 px-4 text-sm text-white transition-colors"
           aria-label="Cancel Appointment"
-          onClick={onCancel}
+          onClick={handleCancel}
         >
           Cancel
         </button>
@@ -79,5 +114,7 @@ const AppointmentCard: React.FC<Props> = ({
     </div>
   );
 };
+
+
 
 export default AppointmentCard;

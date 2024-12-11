@@ -163,6 +163,7 @@ const DoctorAppointments: React.FC = () => {
               ) : (
                 <AppointmentCard
                   key={appointment._id}
+                  appointment={appointment}
                   profilePicture={appointment.patient?.profilePicture || ""}
                   fullName={
                     appointment.patient?.firstName +
@@ -176,8 +177,6 @@ const DoctorAppointments: React.FC = () => {
                     setSelectedAppointment(appointment);
                     setIsAppointmentOnline(true);
                   }}
-                  onReschedule={() => console.log("Reschedule")}
-                  onCancel={() => console.log("Cancel")}
                 />
               )
             )}

@@ -74,8 +74,6 @@ const useSockets = () => {
     if(data.statusCode === 200) {
     toast.success(data.message);
     dispatch(addAppointment(data.data));
-    }else{
-      toast.error(data.message);
     }
   }, [dispatch]);
 
@@ -84,8 +82,10 @@ const useSockets = () => {
     message: string;
     data: Appointment;
   }) => {
-    toast.error(data.message);
+    if(data.statusCode === 200) {
+    toast.success(data.message);
     dispatch(addAppointment(data.data));
+    }
   }, [dispatch]);
 
   const handleAppointmentScheduling = useCallback((data: {
@@ -93,8 +93,10 @@ const useSockets = () => {
     message: string;
     data: Appointment;
   }) => {
+    if(data.statusCode === 200) {
     toast.success(data.message);
     dispatch(scheduleAppointment({appointment: data.data}));
+    }
   }, [dispatch]);
 
   const handleAppointmentRescheduling = useCallback((data: {
@@ -102,8 +104,10 @@ const useSockets = () => {
     message: string;
     data: Appointment;
   }) => {
+    if(data.statusCode === 200) {
     toast.success(data.message);
-    dispatch(reScheduleAppointment({appointment: data.data}));
+    dispatch(reScheduleAppointment({appointmentId: data.data._id, date: data.data.date, time: data.data.time, reason: data.data.reason}));
+    }
   }, [dispatch]);
 
   const handleAppointmentCancellation = useCallback((data: {
@@ -111,8 +115,10 @@ const useSockets = () => {
     message: string;
     data: Appointment;
   }) => {
+    if(data.statusCode === 200) {
     toast.error(data.message);
-    dispatch(removeAppointment(data.data));
+    dispatch(removeAppointment(data.data._id));
+    }
   }, [dispatch]);
 
   const handleAppointmentRejection = useCallback((data: {
@@ -120,8 +126,10 @@ const useSockets = () => {
     message: string;
     data: Appointment;
   }) => {
+    if(data.statusCode === 200) {
     toast.error(data.message);
-    dispatch(removeAppointment(data.data));
+    dispatch(removeAppointment(data.data._id));
+    }
   }, [dispatch]);
 
   const handleAppointmentCompletion = useCallback((data: {
@@ -129,8 +137,10 @@ const useSockets = () => {
     message: string;
     data: Appointment;
   }) => {
+    if(data.statusCode === 200) {
     toast.success(data.message);
-    dispatch(removeAppointment(data.data));
+    dispatch(removeAppointment(data.data._id));
+    }
   }, [dispatch]);
 
   const setupSocketListeners = useCallback((socket: Socket) => {

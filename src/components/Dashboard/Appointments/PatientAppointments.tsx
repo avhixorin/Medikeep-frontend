@@ -1,25 +1,48 @@
 import { RootState } from "@/redux/store/store";
 import { Users } from "lucide-react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import SearchDoctorsForAppointments from "./SearchDoctorsForAppointments/SearchDoctorsForAppointments";
+import { RescheduleForm } from "./RescheduleForm/RescheduleForm";
+import { Appointment } from "@/types/types";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
+import useSockets from "@/hooks/useSockets";
+import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import { removeAppointment } from "@/redux/features/authSlice";
 
 const PatientAppointments: React.FC = () => {
   const [isSchedulingAppointment, setIsSchedulingAppointment] = useState(false);
+  const [reScheduleAppointment, setReScheduleAppointment] = useState<Appointment>();
+  const [isRescheduling, setIsRescheduling] = React.useState(false);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments
   );
-
-  const handleCancelRequest = (appointmentId: string) => {
-    console.log(`Requesting cancellation for appointment ${appointmentId}`);
-    // Add cancellation logic here
+  const { socket } = useSockets();
+  const dispatch = useDispatch();
+  const handleCancelRequest = async (appointmentId: string) => {
+    await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, cancel it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        socket?.emit(SOCKET_EVENTS.CANCELLED_APPOINTMENT, {
+          appointmentId
+        });
+        toast.success("Appointment cancellation requested successfully");
+        dispatch(removeAppointment(appointmentId));
+      }
+    })
   };
-
-  const handleRescheduleRequest = (appointmentId: string) => {
-    console.log(`Requesting reschedule for appointment ${appointmentId}`);
-    // Add reschedule logic here
-  };
+  const [date, setDate] = useState<string | undefined>(undefined);
+  const [time, setTime] = useState("");
+  const [reason, setReason] = useState("");
 
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-4 dark:bg-[#121212]">
@@ -28,6 +51,20 @@ const PatientAppointments: React.FC = () => {
           setIsSchedulingAppointment={setIsSchedulingAppointment}
         />
       )}
+      {
+        isRescheduling && reScheduleAppointment ? (
+          <RescheduleForm
+            date={date}
+            time={time}
+            reason={reason}
+            setDate={setDate}
+            setTime={setTime}
+            setReason={setReason}
+            appointment={reScheduleAppointment}
+            setIsRescheduling={setIsRescheduling}
+          />
+        ) : null
+      }
 
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -83,7 +120,10 @@ const PatientAppointments: React.FC = () => {
                   </button>
                   <button
                     className="text-sm text-blue-600 border-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-zinc-800 px-3 py-1 border rounded-md"
-                    onClick={() => handleRescheduleRequest(appointment._id)}
+                    onClick={() => {
+                      setReScheduleAppointment(appointment)
+                      setIsRescheduling(true)
+                    }}
                   >
                     Request Reschedule
                   </button>
@@ -100,5 +140,7 @@ const PatientAppointments: React.FC = () => {
     </div>
   );
 };
+
+
 
 export default PatientAppointments;
