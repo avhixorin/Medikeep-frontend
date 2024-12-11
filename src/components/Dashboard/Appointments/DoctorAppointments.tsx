@@ -5,7 +5,11 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import AppointmentCardMobile from "./AppointmentCards/AppointmentCardMobile";
 import AppointmentCard from "./AppointmentCards/AppointmentCard";
 import HandleCallScreen from "./HandleCallScreen/HandleCallScreen";
@@ -17,13 +21,20 @@ const DoctorAppointments: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
   const [isAppointmentOnline, setIsAppointmentOnline] = useState(false);
-  const appointments = useSelector((state: RootState) => state.auth.user?.appointments || []);
-  const [selectedAppointment, setSelectedAppointment] = useState(appointments[0]);
+  const appointments = useSelector(
+    (state: RootState) => state.auth.user?.appointments || []
+  );
+  const [selectedAppointment, setSelectedAppointment] = useState(
+    appointments[0]
+  );
   const filteredAppointments = appointments
     .filter(
       (appt) =>
         (!formattedDate || appt.date === formattedDate) &&
-        (!searchQuery || `${appt.patient.firstName} ${appt.patient.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()))
+        (!searchQuery ||
+          `${appt.patient.firstName} ${appt.patient.lastName}`
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()))
     )
     .sort((a, b) => {
       const dateA = a.date ? parseISO(a.date) : new Date(0);
@@ -58,11 +69,12 @@ const DoctorAppointments: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#121212]">
-      {
-        isAppointmentOnline && (
-          <HandleCallScreen  setIsAppointmentOnline={setIsAppointmentOnline} appointment={selectedAppointment}/>
-        )
-      }
+      {isAppointmentOnline && (
+        <HandleCallScreen
+          setIsAppointmentOnline={setIsAppointmentOnline}
+          appointment={selectedAppointment}
+        />
+      )}
       <div className="w-full flex flex-col gap-8">
         <h1 className="text-3xl font-semibold text-zinc-700 dark:text-gray-200">
           Appointments
@@ -119,7 +131,9 @@ const DoctorAppointments: React.FC = () => {
             className={cn(
               "whitespace-nowrap text-gray-700 border-gray-300 hover:bg-gray-100",
               "dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800 dark:hover:text-gray-200",
-              !date && !searchQuery && "text-muted-foreground dark:text-gray-500"
+              !date &&
+                !searchQuery &&
+                "text-muted-foreground dark:text-gray-500"
             )}
             disabled={!date && !searchQuery}
           >
@@ -127,9 +141,7 @@ const DoctorAppointments: React.FC = () => {
           </Button>
         </div>
       </div>
-
       <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md p-6 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
-        
         {filteredAppointments.length > 0 ? (
           <div className={isMobile ? "space-y-4" : "grid grid-cols-1 gap-2"}>
             {filteredAppointments.map((appointment) =>
@@ -139,7 +151,7 @@ const DoctorAppointments: React.FC = () => {
                   profilePicture={appointment.patient.profilePicture || ""}
                   fullName={`${appointment.patient.firstName} ${appointment.patient.lastName}`}
                   age={calcAge(appointment.patient.dateOfBirth)}
-                  appointmentDate={appointment.date}
+                  appointmentDate={format(new Date(appointment.date), "PPP")}
                   appointmentTime={appointment.time}
                   onStartSession={() => {
                     setSelectedAppointment(appointment);
@@ -152,9 +164,13 @@ const DoctorAppointments: React.FC = () => {
                 <AppointmentCard
                   key={appointment._id}
                   profilePicture={appointment.patient?.profilePicture || ""}
-                  fullName={appointment.patient?.firstName + " " + appointment.patient?.lastName}
+                  fullName={
+                    appointment.patient?.firstName +
+                    " " +
+                    appointment.patient?.lastName
+                  }
                   age={calcAge(appointment.patient?.dateOfBirth)}
-                  appointmentDate={appointment.date}
+                  appointmentDate={format(new Date(appointment.date), "PPP")}
                   appointmentTime={appointment.time}
                   onStartSession={() => {
                     setSelectedAppointment(appointment);
@@ -172,6 +188,7 @@ const DoctorAppointments: React.FC = () => {
           </p>
         )}
       </div>
+      ;
     </div>
   );
 };
