@@ -133,7 +133,7 @@ export default {
     require("daisyui"),
   ],
   daisyui: {
-    themes: ["light", "dark"], 
+    themes: ["light", "dark", "retro", "synthwave", "cyberpunk"], 
     base: false, 
     utils: true, 
   },

@@ -23,7 +23,21 @@ const useTheme = () => {
     }
   }, [dispatch]);
 
-  return { theme, toggleTheme };
+  const setTheme = useCallback((theme: string) => {
+    
+    const htmlElement = document.querySelector("html");
+    if(theme === "default") {
+      htmlElement?.removeAttribute("data-theme");
+    };
+    if(htmlElement?.hasAttribute("data-theme")){
+      
+      htmlElement.setAttribute("data-theme", theme);
+    }else{
+      htmlElement?.setAttribute("data-theme", theme);
+    }
+  },[]);
+
+  return { theme, toggleTheme, setTheme };
 };
 
 export default useTheme;

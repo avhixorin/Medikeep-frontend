@@ -19,7 +19,7 @@ export type User = {
     read: boolean;
   }[];
   messages? : Messages;
-  theme?: "light" | "dark";
+  theme?: "light" | "dark" | "retro" | "synthwave" | "cyberpunk";
   medicalLicenseNumber?: string;
   specialization?: string;
   yearsOfExperience?: number;
@@ -115,3 +115,12 @@ export type MessageState = {
     [friendId: string]: PrivateMessage[];
   };
 };
+
+export type Appointment = {
+  patient: User;
+  doctor: User;
+  date: string;
+  time: string;
+  status: string;
+  reason: string;
+}

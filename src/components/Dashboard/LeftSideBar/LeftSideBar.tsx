@@ -22,55 +22,57 @@ export default function LeftSidebar() {
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
 
-const handleLogout = async () => {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "Do you really want to log out? You will need to log in again to access your account.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, log out",
-    cancelButtonText: "Cancel",
-    reverseButtons: true,
-  });
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to log out? You will need to log in again to access your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, log out",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
 
-  if (result.isConfirmed) {
-    try {
-      const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
+    if (result.isConfirmed) {
+      try {
+        const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
 
-      const response = await axios.post(
-        logoutUrl,
-        {},
-        {
-          withCredentials: true, 
-          headers: {
-            "Content-Type": "application/json",
-          },
+        const response = await axios.post(
+          logoutUrl,
+          {},
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          dispatch(clearAuthUser());
+          toast.success("Logged out successfully.");
+          setTimeout(() => navigate("/sign-in"), 0);
+        } else {
+          toast.error(response.data.message || "Failed to log out.");
         }
-      );
-
-      if (response.status === 200) {
-        dispatch(clearAuthUser());
-        toast.success("Logged out successfully.");
-        setTimeout(() => navigate("/sign-in"), 0);
-      } else {
-        toast.error(response.data.message || "Failed to log out.");
+      } catch (error) {
+        console.error(error);
+        toast.error(
+          error instanceof Error ? error.message : "An error occurred"
+        );
       }
-    } catch (error) {
-      console.error(error);
-      toast.error(error instanceof Error ? error.message : "An error occurred");
+    } else {
+      console.log("User canceled logout");
     }
-  } else {
-    console.log("User canceled logout");
-  }
-};
-
+  };
 
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8 dark:bg-[#0A0A0A]">
       {/* Logo Section */}
       <div className="w-full flex flex-col gap-12 md:gap-8">
-        <div className="flex w-full justify-center items-center p-2 gap-2 my-8 cursor-pointer"
-        onClick={() => navigate("/dashboard")}
+        <div
+          className="flex w-full justify-center items-center p-2 gap-2 my-8 cursor-pointer"
+          onClick={() => navigate("/dashboard")}
         >
           <img
             src="https://res.cloudinary.com/avhixorin/image/upload/v1726237530/titleIcon_h3ehnu.png"
@@ -95,6 +97,14 @@ const handleLogout = async () => {
             icon={<Calendar size={24} />}
             label="Appointments"
           />
+          {/* {
+            user?.role === "doctor" && (
+              <SidebarLink
+                to="/dashboard/consultations"
+                icon={<MessageSquare size={24} />}
+                label="Consultations"
+              />)
+          } */}
           <SidebarLink
             to="/dashboard/chats"
             icon={<MessageSquare size={24} />}
@@ -105,11 +115,19 @@ const handleLogout = async () => {
             icon={<HeartPulse size={24} />}
             label="Records"
           />
-          <SidebarLink
-            to="/dashboard/vitals"
-            icon={<User size={24} />}
-            label="Health Profile"
-          />
+          {user?.role === "doctor" ? (
+            <SidebarLink
+              to="/dashboard/patients"
+              icon={<User size={24} />}
+              label="Patients"
+            />
+          ) : (
+            <SidebarLink
+              to="/dashboard/vitals"
+              icon={<User size={24} />}
+              label="Health Profile"
+            />
+          )}
         </nav>
       </div>
 
@@ -136,13 +154,12 @@ const handleLogout = async () => {
           />
           <div className="hidden md:block">
             <div className="w-full h-full flex flex-col justify-center ">
-
-            <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-              {user?.username}
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {user?.gender}
-            </p>
+              <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {user?.username}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {user?.gender}
+              </p>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format, compareAsc, parseISO } from "date-fns";
 import { CalendarIcon, SearchIcon, X } from "lucide-react";
 import { appointments } from "@/constants/appointments";
@@ -6,51 +6,69 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import AppointmentCard from "./AppointmentCard";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import AppointmentCardMobile from "./AppointmentCards/AppointmentCardMobile";
+import AppointmentCard from "./AppointmentCards/AppointmentCard";
+import HandleScreen from "./HandleScreen/HandleScreen";
 const Appointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-
+  const [selectedAppointment, setSelectedAppointment] = useState(appointments[0]);
+  const [isAppointmentOnline, setIsAppointmentOnline] = useState(false);
   const filteredAppointments = appointments
     .filter(
       (appt) =>
         (!formattedDate || appt.date === formattedDate) &&
-        (!searchQuery ||
-          appt.patientName.toLowerCase().includes(searchQuery.toLowerCase()))
+        (!searchQuery || appt.patientName.toLowerCase().includes(searchQuery.toLowerCase()))
     )
     .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)));
-
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    filteredAppointments[0] ? parseISO(filteredAppointments[0].date) : undefined
-  );
 
   const clearFilters = () => {
     setDate(undefined);
     setSearchQuery("");
   };
 
+  const calcAge = (birthDate: string) => {
+    const today = new Date();
+    const dateOfBirth = new Date(birthDate);
+    let age = today.getFullYear() - dateOfBirth.getFullYear();
+    const m = today.getMonth() - dateOfBirth.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
+  // Handle dynamic resizing
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#121212]">
+      {
+        isAppointmentOnline && (
+          <HandleScreen  setIsAppointmentOnline={setIsAppointmentOnline} appointment={selectedAppointment}/>
+        )
+      }
       <div className="w-full flex flex-col gap-8">
         <h1 className="text-3xl font-semibold text-zinc-700 dark:text-gray-200">
           Appointments
         </h1>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row items-center gap-3">
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[200px] justify-start text-left font-normal bg-white text-gray-700 border-gray-300 hover:bg-gray-100",
+                  "w-full md:w-[200px] justify-start text-left font-normal bg-white text-gray-700 border-gray-300 hover:bg-gray-100",
                   "dark:bg-[#0A0A0A] dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800",
                   !date && "text-muted-foreground dark:text-gray-500"
                 )}
@@ -62,11 +80,8 @@ const Appointments: React.FC = () => {
             <PopoverContent className="w-auto p-0 bg-white border-gray-300 dark:bg-[#0A0A0A] dark:border-gray-700">
               <Calendar
                 mode="single"
-                selected={selectedDate}
-                onSelect={(selectedDate) => {
-                  setDate(selectedDate);
-                  setSelectedDate(selectedDate);
-                }}
+                selected={date}
+                onSelect={setDate}
                 initialFocus
               />
             </PopoverContent>
@@ -98,9 +113,7 @@ const Appointments: React.FC = () => {
             className={cn(
               "whitespace-nowrap text-gray-700 border-gray-300 hover:bg-gray-100",
               "dark:text-gray-400 dark:border-gray-700 dark:hover:bg-zinc-800 dark:hover:text-gray-200",
-              !date &&
-                !searchQuery &&
-                "text-muted-foreground dark:text-gray-500"
+              !date && !searchQuery && "text-muted-foreground dark:text-gray-500"
             )}
             disabled={!date && !searchQuery}
           >
@@ -109,18 +122,43 @@ const Appointments: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md p-6 overflow-y-auto overflow-x-hidden shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
+      <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md p-6 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
+        
         {filteredAppointments.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-6">
-            {filteredAppointments.map((appointment) => (
-              <AppointmentCard
-                key={appointment.id}
-                Name={appointment.patientName}
-                timeSlots={appointment.timeSlot}
-                imgSrc={appointment.imgSrc}
-                selectedDate={parseISO(appointment.date)}
-              />
-            ))}
+          <div className={isMobile ? "space-y-4" : "grid grid-cols-1 gap-2"}>
+            {filteredAppointments.map((appointment) =>
+              isMobile ? (
+                <AppointmentCardMobile
+                  key={appointment.id}
+                  profilePicture={appointment.imgSrc}
+                  fullName={appointment.patientName}
+                  age={calcAge(appointment.date)}
+                  appointmentDate={appointment.date}
+                  appointmentTime={appointment.timeSlot}
+                  onStartSession={() => {
+                    setSelectedAppointment(appointment);
+                    setIsAppointmentOnline(true);
+                  }}
+                  onReschedule={() => console.log("Reschedule")}
+                  onCancel={() => console.log("Cancel")}
+                />
+              ) : (
+                <AppointmentCard
+                  key={appointment.id}
+                  profilePicture={appointment.imgSrc}
+                  fullName={appointment.patientName}
+                  age={calcAge(appointment.date)}
+                  appointmentDate={appointment.date}
+                  appointmentTime={appointment.timeSlot}
+                  onStartSession={() => {
+                    setSelectedAppointment(appointment);
+                    setIsAppointmentOnline(true);
+                  }}
+                  onReschedule={() => console.log("Reschedule")}
+                  onCancel={() => console.log("Cancel")}
+                />
+              )
+            )}
           </div>
         ) : (
           <p className="text-center text-gray-500 dark:text-gray-400">

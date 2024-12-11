@@ -30,7 +30,7 @@ const navItems = [
 
 export default function SettingsPage() {
   const { user } = useSelector((state: RootState) => state.auth);
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, setTheme } = useTheme();
   const [uploadClicked, setUploadClicked] = useState(false);
 
   const cancelUpload = () => {
@@ -199,6 +199,23 @@ export default function SettingsPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* <div className="space-y-1">
+                <Label>Themes</Label>
+                <Select defaultValue="default"
+                onValueChange={(value) => setTheme(value)}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="retro">Retro</SelectItem>
+                    <SelectItem value="synthwave">Synthwave</SelectItem>
+                    <SelectItem value="cyberpunk">Cyberpunk</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div> */}
 
               {/* Date Format Setting */}
               <div className="space-y-1">

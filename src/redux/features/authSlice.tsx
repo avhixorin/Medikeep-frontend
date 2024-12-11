@@ -15,7 +15,7 @@ const authSlice = createSlice({
     setAuthUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
-    setUserTheme: (state, action: PayloadAction<"light" | "dark">) => {
+    setUserTheme: (state, action: PayloadAction<"light" | "dark" | "retro" | "synthwave" | "cyberpunk">) => {
       if (state.user) {
         state.user.theme = action.payload;
       }
