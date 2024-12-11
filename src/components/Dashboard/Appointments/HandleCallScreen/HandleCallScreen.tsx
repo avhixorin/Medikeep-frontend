@@ -1,3 +1,5 @@
+import React, { useState, useRef, useEffect } from "react";
+import useRTC from "@/hooks/useRTC";
 import { Appointment } from "@/types/types";
 import {
   Mic,
@@ -9,7 +11,7 @@ import {
   VideoOff,
   X,
 } from "lucide-react";
-import React, { useState } from "react";
+import { format } from "date-fns";
 
 type HandleScreenProps = {
   setIsAppointmentOnline: (value: boolean) => void;
@@ -24,13 +26,32 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
 
+  const { localStream, remoteStream, startRTC, createOffer } = useRTC();
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  }, [localStream]);
+
+  useEffect(() => {
+    if (remoteVideoRef.current && remoteStream) {
+      remoteVideoRef.current.srcObject = remoteStream;
+    }
+  }, [remoteStream]);
+
   const toggleMic = () => setIsMicOn((prev) => !prev);
   const toggleVideo = () => setIsVideoOn((prev) => !prev);
-  const startCall = () => setIsCallActive(true);
+  const startCall = () => {
+    startRTC();
+    setIsCallActive(true);
+  };
   const endCall = () => setIsCallActive(false);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
+    <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
       {/* Close Button */}
       <button
         onClick={() => setIsAppointmentOnline(false)}
@@ -54,8 +75,8 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
           <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
             {appointment.patient.username}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {appointment.date} at {appointment.time}
+          <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            {format(new Date(appointment.date), "PPP")} at {appointment.time}
           </p>
           <button className="mt-auto bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
             View Medical History
@@ -66,16 +87,31 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
         <div className="w-[60%] p-4 bg-gradient-to-br from-purple-500/10 to-blue-500/10 dark:from-purple-900/20 dark:to-blue-900/20 flex flex-col">
           <div className="grid grid-cols-2 gap-2 h-full">
             <div className="relative bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg overflow-hidden">
-              <img
-                src="/placeholder.svg"
-                alt="Video stream"
-                className="w-full h-full object-cover"
-              />
+              {isCallActive ? (
+                <video
+                  ref={remoteVideoRef}
+                  autoPlay
+                  muted
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 animate-pulse" />
+                </div>
+              )}
             </div>
             <div className="relative bg-gradient-to-br from-pink-500 to-red-500 rounded-lg overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-red-500 animate-pulse" />
-              </div>
+              {isCallActive ? (
+                <video
+                  ref={localVideoRef}
+                  autoPlay
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-red-500 animate-pulse" />
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center justify-center gap-4 mt-4">
@@ -88,11 +124,7 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
                   : "bg-red-500 hover:bg-red-600"
               } text-gray-800 dark:text-gray-200 p-3 rounded-full`}
             >
-              {isMicOn ? (
-                <Mic className="w-6 h-6" />
-              ) : (
-                <MicOff className="w-6 h-6" />
-              )}
+              {isMicOn ? <Mic className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}
             </button>
 
             {/* Toggle Video */}
@@ -104,17 +136,14 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
                   : "bg-red-500 hover:bg-red-600"
               } text-gray-800 dark:text-gray-200 p-3 rounded-full`}
             >
-              {isVideoOn ? (
-                <Video className="w-6 h-6" />
-              ) : (
-                <VideoOff className="w-6 h-6" />
-              )}
+              {isVideoOn ? <Video className="w-6 h-6" /> : <VideoOff className="w-6 h-6" />}
             </button>
 
             {/* View Participants */}
             <button className="bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 p-3 rounded-full">
               <Users className="w-6 h-6" />
             </button>
+
             {/* Start/End Call */}
             {isCallActive ? (
               <button
@@ -138,14 +167,10 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
 
         {/* Chat Section */}
         <div className="w-[20%] p-4 bg-gradient-to-b from-gray-100 via-white to-gray-50 dark:from-gray-800 dark:via-black dark:to-gray-900 flex flex-col">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-white">
-            Chat
-          </h2>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-white">Chat</h2>
           <div className="flex-1 overflow-y-auto bg-white/70 dark:bg-gray-800 rounded-lg p-4 shadow-inner">
             <div className="space-y-4">
-              <div className="bg-blue-500 text-white p-2 rounded-lg self-end">
-                Hello Doctor!
-              </div>
+              <div className="bg-blue-500 text-white p-2 rounded-lg self-end">Hello Doctor!</div>
               <div className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 p-2 rounded-lg">
                 Hello! How can I assist you today?
               </div>
