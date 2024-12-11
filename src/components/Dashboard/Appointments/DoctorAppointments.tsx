@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import AppointmentCardMobile from "./AppointmentCards/AppointmentCardMobile";
 import AppointmentCard from "./AppointmentCards/AppointmentCard";
-import HandleScreen from "./HandleScreen/HandleScreen";
-const Appointments: React.FC = () => {
+import HandleCallScreen from "./HandleCallScreen/HandleCallScreen";
+const DoctorAppointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -54,7 +54,7 @@ const Appointments: React.FC = () => {
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#121212]">
       {
         isAppointmentOnline && (
-          <HandleScreen  setIsAppointmentOnline={setIsAppointmentOnline} appointment={selectedAppointment}/>
+          <HandleCallScreen  setIsAppointmentOnline={setIsAppointmentOnline} appointment={selectedAppointment}/>
         )
       }
       <div className="w-full flex flex-col gap-8">
@@ -170,4 +170,4 @@ const Appointments: React.FC = () => {
   );
 };
 
-export default Appointments;
+export default DoctorAppointments;

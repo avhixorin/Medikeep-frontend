@@ -56,3 +56,55 @@ export const appointments = [
       date: "2024-11-26",
     },
   ];
+
+  export const doctors = [
+    {
+      id: 1,
+      name: "Dr. Sarah Johnson",
+      specialization: "Cardiology",
+      imgSrc: "/images/doctors/sarah_johnson.jpg", // Update with valid image paths
+    },
+    {
+      id: 2,
+      name: "Dr. Anil Kumar",
+      specialization: "Dermatology",
+      imgSrc: "/images/doctors/anil_kumar.jpg",
+    },
+    {
+      id: 3,
+      name: "Dr. Emily Davis",
+      specialization: "Pediatrics",
+      imgSrc: "/images/doctors/emily_davis.jpg",
+    },
+    {
+      id: 4,
+      name: "Dr. Rajesh Sharma",
+      specialization: "Orthopedics",
+      imgSrc: "/images/doctors/rajesh_sharma.jpg",
+    },
+    {
+      id: 5,
+      name: "Dr. Clara Lee",
+      specialization: "Neurology",
+      imgSrc: "/images/doctors/clara_lee.jpg",
+    },
+    {
+      id: 6,
+      name: "Dr. Mohan Das",
+      specialization: "General Medicine",
+      imgSrc: "/images/doctors/mohan_das.jpg",
+    },
+    {
+      id: 7,
+      name: "Dr. Julia Wong",
+      specialization: "Oncology",
+      imgSrc: "/images/doctors/julia_wong.jpg",
+    },
+    {
+      id: 8,
+      name: "Dr. Ahmed Saeed",
+      specialization: "Psychiatry",
+      imgSrc: "/images/doctors/ahmed_saeed.jpg",
+    },
+  ];
+  

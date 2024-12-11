@@ -21,7 +21,7 @@ type HandleScreenProps = {
   };
 };
 
-const HandleScreen: React.FC<HandleScreenProps> = ({
+const HandleCallScreen: React.FC<HandleScreenProps> = ({
   setIsAppointmentOnline,
   appointment,
 }) => {
@@ -172,4 +172,4 @@ const HandleScreen: React.FC<HandleScreenProps> = ({
   );
 };
 
-export default HandleScreen;
+export default HandleCallScreen;

@@ -1,4 +1,4 @@
-import { User } from "@/types/types";
+import { Appointment, User } from "@/types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface AuthState {
   user: User | null;
@@ -54,6 +54,39 @@ const authSlice = createSlice({
         );
       }
     },
+    addAppointment: (state, action: PayloadAction<Appointment>) => {
+      if (state.user) {
+        state.user.appointments = state.user.appointments || [];
+        state.user.appointments.push(action.payload);
+      }
+    },
+    removeAppointment: (state, action: PayloadAction<Appointment>) => {
+      if (state.user && state.user.appointments) {
+        state.user.appointments = state.user.appointments.filter(
+          (appointment) => appointment._id !== action.payload._id
+        );
+      }
+    },
+    scheduleAppointment: (state, action: PayloadAction<{ appointment: Appointment }>) => {
+      if (state.user && state.user.appointments) {
+        state.user.appointments = state.user.appointments.map((appointment) => {
+          if (appointment._id === action.payload.appointment._id) {
+            return { ...appointment, ...action.payload.appointment };
+          }
+          return appointment;
+        });
+      }
+    },
+    reScheduleAppointment: (state, action: PayloadAction<{ appointment: Appointment }>) => {
+      if (state.user && state.user.appointments) {
+        state.user.appointments = state.user.appointments.map((appointment) => {
+          if (appointment._id === action.payload.appointment._id) {
+            return { ...appointment, ...action.payload.appointment };
+          }
+          return appointment;
+        });
+      }
+    },
   },
 });
 
@@ -66,6 +99,10 @@ export const {
   removeConnection,
   addConnectionRequest,
   removeConnectionRequest,
+  addAppointment,
+  removeAppointment,
+  scheduleAppointment,
+  reScheduleAppointment,
 } = authSlice.actions;
 
 export default authSlice.reducer;

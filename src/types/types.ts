@@ -19,6 +19,7 @@ export type User = {
     read: boolean;
   }[];
   messages? : Messages;
+  appointments?: Appointment[];
   theme?: "light" | "dark" | "retro" | "synthwave" | "cyberpunk";
   medicalLicenseNumber?: string;
   specialization?: string;
@@ -116,11 +117,21 @@ export type MessageState = {
   };
 };
 
+export enum AppointmentStatus {
+  "IDLE" = "request",
+  "REQUESTED" = "requested" ,
+  "SCHEDULED" = "scheduled" , 
+  "COMPLETED" = "completed" , 
+  "RESCHEDULED" = "rescheduled" , 
+  "CANCELLED" = "cancelled"
+}
+
 export type Appointment = {
+  _id: string;
   patient: User;
   doctor: User;
   date: string;
   time: string;
-  status: string;
+  status: AppointmentStatus;
   reason: string;
 }
