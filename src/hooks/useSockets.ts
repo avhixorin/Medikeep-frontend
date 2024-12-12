@@ -107,7 +107,7 @@ const useSockets = () => {
   }) => {
     if(data.statusCode === 200) {
     toast.success(data.message);
-    dispatch(reScheduleAppointment({appointmentId: data.data._id, date: data.data.date, time: data.data.time, reason: data.data.reason}));
+    dispatch(reScheduleAppointment(data.data));
     }
   }, [dispatch]);
 

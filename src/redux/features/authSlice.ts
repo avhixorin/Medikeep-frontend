@@ -80,10 +80,10 @@ const authSlice = createSlice({
         );
       }
     },
-    reScheduleAppointment: (state, action: PayloadAction<{ appointmentId: string, date: string, time: string, reason: string }>) => {
+    reScheduleAppointment: (state, action: PayloadAction<Appointment>) => {
       if (state.user && state.user.appointments) {
         state.user.appointments = state.user.appointments.map((appointment) => {
-          if (appointment._id === action.payload.appointmentId) {
+          if (appointment._id === action.payload._id) {
             return { ...appointment, ...action.payload };
           }
           return appointment;

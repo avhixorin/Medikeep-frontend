@@ -11,54 +11,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import useSockets from "@/hooks/useSockets";
 import { cn } from "@/lib/utils";
-import { reScheduleAppointment } from "@/redux/features/authSlice";
 import { Appointment } from "@/types/types";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 type RescheduleFormProps = {
-  date: string | undefined;
-  time: string;
-  reason: string;
-  setDate: (date: string) => void;
-  setTime: (time: string) => void;
-  setReason: (reason: string) => void;
   appointment: Appointment;
   setIsRescheduling: (value: boolean) => void;
 };
 
 export const RescheduleForm: React.FC<RescheduleFormProps> = ({
-  date,
-  time,
-  reason,
-  setDate,
-  setTime,
-  setReason,
   appointment,
   setIsRescheduling,
 }) => {
   const { socket } = useSockets();
-  const dispatch = useDispatch();
-
+    const [date, setDate] = useState<string | undefined>(undefined);
+    const [time, setTime] = useState("");
+    const [reason, setReason] = useState("");
   const handleRequest = () => {
     socket?.emit(SOCKET_EVENTS.RESCHEDULED_APPOINTMENT, {
       appointmentId: appointment._id,
       date: date || "",
       time,
-      reason,
+      reason
     });
-    dispatch(
-      reScheduleAppointment({
-        appointmentId: appointment._id,
-        date: date || "",
-        time,
-        reason,
-      })
-    );
     setIsRescheduling(false);
   };
-
   const handleCancel = () => {
     setIsRescheduling(false);
   };

@@ -1,15 +1,10 @@
 import { RootState } from "@/redux/store/store";
 import { Bell, BellDotIcon, Users } from "lucide-react";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import SearchDoctorsForAppointments from "./SearchDoctorsForAppointments/SearchDoctorsForAppointments";
 import { Appointment } from "@/types/types";
-import Swal from "sweetalert2";
-import toast from "react-hot-toast";
-import useSockets from "@/hooks/useSockets";
-import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { removeAppointment } from "@/redux/features/authSlice";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import { Button } from "@/components/ui/button";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
@@ -27,31 +22,6 @@ const PatientAppointments: React.FC = () => {
     (state: RootState) => state.auth.user?.appointments
   );
   const user = useSelector((state: RootState) => state.auth.user);
-  const { socket } = useSockets();
-  const dispatch = useDispatch();
-  const handleCancelRequest = async (appointmentId: string) => {
-    await Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, cancel it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        socket?.emit(SOCKET_EVENTS.CANCELLED_APPOINTMENT, {
-          appointmentId,
-        });
-        toast.success("Appointment cancellation requested successfully");
-        dispatch(removeAppointment(appointmentId));
-      }
-    });
-  };
-  const [date, setDate] = useState<string | undefined>(undefined);
-  const [time, setTime] = useState("");
-  const [reason, setReason] = useState("");
-
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-4 dark:bg-[#121212]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
@@ -67,12 +37,6 @@ const PatientAppointments: React.FC = () => {
       )}
       {isRescheduling && reScheduleAppointment ? (
         <RescheduleForm
-          date={date}
-          time={time}
-          reason={reason}
-          setDate={setDate}
-          setTime={setTime}
-          setReason={setReason}
           appointment={reScheduleAppointment}
           setIsRescheduling={setIsRescheduling}
         />
@@ -146,19 +110,13 @@ const PatientAppointments: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    className="text-sm text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-zinc-800 px-3 py-1 border rounded-md"
-                    onClick={() => handleCancelRequest(appointment._id)}
-                  >
-                    Request Cancellation
-                  </button>
-                  <button
                     className="text-sm text-blue-600 border-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-zinc-800 px-3 py-1 border rounded-md"
                     onClick={() => {
                       setReScheduleAppointment(appointment);
                       setIsRescheduling(true);
                     }}
                   >
-                    Request Reschedule
+                    Reschedule
                   </button>
                 </div>
               </div>
