@@ -62,7 +62,6 @@ const DoctorAppointments: React.FC = () => {
     return age;
   };
 
-  // Handle dynamic resizing
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);

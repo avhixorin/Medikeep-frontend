@@ -14,7 +14,6 @@ import { User } from "@/types/types";
 import useSubmitForm from "@/utils/submitForm";
 import { Link } from "react-router-dom";
 
-// Constants
 const initialFormValues: User = {
   role: "patient",
   firstName: "",
@@ -52,7 +51,6 @@ const validationSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
-// Helper Components
 const Sidebar: React.FC<{
   currentSlide: number;
   setCurrentSlide: (index: number) => void;
@@ -140,7 +138,6 @@ const ProgressIndicator: React.FC<{
   </div>
 );
 
-// Main Component
 const SignUpA: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [currentSlide, setCurrentSlide] = useState(0);

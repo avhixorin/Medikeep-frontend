@@ -4,28 +4,24 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Type definition for the GLTF result
 type GLTFResult = {
   scene: THREE.Group;
   nodes: { [key: string]: THREE.Object3D };
   materials: { [key: string]: THREE.Material };
 };
 
-// DNA Component
 const DNA: React.FC = () => {
   const { scene } = useGLTF('/DNA/dnaModel.glb') as GLTFResult;
   const groupRef = useRef<THREE.Group>(null);
 
-  // Rotate the model around its local axis (e.g., Y-axis)
   useFrame(() => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.01; // Keep rotation in useFrame for smooth animation
+      groupRef.current.rotation.y += 0.01;
     }
   });
 
   useEffect(() => {
     if (groupRef.current) {
-      // Center the model
       const boundingBox = new THREE.Box3().setFromObject(groupRef.current);
       const boxCenter = boundingBox.getCenter(new THREE.Vector3());
       groupRef.current.position.sub(boxCenter);
@@ -40,7 +36,6 @@ const DNA: React.FC = () => {
   );
 };
 
-// DNAViewer Component
 const DNAViewer: React.FC = () => {
   return (
     <Canvas>
@@ -52,11 +47,9 @@ const DNAViewer: React.FC = () => {
           maxDistance={350}
         />
         
-        {/* Adjust ambient light intensity */}
-        <ambientLight intensity={0.8} /> {/* Lower intensity for a softer light */}
+        <ambientLight intensity={0.8} /> 
         
-        {/* Adjust directional light */}
-        <directionalLight position={[200, 200, 200]} intensity={1.5} /> {/* Lower intensity */}
+        <directionalLight position={[200, 200, 200]} intensity={1.5} /> 
         
         <PerspectiveCamera
           makeDefault

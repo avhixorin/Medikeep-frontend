@@ -21,7 +21,6 @@ const SignInForm: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Validation schema
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email format")
@@ -31,7 +30,6 @@ const SignInForm: React.FC = () => {
       .required("Password is required"),
   });
 
-  // Form submit handler
   const handleSubmit = async (values: { email: string; password: string }) => {
     setLoading(true);
     try {

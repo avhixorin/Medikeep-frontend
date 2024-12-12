@@ -51,7 +51,6 @@ export type User = {
   __v?: number;
 };
 
-// Define a type for dayData
 export type DayData = number[];
 
 export type Activity = {

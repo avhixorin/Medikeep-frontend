@@ -15,7 +15,6 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-// Redux Persist configuration
 const persistConfig = {
   key: 'root',
   version: 1,

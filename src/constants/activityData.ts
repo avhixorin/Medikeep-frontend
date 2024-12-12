@@ -61,7 +61,6 @@ export const activityData = [
   { date: "2024-05-30", stepCount: 8900, heartRate: 71 },
   { date: "2024-05-31", stepCount: 7000, heartRate: 72 },
 
-  // Add data for the last 7 days (dummy data for demonstration)
   { date: "2024-06-01", stepCount: 7800, heartRate: 70 },
   { date: "2024-06-02", stepCount: 8100, heartRate: 72 },
   { date: "2024-06-03", stepCount: 8300, heartRate: 74 },
@@ -70,7 +69,6 @@ export const activityData = [
   { date: "2024-06-06", stepCount: 8900, heartRate: 72 },
   { date: "2024-06-07", stepCount: 9200, heartRate: 73 },
 
-  // Add data for the last 3 days (dummy data for demonstration)
   { date: "2024-06-08", stepCount: 9300, heartRate: 71 },
   { date: "2024-06-09", stepCount: 9400, heartRate: 70 },
   { date: "2024-06-10", stepCount: 9600, heartRate: 74 }

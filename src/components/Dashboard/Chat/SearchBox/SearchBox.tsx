@@ -24,7 +24,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
     [key: string]: "idle" | "connecting" | "sent";
   }>({});
 
-  // Handle socket events
   useEffect(() => {
     if ( !socket ) {
       toast.error("Socket is not initialized. Please refresh the page.");
@@ -53,7 +52,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
     };
   }, [socket, dispatch]);
 
-  // Handle connection requests
   const handleConnect = (userId: string) => {
     if (!socket) {
       toast.error("Socket is not initialized. Please refresh the page.");
@@ -71,7 +69,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center">
       <div className="relative rounded-lg bg-white dark:bg-[#1e293b] shadow-md p-6 max-w-lg w-[90%]">
-        {/* Close Button */}
         <button
           onClick={() => setIsSearching(false)}
           className="absolute top-3 right-3 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors text-2xl"
@@ -79,12 +76,10 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
           &times;
         </button>
 
-        {/* Header */}
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
           Search
         </h2>
 
-        {/* Search Input */}
         <Input
           type="text"
           placeholder="Search username..."
@@ -93,7 +88,6 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
           className="w-full bg-transparent px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all mb-4"
         />
 
-        {/* Search Results */}
         {filteredUsers.length > 0 ? (
           <div className="max-h-[60vh] overflow-y-auto scrollbar-webkit overflow-x-hidden rounded-md">
             {filteredUsers.map((u: User) => {

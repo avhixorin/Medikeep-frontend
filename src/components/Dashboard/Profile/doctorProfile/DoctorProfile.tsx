@@ -214,7 +214,6 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
 }
 
 export default DoctorProfile;
-// Reusable InputWithIcon component
 interface InputWithIconProps {
   icon: React.ReactNode;
   label: string;

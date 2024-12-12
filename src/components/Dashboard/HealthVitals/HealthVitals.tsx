@@ -25,7 +25,6 @@ const HealthDashboard: React.FC = () => {
     return prev < current ? "up" : "down";
   };
 
-  // Use useEffect to avoid infinite loop
   useEffect(() => {
     setBodyMeasurements((prevMeasurements) => ({
       ...prevMeasurements,
@@ -35,7 +34,6 @@ const HealthDashboard: React.FC = () => {
     }));
   }, [bodyMeasurements.chest, bodyMeasurements.waist, bodyMeasurements.hip]);
 
-  // BMI calculation moved into useEffect
   useEffect(() => {
     const bmiCalculator = (height: number, weight: number): void => {
       const heightInMeters = height / 100;

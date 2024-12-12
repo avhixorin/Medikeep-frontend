@@ -33,12 +33,10 @@ const useRTC = () => {
 
     const peerConnection = peerConnectionRef.current;
 
-    // Add local stream tracks to the connection
     localStream.getTracks().forEach((track) => {
       peerConnection.addTrack(track, localStream);
     });
 
-    // Handle remote stream
     peerConnection.ontrack = (event) => {
       if (!remoteStream) {
         const newRemoteStream = new MediaStream();
@@ -49,14 +47,12 @@ const useRTC = () => {
       });
     };
 
-    // Handle ICE candidates
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         console.log("ICE Candidate:", event.candidate);
       }
     };
 
-    // Create and set local offer
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
 

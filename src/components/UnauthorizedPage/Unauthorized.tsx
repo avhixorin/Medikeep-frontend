@@ -7,9 +7,9 @@ const Unauthorized: React.FC = () => {
 
   const handleClick = () => {
     if (window.history.length > 1) {
-      navigate(-1);  // Go back if possible
+      navigate(-1); 
     } else {
-      navigate('/');  // Fallback to home if there's no history
+      navigate('/'); 
     }
   };
 
