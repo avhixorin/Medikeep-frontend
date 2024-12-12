@@ -88,7 +88,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
           className="w-full bg-transparent px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all mb-4"
         />
 
-        {filteredUsers.length > 0 ? (
+        {filteredUsers?.length > 0 ? (
           <div className="max-h-[60vh] overflow-y-auto scrollbar-webkit overflow-x-hidden rounded-md">
             {filteredUsers.map((u: User) => {
               const connectionState = u._id ? connectionStates[u._id] || "idle" : "idle";
