@@ -6,7 +6,6 @@ import {
   MicOff,
   PhoneCall,
   PhoneMissed,
-  Users,
   Video,
   VideoOff,
   X,
@@ -42,17 +41,38 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
     }
   }, [remoteStream]);
 
-  const toggleMic = () => setIsMicOn((prev) => !prev);
-  const toggleVideo = () => setIsVideoOn((prev) => !prev);
-  const startCall = () => {
-    startRTC();
+  const toggleMic = () => {
+    if (localStream) {
+      localStream.getAudioTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+      setIsMicOn((prev) => !prev);
+    }
+  };
+
+  const toggleVideo = () => {
+    if (localStream) {
+      localStream.getVideoTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+      setIsVideoOn((prev) => !prev);
+    }
+  };
+
+  const startCall = async () => {
+    await startRTC();
     setIsCallActive(true);
   };
-  const endCall = () => setIsCallActive(false);
+
+  const endCall = () => {
+    if (localStream) {
+      localStream.getTracks().forEach((track) => track.stop());
+    }
+    setIsCallActive(false);
+  };
 
   return (
     <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
-      {/* Close Button */}
       <button
         onClick={() => setIsAppointmentOnline(false)}
         className="absolute top-4 right-4 bg-gray-100/80 dark:bg-gray-900/60 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-2 rounded-full transition-colors z-50"
@@ -62,7 +82,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
       </button>
 
       <div className="bg-white/70 dark:bg-black/50 backdrop-blur-lg w-full h-full rounded-lg shadow-lg flex overflow-hidden">
-        {/* Appointment Details Section */}
         <div className="w-[20%] p-4 bg-gradient-to-b from-gray-100 via-white to-gray-50 dark:from-gray-800 dark:via-black dark:to-gray-900 flex flex-col gap-4">
           <h2 className="text-lg font-bold text-gray-800 dark:text-white">
             Appointment Details
@@ -83,7 +102,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
           </button>
         </div>
 
-        {/* Video Call Section */}
         <div className="w-[60%] p-4 bg-gradient-to-br from-purple-500/10 to-blue-500/10 dark:from-purple-900/20 dark:to-blue-900/20 flex flex-col">
           <div className="grid grid-cols-2 gap-2 h-full">
             <div className="relative bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg overflow-hidden">
@@ -115,7 +133,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
             </div>
           </div>
           <div className="flex items-center justify-center gap-4 mt-4">
-            {/* Toggle Mic */}
             <button
               onClick={toggleMic}
               className={`${
@@ -131,7 +148,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
               )}
             </button>
 
-            {/* Toggle Video */}
             <button
               onClick={toggleVideo}
               className={`${
@@ -147,12 +163,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
               )}
             </button>
 
-            {/* View Participants */}
-            <button className="bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 p-3 rounded-full">
-              <Users className="w-6 h-6" />
-            </button>
-
-            {/* Start/End Call */}
             {isCallActive ? (
               <button
                 onClick={endCall}
@@ -173,7 +183,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
           </div>
         </div>
 
-        {/* Chat Section */}
         <div className="w-[20%] p-4 bg-gradient-to-b from-gray-100 via-white to-gray-50 dark:from-gray-800 dark:via-black dark:to-gray-900 flex flex-col">
           <h2 className="text-lg font-bold text-gray-800 dark:text-white">
             Chat
