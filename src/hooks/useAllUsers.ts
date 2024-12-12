@@ -1,5 +1,6 @@
 import { setAllUsers } from "@/redux/features/allUsersSlice";
 import axios from "axios"
+import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 
 const useAllUsers = () => {
@@ -11,11 +12,9 @@ const useAllUsers = () => {
         })
 
         if(response.status === 200){
-            console.log("All users fetched successfully")
             dispatch(setAllUsers(response.data?.data))
-            console.log(response.data)
         }else{
-            console.error("Failed to fetch all users")
+            toast.error("Failed to fetch all users")
         }
 
 

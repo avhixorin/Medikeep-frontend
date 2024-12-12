@@ -22,7 +22,7 @@ const Chat: React.FC = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
-  const allUsers = useSelector((state: RootState) => state.allUsers);
+  const { allUsers } = useSelector((state: RootState) => state);
   const selectedUser = useSelector((state: RootState) => state.selectedUser.selectedUser);
   const { fetchAllUsers } = useAllUsers();
   const messages = useSelector((state: RootState) =>
@@ -36,12 +36,9 @@ const Chat: React.FC = () => {
     }
   }, [messages, selectedUser]);
   useEffect(() => {
-    const fetchData = async () => {
       if (allUsers?.users?.length === 0) {
-        await fetchAllUsers();
+         fetchAllUsers();
       }
-    };
-    fetchData();
   }, [allUsers, fetchAllUsers]);
 
   const handleSendMessage = () => {
