@@ -36,9 +36,12 @@ const Chat: React.FC = () => {
     }
   }, [messages, selectedUser]);
   useEffect(() => {
-    if (allUsers.users.length === 0) {
-      fetchAllUsers();
-    }
+    const fetchData = async () => {
+      if (allUsers?.users?.length === 0) {
+        await fetchAllUsers();
+      }
+    };
+    fetchData();
   }, [allUsers, fetchAllUsers]);
 
   const handleSendMessage = () => {
