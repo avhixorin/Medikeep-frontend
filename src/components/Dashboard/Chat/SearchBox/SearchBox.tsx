@@ -64,8 +64,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
     socket.emit(SOCKET_EVENTS.CONNECT_USER, { from: user, to: userId });
   };
 
-  // Filter users based on the search query
-  const filteredUsers = allUsers.filter((u: User) =>
+  const filteredUsers = allUsers?.filter((u: User) =>
     u.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
