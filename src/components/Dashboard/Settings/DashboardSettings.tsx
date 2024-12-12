@@ -30,7 +30,7 @@ const navItems = [
 
 export default function SettingsPage() {
   const { user } = useSelector((state: RootState) => state.auth);
-  const { theme, toggleTheme, setTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const [uploadClicked, setUploadClicked] = useState(false);
 
   const cancelUpload = () => {
