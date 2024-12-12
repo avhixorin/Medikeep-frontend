@@ -45,12 +45,12 @@ export enum SOCKET_EVENTS {
 
   // Appointments
   REQUEST_APPOINTMENT = "request_appointment",
+  ACCEPT_APPOINTMENT = "accept_appointment",
   NEW_APPOINTMENT_REQUEST = "new_appointment_request",
   REQUEST_APPOINTMENT_RESPONSE = "request_appointment_response",
-  SCHEDULED_APPOINTMENT = "scheduled_appointment",
   RESCHEDULED_APPOINTMENT = "rescheduled_appointment",
   CANCELLED_APPOINTMENT = "cancelled_appointment",
-  DECLINED_APPOINTMENT = "declined_appointment",
+  DECLINE_APPOINTMENT_REQUEST = "decline_appointment_request",
   COMPLETED_APPOINTMENT = "completed_appointment",
 
   AUTHENTICATED = "authenticated",

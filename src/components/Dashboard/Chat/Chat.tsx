@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatCard from "./ChatCard";
-import { Users } from "lucide-react";
+import { Bell, BellDotIcon, Users } from "lucide-react";
 import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,10 +14,12 @@ import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { addMyMessage } from "@/redux/features/messageSlice";
 import { v4 as uuid } from "uuid";
 import { setSelectedUser } from "@/redux/features/selectedUserSlice";
+import NotificationDrawer from "../Notifications/NotificationDrawer";
 
 const Chat: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isManagingConnections, setIsManagingConnections] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
@@ -70,7 +72,7 @@ const Chat: React.FC = () => {
         />
       )}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
-
+      {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {/* Connections Section */}
       <div className="h-[25%] w-full flex flex-col gap-6">
         <div className="flex justify-between items-center">
@@ -83,7 +85,7 @@ const Chat: React.FC = () => {
               className="stroke-[#3f3f46] dark:stroke-gray-200"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <button
               className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
               onClick={() => setIsManagingConnections(true)}
@@ -96,6 +98,17 @@ const Chat: React.FC = () => {
             >
               Add Connections
             </button>
+            {
+          (user?.notifications?.length ?? 0) > 0 ? (
+            <Bell size={22} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
+            onClick={() => setIsOpen(true)}
+            />
+          ) : (
+            <BellDotIcon size={22} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
+            onClick={() => setIsOpen(true)}
+            />
+          )
+        }
           </div>
         </div>
 

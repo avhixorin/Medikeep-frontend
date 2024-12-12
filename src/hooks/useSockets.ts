@@ -1,5 +1,5 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { addAppointment, addConnection, addConnectionRequest, removeAppointment, removeConnectionRequest, reScheduleAppointment, scheduleAppointment } from "@/redux/features/authSlice";
+import { addAppointment, addAppointmentRequest, addConnection, addConnectionRequest, removeAppointment, removeAppointmentRequest, removeConnectionRequest, reScheduleAppointment } from "@/redux/features/authSlice";
 import { addFriendMessage } from "@/redux/features/messageSlice";
 import { addNotification } from "@/redux/features/notificationsSlice";
 import { acceptConnectionResponse, AcceptedConnection, Appointment, notification, PrivateMessage, rejectConnectionResponse, RejectedConnection } from "@/types/types";
@@ -73,7 +73,7 @@ const useSockets = () => {
   }) => {
     if(data.statusCode === 200) {
     toast.success(data.message);
-    dispatch(addAppointment(data.data));
+    dispatch(addAppointmentRequest(data.data));
     }
   }, [dispatch]);
 
@@ -84,18 +84,19 @@ const useSockets = () => {
   }) => {
     if(data.statusCode === 200) {
     toast.success(data.message);
-    dispatch(addAppointment(data.data));
+    dispatch(addAppointmentRequest(data.data));
     }
   }, [dispatch]);
 
-  const handleAppointmentScheduling = useCallback((data: {
+  const handleAppointmentAcception = useCallback((data: {
     statusCode: number;
     message: string;
     data: Appointment;
   }) => {
     if(data.statusCode === 200) {
     toast.success(data.message);
-    dispatch(scheduleAppointment({appointment: data.data}));
+    dispatch(removeAppointmentRequest(data.data._id));
+    dispatch(addAppointment(data.data));
     }
   }, [dispatch]);
 
@@ -121,14 +122,14 @@ const useSockets = () => {
     }
   }, [dispatch]);
 
-  const handleAppointmentRejection = useCallback((data: {
+  const handleAppointmentRequestRejection = useCallback((data: {
     statusCode: number;
     message: string;
     data: Appointment;
   }) => {
     if(data.statusCode === 200) {
     toast.error(data.message);
-    dispatch(removeAppointment(data.data._id));
+    dispatch(removeAppointmentRequest(data.data._id));
     }
   }, [dispatch]);
 
@@ -181,18 +182,21 @@ const useSockets = () => {
       });
     }
 
+    if (!socket.hasListeners(SOCKET_EVENTS.NEW_APPOINTMENT_REQUEST)) {
+      socket.on(SOCKET_EVENTS.NEW_APPOINTMENT_REQUEST, handleNewAppointmentRequest);
+    }
+    
     if (!socket.hasListeners(SOCKET_EVENTS.REQUEST_APPOINTMENT_RESPONSE)) {
       socket.on(SOCKET_EVENTS.REQUEST_APPOINTMENT_RESPONSE, handleAppointmentRequestResponse);
     }
 
-    if (!socket.hasListeners(SOCKET_EVENTS.NEW_APPOINTMENT_REQUEST)) {
-      socket.on(SOCKET_EVENTS.NEW_APPOINTMENT_REQUEST, handleNewAppointmentRequest);
+    if (!socket.hasListeners(SOCKET_EVENTS.ACCEPT_APPOINTMENT)) {
+      socket.on(SOCKET_EVENTS.ACCEPT_APPOINTMENT, handleAppointmentAcception);
     }
 
-    if (!socket.hasListeners(SOCKET_EVENTS.SCHEDULED_APPOINTMENT)) {
-      socket.on(SOCKET_EVENTS.SCHEDULED_APPOINTMENT, handleAppointmentScheduling);
+    if (!socket.hasListeners(SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST)) {
+      socket.on(SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST, handleAppointmentRequestRejection);
     }
-
     if (!socket.hasListeners(SOCKET_EVENTS.RESCHEDULED_APPOINTMENT)) {
       socket.on(SOCKET_EVENTS.RESCHEDULED_APPOINTMENT, handleAppointmentRescheduling);
     }
@@ -201,9 +205,6 @@ const useSockets = () => {
       socket.on(SOCKET_EVENTS.CANCELLED_APPOINTMENT, handleAppointmentCancellation);
     }
 
-    if (!socket.hasListeners(SOCKET_EVENTS.DECLINED_APPOINTMENT)) {
-      socket.on(SOCKET_EVENTS.DECLINED_APPOINTMENT, handleAppointmentRejection);
-    }
 
     if (!socket.hasListeners(SOCKET_EVENTS.COMPLETED_APPOINTMENT)) {
       socket.on(SOCKET_EVENTS.COMPLETED_APPOINTMENT, handleAppointmentCompletion);
@@ -220,7 +221,7 @@ const useSockets = () => {
         console.log("Disconnected from the socket server.");
       });
     }
-  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentScheduling, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentRejection, handleAppointmentCompletion]);
+  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentCompletion, handleAppointmentRequestRejection, handleAppointmentAcception]);
 
   useEffect(() => {
     const socket = initializeSocket();

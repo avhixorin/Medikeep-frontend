@@ -46,7 +46,7 @@ export default function Welcome() {
     {
       title: "Health Overview",
       description:
-        user?.role === "Doctor"
+        user?.role === "doctor"
           ? "Monitor patient health trends and stats at a glance."
           : "Get a quick overview of your health status.",
       action: "View Overview",
@@ -61,7 +61,11 @@ export default function Welcome() {
     }else if(title === "Messages"){
       navigate('/dashboard/chats')
     }else{
-      navigate('/dashboard/vitals')
+      if(user?.role === "doctor"){
+        navigate('/dashboard/patients')
+      }else{
+        navigate('/dashboard/vitals')
+      }
     }
   }
 
@@ -70,12 +74,15 @@ export default function Welcome() {
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl dark:text-[#fafafa]">
-            Hello,
+            {user?.role === "doctor" ? "Welcome" : "Hello"},
             <br />
+            {
+              user?.role === "doctor" ? "Dr." : ""
+            }
             {user?.firstName}! 👋
           </h1>
           <p className="text-muted-foreground max-w-[700px] text-base sm:text-lg md:text-xl">
-            {user?.role === "Doctor"
+            {user?.role === "doctor"
               ? "Ready to manage your patients and appointments efficiently? Let's make healthcare seamless!"
               : "Your health is our priority. Track appointments, prescriptions, and more with ease."}
           </p>

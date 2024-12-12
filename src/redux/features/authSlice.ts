@@ -60,6 +60,12 @@ const authSlice = createSlice({
         state.user.appointments.push(action.payload);
       }
     },
+    addAppointmentRequest: (state, action: PayloadAction<Appointment>) => {
+      if (state.user) {
+        state.user.appointmentRequests = state.user.appointmentRequests || [];
+        state.user.appointmentRequests.push(action.payload);
+      }
+    },
     removeAppointment: (state, action: PayloadAction<string>) => {
       if (state.user && state.user.appointments) {
         state.user.appointments = state.user.appointments.filter(
@@ -67,14 +73,11 @@ const authSlice = createSlice({
         );
       }
     },
-    scheduleAppointment: (state, action: PayloadAction<{ appointment: Appointment }>) => {
-      if (state.user && state.user.appointments) {
-        state.user.appointments = state.user.appointments.map((appointment) => {
-          if (appointment._id === action.payload.appointment._id) {
-            return { ...appointment, ...action.payload.appointment };
-          }
-          return appointment;
-        });
+    removeAppointmentRequest: (state, action: PayloadAction<string>) => {
+      if (state.user && state.user.appointmentRequests) {
+        state.user.appointmentRequests = state.user.appointmentRequests.filter(
+          (request) => request._id !== action.payload
+        );
       }
     },
     reScheduleAppointment: (state, action: PayloadAction<{ appointmentId: string, date: string, time: string, reason: string }>) => {
@@ -101,7 +104,8 @@ export const {
   removeConnectionRequest,
   addAppointment,
   removeAppointment,
-  scheduleAppointment,
+  addAppointmentRequest,
+  removeAppointmentRequest,
   reScheduleAppointment,
 } = authSlice.actions;
 

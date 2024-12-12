@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, compareAsc, parseISO } from "date-fns";
-import { CalendarIcon, SearchIcon, X } from "lucide-react";
+import { Bell, BellDotIcon, CalendarIcon, SearchIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -17,12 +17,17 @@ import {
   DocotorAppointmentCard,
   DocotorAppointmentCardMobile,
 } from "./DoctorAppointmentCards";
+import NotificationDrawer from "../../Notifications/NotificationDrawer";
+import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 const DoctorAppointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
   const [isAppointmentOnline, setIsAppointmentOnline] = useState(false);
+  const [isManagingAppointmentRequests , setIsManagingAppointmentRequests]  = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.auth.user);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments || []
   );
@@ -76,10 +81,43 @@ const DoctorAppointments: React.FC = () => {
           appointment={selectedAppointment}
         />
       )}
+      {
+        isOpen && (
+          <NotificationDrawer setIsOpen={setIsOpen} />
+        )
+      }
+      {
+        isManagingAppointmentRequests && (
+          <ManageAppointmentRequests setIsManagingAppointmentRequests={setIsManagingAppointmentRequests} />
+        )
+      }
       <div className="w-full flex flex-col gap-8">
+        <div className="w-full flex items-center justify-between">
         <h1 className="text-3xl font-semibold text-zinc-700 dark:text-gray-200">
           Appointments
         </h1>
+        <div className="flex items-center gap-4">
+
+        <Button
+        className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+        onClick={() => setIsManagingAppointmentRequests(true)}
+        >
+          Manage Appointment Requests
+        </Button>
+        {
+          (user?.notifications?.length ?? 0) > 0 ? (
+            <Bell size={22} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
+            onClick={() => setIsOpen(true)}
+            />
+          ) : (
+            <BellDotIcon size={22} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
+            onClick={() => setIsOpen(true)}
+            />
+          )
+        }
+        </div>
+          
+        </div>
 
         <div className="flex flex-col md:flex-row items-center gap-3">
           <Popover>
@@ -183,12 +221,11 @@ const DoctorAppointments: React.FC = () => {
             )}
           </div>
         ) : (
-          <p className="text-center text-gray-500 dark:text-gray-400">
-            No appointments found.
+          <p className="w-full h-full grid place-content-center text-center text-gray-500 dark:text-gray-400">
+            You have no appointments scheduled.
           </p>
         )}
       </div>
-      ;
     </div>
   );
 };

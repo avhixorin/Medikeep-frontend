@@ -1,5 +1,5 @@
 import { RootState } from "@/redux/store/store";
-import { Users } from "lucide-react";
+import { Bell, BellDotIcon, Users } from "lucide-react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -11,15 +11,22 @@ import useSockets from "@/hooks/useSockets";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { removeAppointment } from "@/redux/features/authSlice";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
+import { Button } from "@/components/ui/button";
+import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
+import NotificationDrawer from "../../Notifications/NotificationDrawer";
 
 const PatientAppointments: React.FC = () => {
   const [isSchedulingAppointment, setIsSchedulingAppointment] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isManagingAppointmentRequests, setIsManagingAppointmentRequests] =
+    useState(false);
   const [reScheduleAppointment, setReScheduleAppointment] =
     useState<Appointment>();
   const [isRescheduling, setIsRescheduling] = React.useState(false);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments
   );
+  const user = useSelector((state: RootState) => state.auth.user);
   const { socket } = useSockets();
   const dispatch = useDispatch();
   const handleCancelRequest = async (appointmentId: string) => {
@@ -47,6 +54,12 @@ const PatientAppointments: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-4 dark:bg-[#121212]">
+      {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
+      {isManagingAppointmentRequests && (
+        <ManageAppointmentRequests
+          setIsManagingAppointmentRequests={setIsManagingAppointmentRequests}
+        />
+      )}
       {isSchedulingAppointment && (
         <SearchDoctorsForAppointments
           setIsSchedulingAppointment={setIsSchedulingAppointment}
@@ -72,12 +85,33 @@ const PatientAppointments: React.FC = () => {
           </h1>
           <Users size={24} className="stroke-[#3f3f46] dark:stroke-gray-200" />
         </div>
-        <button
-          className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
-          onClick={() => setIsSchedulingAppointment(true)}
-        >
-          Schedule an Appointment
-        </button>
+        <div className="flex items-center gap-4">
+          <Button
+            className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+            onClick={() => setIsManagingAppointmentRequests(true)}
+          >
+            Manage Appointment Requests
+          </Button>
+          <Button
+            className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+            onClick={() => setIsSchedulingAppointment(true)}
+          >
+            Schedule an Appointment
+          </Button>
+          {(user?.notifications?.length ?? 0) > 0 ? (
+            <Bell
+              size={22}
+              className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
+              onClick={() => setIsOpen(true)}
+            />
+          ) : (
+            <BellDotIcon
+              size={22}
+              className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
+              onClick={() => setIsOpen(true)}
+            />
+          )}
+        </div>
       </div>
 
       <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md p-6 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">

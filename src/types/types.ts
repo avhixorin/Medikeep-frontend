@@ -20,6 +20,7 @@ export type User = {
   }[];
   messages? : Messages;
   appointments?: Appointment[];
+  appointmentRequests?: Appointment[];
   theme?: "light" | "dark" | "retro" | "synthwave" | "cyberpunk";
   medicalLicenseNumber?: string;
   specialization?: string;
