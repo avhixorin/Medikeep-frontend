@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { format } from "date-fns";
+import useSockets from "@/hooks/useSockets";
 
 type HandleScreenProps = {
   setIsAppointmentOnline: (value: boolean) => void;
@@ -24,10 +25,11 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
-
-  const { localStream, remoteStream, startRTC } = useRTC();
+  const [isMyVideoActive, setIsMyVideoActive] = useState(false);
+  const { localStream, remoteStream, startRTC, createOffer } = useRTC();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const { socket } = useSockets();
 
   useEffect(() => {
     if (localVideoRef.current && localStream) {
@@ -59,9 +61,21 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
     }
   };
 
-  const startCall = async () => {
+  const startMyVideo = async () => {
     await startRTC();
-    setIsCallActive(true);
+    setIsMyVideoActive(true);
+  };
+
+  const startCall = async () => {
+    if (localStream) {
+      const offer = await createOffer(appointment);
+      setIsCallActive(true);
+      socket?.emit("call", {
+        type: "offer",
+        offer,
+        to: appointment.patient._id,
+      });
+    }
   };
 
   const endCall = () => {
@@ -70,6 +84,7 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
     }
     setIsCallActive(false);
   };
+
 
   return (
     <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
@@ -119,7 +134,7 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
               )}
             </div>
             <div className="relative bg-gradient-to-br from-pink-500 to-red-500 rounded-lg overflow-hidden">
-              {isCallActive ? (
+              {isMyVideoActive ? (
                 <video
                   ref={localVideoRef}
                   autoPlay
@@ -180,6 +195,14 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
                 <span className="ml-2">Start Call</span>
               </button>
             )}
+            {!isMyVideoActive && (
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full"
+                onClick={startMyVideo}
+              >
+                Start my video
+              </button>
+            )}
           </div>
         </div>
 
@@ -203,7 +226,10 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
               placeholder="Type your message..."
               className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none"
             />
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+              onClick={() => alert("Message sent!")}
+            >
               Send
             </button>
           </div>
