@@ -4,17 +4,18 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import SearchDoctorsForAppointments from "./SearchDoctorsForAppointments/SearchDoctorsForAppointments";
-import { RescheduleForm } from "./RescheduleForm/RescheduleForm";
 import { Appointment } from "@/types/types";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import useSockets from "@/hooks/useSockets";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { removeAppointment } from "@/redux/features/authSlice";
+import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 
 const PatientAppointments: React.FC = () => {
   const [isSchedulingAppointment, setIsSchedulingAppointment] = useState(false);
-  const [reScheduleAppointment, setReScheduleAppointment] = useState<Appointment>();
+  const [reScheduleAppointment, setReScheduleAppointment] =
+    useState<Appointment>();
   const [isRescheduling, setIsRescheduling] = React.useState(false);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments
@@ -33,12 +34,12 @@ const PatientAppointments: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         socket?.emit(SOCKET_EVENTS.CANCELLED_APPOINTMENT, {
-          appointmentId
+          appointmentId,
         });
         toast.success("Appointment cancellation requested successfully");
         dispatch(removeAppointment(appointmentId));
       }
-    })
+    });
   };
   const [date, setDate] = useState<string | undefined>(undefined);
   const [time, setTime] = useState("");
@@ -51,20 +52,18 @@ const PatientAppointments: React.FC = () => {
           setIsSchedulingAppointment={setIsSchedulingAppointment}
         />
       )}
-      {
-        isRescheduling && reScheduleAppointment ? (
-          <RescheduleForm
-            date={date}
-            time={time}
-            reason={reason}
-            setDate={setDate}
-            setTime={setTime}
-            setReason={setReason}
-            appointment={reScheduleAppointment}
-            setIsRescheduling={setIsRescheduling}
-          />
-        ) : null
-      }
+      {isRescheduling && reScheduleAppointment ? (
+        <RescheduleForm
+          date={date}
+          time={time}
+          reason={reason}
+          setDate={setDate}
+          setTime={setTime}
+          setReason={setReason}
+          appointment={reScheduleAppointment}
+          setIsRescheduling={setIsRescheduling}
+        />
+      ) : null}
 
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -121,8 +120,8 @@ const PatientAppointments: React.FC = () => {
                   <button
                     className="text-sm text-blue-600 border-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-zinc-800 px-3 py-1 border rounded-md"
                     onClick={() => {
-                      setReScheduleAppointment(appointment)
-                      setIsRescheduling(true)
+                      setReScheduleAppointment(appointment);
+                      setIsRescheduling(true);
                     }}
                   >
                     Request Reschedule
@@ -140,7 +139,5 @@ const PatientAppointments: React.FC = () => {
     </div>
   );
 };
-
-
 
 export default PatientAppointments;

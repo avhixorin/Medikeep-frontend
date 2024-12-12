@@ -10,11 +10,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import AppointmentCardMobile from "./AppointmentCards/AppointmentCardMobile";
-import AppointmentCard from "./AppointmentCards/AppointmentCard";
-import HandleCallScreen from "./HandleCallScreen/HandleCallScreen";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
+import HandleCallScreen from "../HandleCallScreen/HandleCallScreen";
+import {
+  DocotorAppointmentCard,
+  DocotorAppointmentCardMobile,
+} from "./DoctorAppointmentCards";
 const DoctorAppointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -146,7 +148,7 @@ const DoctorAppointments: React.FC = () => {
           <div className={isMobile ? "space-y-4" : "grid grid-cols-1 gap-2"}>
             {filteredAppointments.map((appointment) =>
               isMobile ? (
-                <AppointmentCardMobile
+                <DocotorAppointmentCardMobile
                   key={appointment._id}
                   profilePicture={appointment.patient.profilePicture || ""}
                   fullName={`${appointment.patient.firstName} ${appointment.patient.lastName}`}
@@ -161,7 +163,7 @@ const DoctorAppointments: React.FC = () => {
                   onCancel={() => console.log("Cancel")}
                 />
               ) : (
-                <AppointmentCard
+                <DocotorAppointmentCard
                   key={appointment._id}
                   appointment={appointment}
                   profilePicture={appointment.patient?.profilePicture || ""}

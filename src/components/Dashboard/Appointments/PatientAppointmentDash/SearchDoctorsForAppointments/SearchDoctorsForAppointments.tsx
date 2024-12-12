@@ -3,7 +3,7 @@ import { AppointmentStatus, User } from "@/types/types";
 import { useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import AppointmentForm from "../AppointmentForm";
+import AppointmentForm from "../PatientAppointmentForm";
 
 const SearchDoctorsForAppointments = ({
   setIsSchedulingAppointment,
@@ -31,18 +31,15 @@ const SearchDoctorsForAppointments = ({
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center">
-      {
-        isRequesting && (
-          <AppointmentForm 
+      {isRequesting && (
+        <AppointmentForm
           doctorName={`${requestedDoctors?.firstName} ${requestedDoctors?.lastName}`}
           doctorId={requestedDoctors?._id || ""}
           onCancel={() => setIsRequesting(false)}
           setAppointmentStatuses={setAppointmentStatuses}
-          />
-        )
-      }
+        />
+      )}
       <div className="relative rounded-lg bg-white dark:bg-[#1e293b] shadow-md p-6 max-w-2xl w-[90%]">
-        {/* Close Button */}
         <button
           onClick={() => setIsSchedulingAppointment(false)}
           className="absolute top-3 right-3 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors text-2xl"
@@ -50,12 +47,10 @@ const SearchDoctorsForAppointments = ({
           &times;
         </button>
 
-        {/* Header */}
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
           Search
         </h2>
 
-        {/* Search Input */}
         <Input
           type="text"
           placeholder="Search username..."
@@ -64,7 +59,6 @@ const SearchDoctorsForAppointments = ({
           className="w-full bg-transparent px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all mb-4"
         />
 
-        {/* Search Results */}
         {doctors.length > 0 ? (
           <div className="max-h-[60vh] overflow-y-auto scrollbar-webkit overflow-x-hidden rounded-md">
             {doctors.map((doctor: User) => (
@@ -90,7 +84,8 @@ const SearchDoctorsForAppointments = ({
                 <button
                   onClick={() => handleRequest(doctor)}
                   className={`px-4 py-2 rounded-lg shadow transition-all ${
-                    appointmentStatuses[doctor._id!] === AppointmentStatus.REQUESTED
+                    appointmentStatuses[doctor._id!] ===
+                    AppointmentStatus.REQUESTED
                       ? "bg-green-500 text-white"
                       : "bg-blue-500 text-white hover:bg-blue-600"
                   }`}
