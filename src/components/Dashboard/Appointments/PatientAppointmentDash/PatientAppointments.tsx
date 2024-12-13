@@ -1,6 +1,6 @@
 import { RootState } from "@/redux/store/store";
 import { Bell, BellDotIcon, Users } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import SearchDoctorsForAppointments from "./SearchDoctorsForAppointments/SearchDoctorsForAppointments";
@@ -9,6 +9,9 @@ import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import { Button } from "@/components/ui/button";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import NotificationDrawer from "../../Notifications/NotificationDrawer";
+import useSockets from "@/hooks/useSockets";
+import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import useRTC from "@/hooks/useRTC";
 
 const PatientAppointments: React.FC = () => {
   const [isSchedulingAppointment, setIsSchedulingAppointment] = useState(false);
@@ -17,11 +20,61 @@ const PatientAppointments: React.FC = () => {
     useState(false);
   const [reScheduleAppointment, setReScheduleAppointment] =
     useState<Appointment>();
+    const {peerConnectionRef, createAnswer } = useRTC();
+  const { socket } = useSockets();
   const [isRescheduling, setIsRescheduling] = React.useState(false);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments
   );
   const user = useSelector((state: RootState) => state.auth.user);
+  useEffect(() => {
+    socket?.on(SOCKET_EVENTS.RTC_EVENT, async (data) => {
+      console.log("RTC_EVENT received:", data);
+      const { type, offer, answer, candidate } = data;
+      console.log("Desctructured data:", type, offer, answer, candidate);
+      switch (type) {
+        case 'offer':
+          console.log("Offer received:", offer);
+          // if offer is received, set it as the remote description and create an answer
+          if (peerConnectionRef.current) {
+            console.log("Setting remote description for offer.");
+            await peerConnectionRef.current.setRemoteDescription(offer);
+            console.log("Creating answer for offer.");
+            createAnswer(data.offer, data.appointment);
+          }
+          break;
+  
+        case 'answer':
+          console.log("Answer received:", answer);
+          // if answer is received, set it as the remote description
+          if (peerConnectionRef.current) {
+            await peerConnectionRef.current.setRemoteDescription(answer);
+          }
+          break;
+  
+        case 'candidate':
+          // if ice candidate is received, add it to the peer connection
+          if (peerConnectionRef.current) {
+            try {
+              await peerConnectionRef.current.addIceCandidate(candidate);
+            } catch (error) {
+              console.error('Error adding ICE candidate:', error);
+            }
+          }
+          break;
+  
+        default:
+          console.log(`Unhandled RTC event type: ${type}`);
+      }
+    });
+  
+    return () => {
+      console.log("Cleaning up RTC_EVENT listener.");
+      socket?.off(SOCKET_EVENTS.RTC_EVENT);
+    };
+  }, [socket, peerConnectionRef, createAnswer]);
+  
+  
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-4 dark:bg-[#121212]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}

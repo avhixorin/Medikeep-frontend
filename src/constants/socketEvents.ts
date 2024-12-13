@@ -53,6 +53,8 @@ export enum SOCKET_EVENTS {
   DECLINE_APPOINTMENT_REQUEST = "decline_appointment_request",
   COMPLETED_APPOINTMENT = "completed_appointment",
 
+  RTC_EVENT = "rtc_event",
+
   AUTHENTICATED = "authenticated",
   AUTHENTICATION_FAILED = "authentication_failed",
   AUTHENTICATION_SUCCEEDED = "authentication_succeeded",

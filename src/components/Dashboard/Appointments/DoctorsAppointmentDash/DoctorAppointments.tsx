@@ -20,6 +20,9 @@ import {
 import NotificationDrawer from "../../Notifications/NotificationDrawer";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
+import useSockets from "@/hooks/useSockets";
+import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import useRTC from "@/hooks/useRTC";
 const DoctorAppointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -30,6 +33,8 @@ const DoctorAppointments: React.FC = () => {
     useState(false);
   const [isRescheduling, setIsRescheduling] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { peerConnectionRef, createAnswer } = useRTC();
+  const { socket } = useSockets();
   const user = useSelector((state: RootState) => state.auth.user);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments || []
@@ -62,6 +67,54 @@ const DoctorAppointments: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  useEffect(() => {
+      socket?.on(SOCKET_EVENTS.RTC_EVENT, async (data) => {
+        console.log("RTC_EVENT received:", data);
+        const { type, offer, answer, candidate } = data;
+        console.log("Desctructured data:", type, offer, answer, candidate);
+        switch (type) {
+          case 'offer':
+            console.log("Offer received:", offer);
+            // if offer is received, set it as the remote description and create an answer
+            if (peerConnectionRef.current) {
+              console.log("Setting remote description for offer.");
+              await peerConnectionRef.current.setRemoteDescription(offer);
+              console.log("Creating answer for offer.");
+              createAnswer(data.offer, data.appointment);
+            }else{
+              console.log("Peer connection not found.");
+            }
+            break;
+    
+          case 'answer':
+            console.log("Answer received:", answer);
+            // if answer is received, set it as the remote description
+            if (peerConnectionRef.current) {
+              await peerConnectionRef.current.setRemoteDescription(answer);
+            }
+            break;
+    
+          case 'candidate':
+            // if ice candidate is received, add it to the peer connection
+            if (peerConnectionRef.current) {
+              try {
+                await peerConnectionRef.current.addIceCandidate(candidate);
+              } catch (error) {
+                console.error('Error adding ICE candidate:', error);
+              }
+            }
+            break;
+    
+          default:
+            console.log(`Unhandled RTC event type: ${type}`);
+        }
+      });
+    
+      return () => {
+        console.log("Cleaning up RTC_EVENT listener.");
+        socket?.off(SOCKET_EVENTS.RTC_EVENT);
+      };
+    }, [socket, peerConnectionRef, createAnswer]);
 
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#121212]">

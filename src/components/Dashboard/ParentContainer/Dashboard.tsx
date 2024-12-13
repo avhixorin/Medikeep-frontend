@@ -7,11 +7,11 @@ const Dashboard: React.FC = () => {
   const { socket } = useSockets();
   useEffect(() => {
     if (!socket) {
-      console.warn("Socket is undefined");
-      return;
+      console.warn("Socket2 is undefined");
     }
+    
     console.log("Setting up socket listeners for events");
-  }, [socket]);
+  }, [ socket]);
 
   return (
     <div className="w-full max-h-[100dvh] bg-[#FFFCF8] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">

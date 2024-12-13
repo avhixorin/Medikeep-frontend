@@ -11,7 +11,6 @@ import {
   X,
 } from "lucide-react";
 import { format } from "date-fns";
-import useSockets from "@/hooks/useSockets";
 
 type HandleScreenProps = {
   setIsAppointmentOnline: (value: boolean) => void;
@@ -26,10 +25,14 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMyVideoActive, setIsMyVideoActive] = useState(false);
-  const { localStream, remoteStream, startRTC, createOffer } = useRTC();
+  const {
+    localStream,
+    remoteStream,
+    startRTC,
+    createOffer,
+  } = useRTC();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const { socket } = useSockets();
 
   useEffect(() => {
     if (localVideoRef.current && localStream) {
@@ -68,13 +71,9 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
 
   const startCall = async () => {
     if (localStream) {
-      const offer = await createOffer(appointment);
+      console.log("Creating offer...");
+      await createOffer(appointment);
       setIsCallActive(true);
-      socket?.emit("call", {
-        type: "offer",
-        offer,
-        to: appointment.patient._id,
-      });
     }
   };
 
@@ -84,7 +83,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
     }
     setIsCallActive(false);
   };
-
 
   return (
     <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
