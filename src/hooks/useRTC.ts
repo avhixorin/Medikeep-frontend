@@ -16,47 +16,21 @@ const useRTC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
-  const servers = useMemo(() => ({
-    iceServers: [
-      {
-        urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
-      },
-    ],
-  }), []);
+  const servers = useMemo(
+    () => ({
+      iceServers: [
+        {
+          urls: [
+            "stun:stun1.l.google.com:19302",
+            "stun:stun2.l.google.com:19302",
+          ],
+        },
+      ],
+    }),
+    []
+  );
 
-  const initializePeerConnection = useCallback((appointment: Appointment) => {
-    if (!peerConnectionRef.current) {
-      const peerConnection = new RTCPeerConnection(servers);
-
-      // Handle remote tracks
-      peerConnection.ontrack = (event) => {
-        setRemoteStream((prevStream) => {
-          const updatedStream = prevStream || new MediaStream();
-          event.streams[0].getTracks().forEach((track) => {
-            updatedStream.addTrack(track);
-          });
-          return updatedStream;
-        });
-      };
-
-      // Handle ICE candidates
-      peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
-            type: "candidate",
-            candidate: event.candidate,
-            to: user?.role === "doctor" ? appointment.patient?._id : appointment.doctor?._id,
-            appointment,
-          });
-        }
-      };
-
-      peerConnectionRef.current = peerConnection;
-    }
-    return peerConnectionRef.current;
-  }, [socket, user, servers]);
-
-  const startRTC = useCallback(async () => {
+  const grabLocalMedia = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setLocalStream(stream);
@@ -65,19 +39,68 @@ const useRTC = () => {
     }
   }, [constraints]);
 
-  const addTracksToPeerConnection = (peerConnection: RTCPeerConnection, stream: MediaStream) => {
-    stream.getTracks().forEach((track) => {
-      peerConnection.addTrack(track, stream);
-    });
-  };
+  const createPeerConnection = useCallback(
+    async (appointment: Appointment) => {
+      if (!peerConnectionRef.current) {
+        const peerConnection = new RTCPeerConnection(servers);
+
+        // Handle remote tracks
+        peerConnection.ontrack = (event) => {
+          setRemoteStream((prevStream) => {
+            const updatedStream = prevStream || new MediaStream();
+            event.streams[0].getTracks().forEach((track) => {
+              updatedStream.addTrack(track);
+            });
+            return updatedStream;
+          });
+        };
+
+        if (!localStream) {
+          await grabLocalMedia();
+        }
+
+        localStream?.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, localStream);
+        });
+
+        peerConnection.ontrack = (event) => {
+          event.streams[0].getTracks().forEach((track) => {
+            setRemoteStream((prevStream) => {
+              const updatedStream = prevStream || new MediaStream();
+              updatedStream.addTrack(track);
+              return updatedStream;
+            });
+          });
+        };
+
+        // Handle ICE candidates
+        peerConnection.onicecandidate = (event) => {
+          if (event.candidate) {
+            socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
+              type: "candidate",
+              candidate: event.candidate,
+              to:
+                user?.role === "doctor"
+                  ? appointment.patient?._id
+                  : appointment.doctor?._id,
+              appointment,
+            });
+          }
+        };
+
+        peerConnectionRef.current = peerConnection;
+      }
+      return peerConnectionRef.current;
+    },
+    [socket, user, servers, localStream, grabLocalMedia]
+  );
 
   const createOffer = async (appointment: Appointment) => {
     console.log("Creating offer started...");
-    if (!localStream) throw new Error("Local stream not initialized. Call startRTC first.");
+    if (!localStream)
+      throw new Error("Local stream not initialized. Call startRTC first.");
 
-    const peerConnection = initializePeerConnection(appointment);
-    addTracksToPeerConnection(peerConnection, localStream);
-
+    const peerConnection = await createPeerConnection(appointment);
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
     console.log("Offer created:", offer);
@@ -89,67 +112,41 @@ const useRTC = () => {
       appointment,
     });
     console.log("Offer sent to patient.");
-
   };
 
-  const createAnswer = useCallback(async (offer: RTCSessionDescriptionInit, appointment: Appointment) => {
-    if (!localStream) throw new Error("Local stream not initialized. Call startRTC first.");
-    console.log("Creating answer...");
-    const peerConnection = initializePeerConnection(appointment);
-    addTracksToPeerConnection(peerConnection, localStream);
+  const createAnswer = useCallback(
+    async (offer: RTCSessionDescriptionInit, appointment: Appointment) => {
+      if (!localStream)
+        throw new Error("Local stream not initialized. Call startRTC first.");
+      console.log("Creating answer...");
+      const peerConnection = await createPeerConnection(appointment);
+      await peerConnection.setRemoteDescription(offer);
 
-    await peerConnection.setRemoteDescription(offer);
-
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
-    console.log("Answer created:", answer);
-    console.log("Sending answer to doctor...");
-    socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
-      type: "answer",
-      answer,
-      to: appointment.doctor?._id,
-      appointment,
-    });
-    console.log("Answer sent to doctor.");
-
-  }, [localStream, initializePeerConnection, socket]);
-
-  // useEffect(() => {
-  //   const handleRTCEvent = async (data) => {
-  //     const peerConnection = initializePeerConnection(data.appointment);
-
-  //     try {
-  //       switch (data.type) {
-  //         case "offer": {
-  //           await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-  //           await createAnswer(data.offer, data.appointment);
-  //           break;
-  //         }
-  //         case "answer":
-  //           await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-  //           break;
-  //         case "candidate":
-  //           await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-  //           break;
-  //         default:
-  //           console.warn("Unknown RTC event type:", data.type);
-  //       }
-  //     } catch (error) {
-  //       console.error(`Error handling RTC event (${data.type}):`, error);
-  //     }
-  //   };
-
-  //   socket?.on(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
-
-  //   return () => {
-  //     socket?.off(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
-  //   };
-  // }, [socket, initializePeerConnection, createAnswer]);
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+      console.log("Answer created:", answer);
+      console.log("Sending answer to doctor...");
+      socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
+        type: "answer",
+        answer,
+        to: appointment.doctor?._id,
+        appointment,
+      });
+      console.log("Answer sent to doctor.");
+    },
+    [localStream, socket, createPeerConnection]
+  );
+  
+  const addAnswer = useCallback(async (answer: RTCSessionDescriptionInit) => {
+    if (!peerConnectionRef.current?.currentRemoteDescription) {
+      await peerConnectionRef.current?.setRemoteDescription(answer);
+    }
+  }, []);
 
   return {
     localStream,
     remoteStream,
-    startRTC,
+    grabLocalMedia,
     createOffer,
     createAnswer,
     setLocalStream,
@@ -157,6 +154,7 @@ const useRTC = () => {
     constraints,
     setConstraints,
     peerConnectionRef,
+    addAnswer,
   };
 };
 
