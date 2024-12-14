@@ -11,6 +11,8 @@ import {
   X,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 type HandleScreenProps = {
   setIsAppointmentOnline: (value: boolean) => void;
@@ -25,14 +27,11 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMyVideoActive, setIsMyVideoActive] = useState(false);
-  const {
-    localStream,
-    remoteStream,
-    grabLocalMedia,
-    createOffer,
-  } = useRTC();
+
+  const { localStream, remoteStream, grabLocalMedia, createOffer } = useRTC();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     if (localVideoRef.current && localStream) {
@@ -67,6 +66,10 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   };
 
   const startCall = async () => {
+    if(user?.role === "patient") {
+      setIsCallActive(true);
+      return;
+    }
     if (localStream) {
       console.log("Creating offer...");
       await createOffer(appointment);
@@ -79,6 +82,8 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
       localStream.getTracks().forEach((track) => track.stop());
     }
     setIsCallActive(false);
+    setIsMyVideoActive(false);
+    setIsAppointmentOnline(false);
   };
 
   return (
@@ -200,7 +205,7 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
             )}
           </div>
         </div>
-
+        {/* Chat Section */}
         <div className="w-[20%] p-4 bg-gradient-to-b from-gray-100 via-white to-gray-50 dark:from-gray-800 dark:via-black dark:to-gray-900 flex flex-col">
           <h2 className="text-lg font-bold text-gray-800 dark:text-white">
             Chat

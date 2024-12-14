@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { format, compareAsc, parseISO } from "date-fns";
 import { Bell, BellDotIcon, CalendarIcon, SearchIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,10 +20,6 @@ import {
 import NotificationDrawer from "../../Notifications/NotificationDrawer";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
-import useSockets from "@/hooks/useSockets";
-import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import useRTC from "@/hooks/useRTC";
-import { Appointment } from "@/types/types";
 const DoctorAppointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -34,9 +30,6 @@ const DoctorAppointments: React.FC = () => {
     useState(false);
   const [isRescheduling, setIsRescheduling] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { peerConnectionRef, createAnswer, addAnswer, closePeerConnection } =
-    useRTC();
-  const { socket } = useSockets();
   const user = useSelector((state: RootState) => state.auth.user);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments || []
@@ -69,56 +62,6 @@ const DoctorAppointments: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  const listenerAdded = useRef(false);
-
-  useEffect(() => {
-    if (listenerAdded.current) return;
-
-    listenerAdded.current = true;
-
-    const handleRTCEvent = async (data: {
-      type: string;
-      offer?: RTCSessionDescriptionInit;
-      answer?: RTCSessionDescriptionInit;
-      candidate?: RTCIceCandidate;
-      appointment: Appointment;
-    }) => {
-      switch (data.type) {
-        case "offer":
-          console.log("Offer received:", data.offer);
-          await createAnswer(data.offer!, data.appointment);
-          break;
-
-        case "answer":
-          console.log("Answer received:", data.answer);
-          await addAnswer(data.answer!);
-          break;
-
-        case "candidate":
-          console.log("ICE candidate received");
-          if (peerConnectionRef.current) {
-            try {
-              await peerConnectionRef.current.addIceCandidate(data.candidate);
-            } catch (error) {
-              console.error("Error adding ICE candidate:", error);
-            }
-          }
-          break;
-
-        default:
-          console.log(`Unhandled RTC event type: ${data.type}`);
-      }
-    };
-    
-    socket?.on(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
-
-    return () => {
-      console.log("Cleaning up RTC_EVENT listener.");
-      socket?.off(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
-      closePeerConnection();
-      listenerAdded.current = false;
-    };
-  }, [socket, peerConnectionRef, createAnswer, addAnswer, closePeerConnection]);
 
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#121212]">
