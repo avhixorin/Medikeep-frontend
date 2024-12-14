@@ -27,7 +27,7 @@ const PatientAppointments: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-4 dark:bg-[#121212]">
+    <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-4 dark:bg-[#141414]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {isManagingAppointmentRequests && (
         <ManageAppointmentRequests

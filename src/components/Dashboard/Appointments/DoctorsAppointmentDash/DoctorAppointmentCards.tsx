@@ -48,7 +48,7 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
     );
   };
   return (
-    <div className="w-full rounded-lg text-black dark:text-gray-200 bg-white dark:bg-gray-800 py-3 px-6 flex flex-wrap md:flex-nowrap justify-between items-center font-poppins border border-gray-300 dark:border-gray-700 space-y-4 md:space-y-0">
+    <div className="w-full rounded-lg text-black dark:text-gray-200 bg-white dark:bg-[#141414] py-3 px-6 flex flex-wrap md:flex-nowrap justify-between items-center font-poppins border border-gray-300 dark:border-gray-700 space-y-4 md:space-y-0">
       {isRescheduling ? (
         <RescheduleForm
           appointment={appointment}
@@ -142,7 +142,7 @@ export function DocotorAppointmentCardMobile({
     );
   };
   return (
-    <Card className="w-full max-w-md mx-auto overflow-hidden transition-all duration-300 hover:shadow-lg dark:bg-gray-800">
+    <Card className="w-full max-w-md mx-auto overflow-hidden transition-all duration-300 hover:shadow-lg dark:bg-[#141414]">
       {isRescheduling ? (
         <RescheduleForm
           appointment={appointment}

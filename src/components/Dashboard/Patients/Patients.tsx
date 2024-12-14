@@ -46,7 +46,7 @@ const Patients: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="w-full min-h-screen bg-[#F9F8F4] flex flex-col items-center px-6 py-4">
+    <div className="w-full min-h-screen bg-[#F9F8F4] flex flex-col items-center px-6 py-4 dark:bg-[#141414]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {isViewingDetails && selectedPatient && <PatientDetailsCard patient={selectedPatient} setIsViewingDetails={setIsViewingDetails} calcAge={calcAge}/>}
       {/* Header Section */}
@@ -100,7 +100,7 @@ const Patients: React.FC = () => {
           patients.map((patient, index) => (
             <Card
               key={index}
-              className="flex flex-col bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow dark:bg-gray-800"
+              className="flex flex-col bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow dark:bg-[#0a0a0a] dark:border dark:border-gray-800"
             >
               <CardHeader>
                 <div className="flex items-center gap-4">

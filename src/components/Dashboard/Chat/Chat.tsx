@@ -85,26 +85,26 @@ const Chat: React.FC = () => {
               className="stroke-[#3f3f46] dark:stroke-gray-200"
             />
           </div>
-          <div className="flex gap-2 items-center">
-            <button
-              className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+          <div className="flex gap-6 items-center">
+            <Button
+              className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
               onClick={() => setIsManagingConnections(true)}
             >
               Manage Connection Requests
-            </button>
-            <button
-              className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+            </Button>
+            <Button
+              className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
               onClick={() => setIsSearching(true)}
             >
               Add Connections
-            </button>
+            </Button>
             {
           (user?.notifications?.length ?? 0) > 0 ? (
-            <Bell size={22} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
+            <Bell size={58} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
             onClick={() => setIsOpen(true)}
             />
           ) : (
-            <BellDotIcon size={22} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
+            <BellDotIcon size={58} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
             onClick={() => setIsOpen(true)}
             />
           )
