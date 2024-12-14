@@ -24,7 +24,7 @@ const Chat: React.FC = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { allUsers } = useSelector((state: RootState) => state);
+  const allUsers = useSelector((state: RootState) => state.allUsers);
   const selectedUser = useSelector((state: RootState) => state.selectedUser.selectedUser);
   const { fetchAllUsers } = useAllUsers();
   const messages = useSelector((state: RootState) =>

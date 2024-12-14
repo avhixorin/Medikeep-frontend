@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef } from "react";
 import useSockets from "./useSockets";
 import { Appointment } from "@/types/types";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
@@ -16,8 +16,7 @@ const useRTC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
-  const servers = useMemo(
-    () => ({
+  const servers = {
       iceServers: [
         {
           urls: [
@@ -26,20 +25,17 @@ const useRTC = () => {
           ],
         },
       ],
-    }),
-    []
-  );
+    }
 
-  const grabLocalMedia = useCallback(async () => {
+  const grabLocalMedia = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       setLocalStream(stream);
     } catch (error) {
       console.error("Error accessing media devices:", error);
     }
-  }, [constraints]);
-
-  const createPeerConnection = useCallback(
+  };
+  const createPeerConnection = 
     async (appointment: Appointment) => {
       if (!peerConnectionRef.current) {
         const peerConnection = new RTCPeerConnection(servers);
@@ -63,16 +59,6 @@ const useRTC = () => {
           peerConnection.addTrack(track, localStream);
         });
 
-        peerConnection.ontrack = (event) => {
-          event.streams[0].getTracks().forEach((track) => {
-            setRemoteStream((prevStream) => {
-              const updatedStream = prevStream || new MediaStream();
-              updatedStream.addTrack(track);
-              return updatedStream;
-            });
-          });
-        };
-
         // Handle ICE candidates
         peerConnection.onicecandidate = (event) => {
           if (event.candidate) {
@@ -91,9 +77,7 @@ const useRTC = () => {
         peerConnectionRef.current = peerConnection;
       }
       return peerConnectionRef.current;
-    },
-    [socket, user, servers, localStream, grabLocalMedia]
-  );
+    }
 
   const createOffer = async (appointment: Appointment) => {
     console.log("Creating offer started...");
@@ -114,34 +98,62 @@ const useRTC = () => {
     console.log("Offer sent to patient.");
   };
 
-  const createAnswer = useCallback(
-    async (offer: RTCSessionDescriptionInit, appointment: Appointment) => {
-      if (!localStream)
-        throw new Error("Local stream not initialized. Call startRTC first.");
-      console.log("Creating answer...");
+  const createAnswer = async (
+    offer: RTCSessionDescriptionInit,
+    appointment: Appointment
+  ) => {
+    try {
+      if (!localStream) await grabLocalMedia();
+      console.log("Creating answer started...");
       const peerConnection = await createPeerConnection(appointment);
-      await peerConnection.setRemoteDescription(offer);
-
+      console.log("Setting remote description for offer...");
+      try {
+        await peerConnection.setRemoteDescription(offer);
+      } catch (error) {
+        console.error("Error setting remote description:", error);
+      }
+      // await peerConnection.setRemoteDescription(offer);
+      console.log("Remote description set.");
+      console.log("Creating answer...");
       const answer = await peerConnection.createAnswer();
-      await peerConnection.setLocalDescription(answer);
       console.log("Answer created:", answer);
-      console.log("Sending answer to doctor...");
-      socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
-        type: "answer",
-        answer,
-        to: appointment.doctor?._id,
-        appointment,
-      });
-      console.log("Answer sent to doctor.");
-    },
-    [localStream, socket, createPeerConnection]
-  );
-  
-  const addAnswer = useCallback(async (answer: RTCSessionDescriptionInit) => {
-    if (!peerConnectionRef.current?.currentRemoteDescription) {
-      await peerConnectionRef.current?.setRemoteDescription(answer);
+      console.log("Setting local description for answer...");
+      await peerConnection.setLocalDescription(answer);
+
+      // Ensure emit is called after setting local description
+      if (socket) {
+        console.log("Sending answer to doctor...");
+        socket.emit(SOCKET_EVENTS.RTC_EVENT, {
+          type: "answer",
+          answer,
+          to: appointment.doctor?._id,
+          appointment,
+        });
+        console.log("Answer sent to doctor.");
+      }
+    } catch (error) {
+      console.error("Error while creating or sending the answer:", error);
     }
-  }, []);
+  };
+
+  const addAnswer = async (answer: RTCSessionDescriptionInit) => {
+    try {
+      console.log("Adding answer...");
+      if (!peerConnectionRef.current?.currentRemoteDescription) {
+        await peerConnectionRef.current?.setRemoteDescription(answer);
+      }
+      console.log("Answer added.");
+    } catch (error) {
+      console.error("Error adding answer:", error);
+    }
+  };
+
+  const closePeerConnection = () => {
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+  };
 
   return {
     localStream,
@@ -155,6 +167,7 @@ const useRTC = () => {
     setConstraints,
     peerConnectionRef,
     addAnswer,
+    closePeerConnection,
   };
 };
 

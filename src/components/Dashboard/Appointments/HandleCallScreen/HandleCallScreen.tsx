@@ -28,7 +28,7 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   const {
     localStream,
     remoteStream,
-    startRTC,
+    grabLocalMedia,
     createOffer,
   } = useRTC();
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -38,13 +38,10 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
     if (localVideoRef.current && localStream) {
       localVideoRef.current.srcObject = localStream;
     }
-  }, [localStream]);
-
-  useEffect(() => {
     if (remoteVideoRef.current && remoteStream) {
       remoteVideoRef.current.srcObject = remoteStream;
     }
-  }, [remoteStream]);
+  }, [localStream, remoteStream]);
 
   const toggleMic = () => {
     if (localStream) {
@@ -65,7 +62,7 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   };
 
   const startMyVideo = async () => {
-    await startRTC();
+    await grabLocalMedia();
     setIsMyVideoActive(true);
   };
 

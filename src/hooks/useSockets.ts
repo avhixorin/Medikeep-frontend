@@ -210,18 +210,6 @@ const useSockets = () => {
       socket.on(SOCKET_EVENTS.COMPLETED_APPOINTMENT, handleAppointmentCompletion);
     }
 
-    if (!socket.hasListeners("ice-candidate")) {
-      socket.on("ice-candidate", (data) => {
-        console.log("Received ICE candidate:", data);
-      });
-    }
-
-    if (!socket.hasListeners("call")) {
-      socket.on("call", (data) => {
-        console.log("Received Call:", data);
-      });
-    }
-
     if (!socket.hasListeners(SOCKET_EVENTS.CONNECT_ERROR)) {
       socket.on(SOCKET_EVENTS.CONNECT_ERROR, (err) => {
         console.error("Socket connection error:", err);

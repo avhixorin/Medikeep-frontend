@@ -1,52 +1,62 @@
 import { RootState } from "@/redux/store/store";
 import { Bell, BellDotIcon, Users } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import SearchDoctorsForAppointments from "./SearchDoctorsForAppointments/SearchDoctorsForAppointments";
 import { Appointment } from "@/types/types";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import { Button } from "@/components/ui/button";
-import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import NotificationDrawer from "../../Notifications/NotificationDrawer";
 import useSockets from "@/hooks/useSockets";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import useRTC from "@/hooks/useRTC";
+import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
+import HandleCallScreen from "../HandleCallScreen/HandleCallScreen";
 
 const PatientAppointments: React.FC = () => {
   const [isSchedulingAppointment, setIsSchedulingAppointment] = useState(false);
+  const [appointInQuestion, setAppointInQuestion] = useState<Appointment>();
+  const [isSomeOneCalling, setIsSomeOneCalling] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isManagingAppointmentRequests, setIsManagingAppointmentRequests] =
     useState(false);
   const [reScheduleAppointment, setReScheduleAppointment] =
     useState<Appointment>();
-  const { peerConnectionRef, createAnswer, addAnswer } = useRTC();
+  const { peerConnectionRef, createAnswer, addAnswer, closePeerConnection } = useRTC();
   const { socket } = useSockets();
   const [isRescheduling, setIsRescheduling] = React.useState(false);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments
   );
   const user = useSelector((state: RootState) => state.auth.user);
+
+  const listenerAdded = useRef(false);
+
   useEffect(() => {
-    socket?.on(SOCKET_EVENTS.RTC_EVENT, async (data) => {
-      console.log("RTC_EVENT received:", data);
-      console.log("The event type is:", data.type);
+    if (listenerAdded.current) return;
+
+    listenerAdded.current = true;
+
+    const handleRTCEvent = async (data: {
+      type: string;
+      offer?: RTCSessionDescriptionInit;
+      answer?: RTCSessionDescriptionInit;
+      candidate?: RTCIceCandidate;
+      appointment: Appointment;
+    }) => {
       switch (data.type) {
         case "offer":
           console.log("Offer received:", data.offer);
-          // if offer is received, set it as the remote description and create an answer
-          console.log("Setting remote description for offer.");
-          await createAnswer(data.offer, data.appointment);
+          await createAnswer(data.offer!, data.appointment);
           break;
 
         case "answer":
           console.log("Answer received:", data.answer);
-          // if answer is received, set it as the remote description
-          await addAnswer(data.answer);
+          await addAnswer(data.answer!);
           break;
 
         case "candidate":
-          // if ice candidate is received, add it to the peer connection
           console.log("ICE candidate received");
           if (peerConnectionRef.current) {
             try {
@@ -60,13 +70,18 @@ const PatientAppointments: React.FC = () => {
         default:
           console.log(`Unhandled RTC event type: ${data.type}`);
       }
-    });
+    };
+
+    socket?.on(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
 
     return () => {
       console.log("Cleaning up RTC_EVENT listener.");
-      socket?.off(SOCKET_EVENTS.RTC_EVENT);
+      socket?.off(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
+      closePeerConnection();
+      listenerAdded.current = false;
     };
-  }, [socket, peerConnectionRef, createAnswer, addAnswer]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
   return (
     <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-4 dark:bg-[#121212]">
@@ -76,6 +91,14 @@ const PatientAppointments: React.FC = () => {
           setIsManagingAppointmentRequests={setIsManagingAppointmentRequests}
         />
       )}
+      {
+        (isSomeOneCalling && appointInQuestion) && (
+          <HandleCallScreen
+            setIsAppointmentOnline={setIsSomeOneCalling}
+            appointment={appointInQuestion}
+          />
+        )
+      }
       {isSchedulingAppointment && (
         <SearchDoctorsForAppointments
           setIsSchedulingAppointment={setIsSchedulingAppointment}
@@ -163,6 +186,17 @@ const PatientAppointments: React.FC = () => {
                     }}
                   >
                     Reschedule
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    className="text-sm text-blue-600 border-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-zinc-800 px-3 py-1 border rounded-md"
+                    onClick={() => {
+                      setAppointInQuestion(appointment);
+                      setIsSomeOneCalling(true);
+                    }}
+                  >
+                    Handle Call
                   </button>
                 </div>
               </div>
