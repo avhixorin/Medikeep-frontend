@@ -20,6 +20,8 @@ export type User = {
   }[];
   messages? : Messages;
   appointments?: Appointment[];
+  about?: string;
+  medicalHistory?: MedicalHistory;
   appointmentRequests?: Appointment[];
   theme?: "light" | "dark" | "retro" | "synthwave" | "cyberpunk";
   medicalLicenseNumber?: string;
@@ -51,6 +53,85 @@ export type User = {
   updatedAt?: string;
   __v?: number;
 };
+
+export type MedicalHistory ={
+  bloodType: string;
+  emergencyContact: {
+    name: string;
+    relationship: string;
+    phoneNumber: string;
+  };
+  medicalConditions: {
+    name: string;
+    diagnosisDate: string;
+    status: "active" | "inactive" | "resolved";
+  }[];
+  medications: {
+    name: string;
+    dosage: string;
+    frequency: string;
+    startDate: string;
+    endDate: string;
+  }[];
+  surgeries: {
+    procedure: string;
+    date: string;
+    outcome: string;
+  }[];
+  immunizations: {
+    vaccine: string;
+    date: string;
+    boosterDate: string;
+  }[];
+  familyHistory: {
+    relationship: string;
+    conditions: string[];
+    ageOnset: number;
+  }[];
+  lifestyle: {
+    smokingStatus: "current" | "former" | "never";
+    alcoholConsumption: "none" | "occasional" | "moderate" | "heavy";
+    diet: "vegetarian" | "vegan" | "pescatarian" | "omnivore";
+    exerciseFrequency: "daily" | "weekly" | "monthly" | "never";
+    substanceUse: "yes" | "no";
+  };
+  allergies: {
+    allergen: string;
+    reaction: string;
+    type: "food" | "drug" | "environmental" | "insect" | "latex" | "mold" | "pet" | "pollen";
+  }[];
+  screenings: {
+    type: string;
+    date: string;
+    result: string;
+  }[];
+  mentalHealth: {
+    condition: string;
+    diagnosisDate: string;
+    treatment: string;
+  }[];
+  reproductiveHealth: {
+    pregnencies: number;
+    menstrualHistory: string;
+    contraceptiveUse: string;
+  };
+  currentSymptoms: {
+    symptom: string;
+    painScale: number;
+    frequency: string;
+  }[];
+  physicalMeasurements: {
+    height: number;
+    weight: number;
+    bloodPressure: string;
+  };
+  insurance: {
+    provider: string;
+    policyNumber: string;
+    validitiy: string;
+  };
+
+}
 
 export type DayData = number[];
 
