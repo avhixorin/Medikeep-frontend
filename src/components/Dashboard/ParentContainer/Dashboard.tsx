@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import LeftSidebar from "../LeftSideBar/LeftSideBar";
+import LeftSidebar from "./LeftSideBar/LeftSideBar";
 import useSockets from "@/hooks/useSockets";
 
 const Dashboard: React.FC = () => {

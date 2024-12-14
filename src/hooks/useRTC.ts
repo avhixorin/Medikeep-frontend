@@ -10,7 +10,7 @@ const useRTC = () => {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [constraints, setConstraints] = useState<MediaStreamConstraints>({
     audio: true,
-    video: true,
+    video: { width: 1280, height: 720 },
   });
   const { socket } = useSockets();
   const user = useSelector((state: RootState) => state.auth.user);

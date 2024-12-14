@@ -72,7 +72,7 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
       </p>
 
       <p className="bg-indigo-500 dark:bg-indigo-700 rounded-md py-1 px-3 text-sm text-white flex-shrink-0">
-        {appointment?.date}
+        {format(appointment?.date, "dd MMM yyyy")}
       </p>
 
       <p className="text-md text-center flex-1 max-w-[12rem] truncate">
