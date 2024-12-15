@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { setAuthUser } from "../../../../redux/features/authSlice";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { setAuthUser } from "@/redux/features/authSlice";
 
 interface UploadProps {
   cancelUpload: () => void;

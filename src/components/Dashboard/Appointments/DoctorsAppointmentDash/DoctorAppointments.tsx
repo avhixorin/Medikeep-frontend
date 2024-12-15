@@ -64,7 +64,7 @@ const DoctorAppointments: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#fffcf8] p-6 gap-2 dark:bg-[#141414]">
+    <div className="w-full h-full flex flex-col bg-transparent p-6 gap-2 dark:bg-[#141414]">
       {isAppointmentOnline && (
         <HandleCallScreen
           setIsAppointmentOnline={setIsAppointmentOnline}

@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import useTheme from "@/hooks/useTheme";
-import Upload from "../../Profile/Upload/Upload";
 import React from "react";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
+import Upload from "@/utils/Upload";
 
 const General = () => {
   const [uploadClicked, setUploadClicked] = React.useState(false);

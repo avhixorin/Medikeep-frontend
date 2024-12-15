@@ -56,7 +56,7 @@ const HealthDashboard: React.FC = () => {
   }, [height, weight]);
 
   return (
-    <div className="flex flex-col lg:flex-row h-full bg-[#FFFCF8] dark:bg-[#141414]">
+    <div className="flex flex-col lg:flex-row h-full bg-transparent dark:bg-[#141414]">
       <div className="flex flex-col w-full h-full justify-evenly items-center px-4">
         <div className="flex justify-between items-center w-full">
           <h1 className="text-xl lg:text-2xl font-bold">Health Overview</h1>

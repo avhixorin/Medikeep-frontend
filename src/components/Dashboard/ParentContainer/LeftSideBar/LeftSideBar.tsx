@@ -62,7 +62,7 @@ export default function LeftSidebar() {
         );
       }
     } else {
-      toast("Logout cancelled", { icon: "info" });
+      toast.error("Logout cancelled");
     }
   };
 

@@ -68,7 +68,7 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-[#fffcf8] dark:bg-[#141414] p-8">
+    <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-8">
       {isManagingConnections && (
         <ManageConnections
           setIsManagingConnections={setIsManagingConnections}
@@ -102,13 +102,13 @@ const Chat: React.FC = () => {
             </Button>
             {(user?.notifications?.length ?? 0) > 0 ? (
               <BellDotIcon
-                size={58}
+                size={60}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
               />
             ) : (
               <Bell
-                size={58}
+                size={60}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
               />

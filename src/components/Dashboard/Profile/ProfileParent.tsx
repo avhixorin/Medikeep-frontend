@@ -3,6 +3,7 @@ import DoctorProfile from './doctorProfile/DoctorProfile';
 import PatientProfile from './patientProfile/PatientProfile';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
+import ProfileHeader from './ProfileHeader';
 
 export default function ProfileSection() {
   const [userType, setUserType] = useState('patient');
@@ -18,8 +19,9 @@ export default function ProfileSection() {
 
   return (
     <div
-      className="w-full h-full bg-gradient-to-br from-[#00c9ff]  via-[#92fe9d] to-[#00c9ff]"
+      className="w-full h-full bg-transparent dark:bg-[#141414]"
     >
+      <ProfileHeader user={user!} />
       {userType === 'doctor' ? <DoctorProfile user={user} /> : <PatientProfile user={user} />}
     </div>
   );

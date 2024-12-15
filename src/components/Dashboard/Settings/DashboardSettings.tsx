@@ -18,7 +18,7 @@ export default function SettingsPage() {
   const { user } = useSelector((state: RootState) => state.auth);
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="w-full h-full bg-transparent">
       <header className="flex items-center justify-between border-b px-4 py-3 md:px-6">
         <div>
           <h1 className="text-lg font-semibold">{user?.firstName}</h1>
@@ -54,7 +54,7 @@ export default function SettingsPage() {
         items={navItems}
       />
 
-      <div className="p-6">
+      <div className="p-6 overflow-y-auto scrollbar-webkit">
         <Outlet />
       </div>
     </div>

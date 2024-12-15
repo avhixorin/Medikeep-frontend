@@ -48,7 +48,7 @@ const Patients: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="w-full min-h-screen bg-[#F9F8F4] flex flex-col items-center px-6 py-4 dark:bg-[#141414]">
+    <div className="w-full min-h-screen bg-transparent flex flex-col items-center px-6 py-4 dark:bg-[#141414]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {isViewingDetails && selectedPatient && (
         <PatientDetailsCard
