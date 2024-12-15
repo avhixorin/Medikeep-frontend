@@ -64,9 +64,9 @@ const Forget = () => {
   };
 
   return (
-    <div className="flex min-h-screen px-6 py-8 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6 space-y-6">
-        <h2 className="text-xl font-bold text-center text-gray-800">
+    <div className="flex min-h-screen px-6 py-8 bg-gradient-to-tl from-blue-200 via-green-200 to-yellow-200 dark:from-[#3f3f3f] dark:via-[#191919] dark:to-[#020202] dark:text-white justify-center items-center">
+      <div className="w-full max-w-md bg-white dark:bg-[#1c1c1c] rounded-lg shadow-lg p-6 space-y-6">
+        <h2 className="text-xl font-bold text-center text-gray-800 dark:text-gray-300">
           Forgot Password
         </h2>
         <Formik
@@ -79,7 +79,7 @@ const Forget = () => {
               {!credentialsTrue ? (
                 <>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       Email<span className="text-red-500">*</span>
                     </label>
                     <Field
@@ -97,7 +97,7 @@ const Forget = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       Date of Birth<span className="text-red-500">*</span>
                     </label>
                     <Popover>
@@ -147,7 +147,7 @@ const Forget = () => {
               ) : (
                 <>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       New Password<span className="text-red-500">*</span>
                     </label>
                     <Field
@@ -165,7 +165,7 @@ const Forget = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       Confirm New Password<span className="text-red-500">*</span>
                     </label>
                     <Field

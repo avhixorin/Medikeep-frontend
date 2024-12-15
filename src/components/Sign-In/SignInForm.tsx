@@ -73,12 +73,14 @@ const SignInForm: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200">
+    <div className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200
+    dark:from-[#323232] dark:via-[#222222] dark:to-[#181818] dark:text-white
+    ">
       <div className="flex items-center justify-center col-span-1 lg:p-8">
-        <div className="lform-container w-[75%] flex justify-center items-center">
+        <div className="lform-container w-[75%] flex justify-center items-center dark:bg-[#141414]">
           <div className="w-full">
             <div className="w-full mb-9 flex items-center justify-center">
-              <p className="sititle text-center w-full">Welcome back</p>
+              <p className="sititle text-center w-full dark:text-gray-400">Welcome back</p>
             </div>
             <Formik
               initialValues={{ email: "", password: "" }}
@@ -88,8 +90,8 @@ const SignInForm: React.FC = () => {
               {() => (
                 <Form className="form flex flex-col gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">
-                      Email<span className="text-red-500">*</span>
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Email<span className="text-red-500 dark:text-red-400">*</span>
                     </label>
                     <Field
                       name="email"
@@ -103,8 +105,8 @@ const SignInForm: React.FC = () => {
                     />
                   </div>
                   <div className="w-full relative space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">
-                      Password<span className="text-red-500">*</span>
+                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Password<span className="text-red-500 dark:text-red-400">*</span>
                     </label>
                     <Field
                       type={showPassword ? "text" : "password"}
@@ -154,7 +156,7 @@ const SignInForm: React.FC = () => {
 
                   <p className="page-link">
                     <span
-                      className="page-link-label"
+                      className="page-link-label dark:text-gray-400 dark:hover:text-gray-200"
                       onClick={() => navigate("/forgot")}
                     >
                       Forgot Password?
@@ -174,9 +176,9 @@ const SignInForm: React.FC = () => {
               )}
             </Formik>
 
-            <p className="sign-up-label">
+            <p className="sign-up-label dark:text-gray-400">
               Don't have an account?
-              <Link to={"/sign-up"} className="sign-up-link">
+              <Link to={"/sign-up"} className="sign-up-link dark:text-blue-400 dark:hover:text-blue-300">
                 Sign up
               </Link>
             </p>
