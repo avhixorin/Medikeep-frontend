@@ -9,7 +9,7 @@ export enum SOCKET_EVENTS {
   ERROR = "error",
   GET_ROOMS = "get_rooms",
   ROOMS = "rooms",
-  GET_ONLINE_USERS = "get_online_users",
+  GET_ONLINE_FRIENDS = "friends",
   GET_ONLINE_USERS_RESPONSE = "get_online_users_response",
   NEW_CONNECTION_NOTIFICATION = "new_connection_notification",
   USERS = "users",

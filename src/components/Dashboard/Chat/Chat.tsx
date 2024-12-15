@@ -15,12 +15,14 @@ import { addMyMessage } from "@/redux/features/messageSlice";
 import { v4 as uuid } from "uuid";
 import { setSelectedUser } from "@/redux/features/selectedUserSlice";
 import NotificationDrawer from "../Notifications/NotificationDrawer";
+import { User } from "@/types/types";
 
 const Chat: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isManagingConnections, setIsManagingConnections] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [activeFriends,setActiveFriends] = useState<User[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
@@ -66,6 +68,27 @@ const Chat: React.FC = () => {
       handleSendMessage();
     }
   };
+  useEffect(() => {
+    if(socket){
+      socket.emit(SOCKET_EVENTS.GET_ONLINE_FRIENDS, user?._id);
+    }
+    socket?.on(SOCKET_EVENTS.GET_ONLINE_FRIENDS, (data: {
+      statusCode: number,
+      message: string,
+      data: User[]
+    }) => {
+      setActiveFriends(data.data);
+    });
+
+    return () => {
+      socket?.off(SOCKET_EVENTS.GET_ONLINE_FRIENDS);
+    }
+
+  }, [socket, user]);
+
+  const getUserStatus = (userId: string) => {
+    return activeFriends.find((user) => user._id === userId) ? "Active now" : "Offline";
+  }
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-8">
@@ -134,7 +157,7 @@ const Chat: React.FC = () => {
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex shadow-xl overflow-hidden">
         <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
           {user?.connections?.map((connUser) => (
-            <ChatCard key={connUser._id} user={connUser} />
+            <ChatCard key={connUser._id} user={connUser} isActive={getUserStatus(connUser._id!) === "Active now" ? true : false} />
           ))}
         </aside>
 
@@ -155,7 +178,7 @@ const Chat: React.FC = () => {
                     {selectedUser.username}
                   </h3>
                 </div>
-                <h3 className="text-slate-400">Active now</h3>
+                <h3 className={`${getUserStatus(selectedUser._id!) === "Active now" ? "text-gray-100" : "text-gray-300"}`}>{getUserStatus(selectedUser._id!)}</h3>
               </header>
 
               <div

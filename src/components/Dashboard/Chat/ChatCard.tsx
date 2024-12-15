@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 interface Props {
   user: User;
+  isActive?: boolean;
 }
 
-const ChatCard: React.FC<Props> = ({ user }) => {
+const ChatCard: React.FC<Props> = ({ user, isActive }) => {
   const selectedUser = useSelector((state: RootState) => state.selectedUser.selectedUser);
   const dispatch = useDispatch();
 
@@ -26,7 +27,7 @@ const ChatCard: React.FC<Props> = ({ user }) => {
       </div>
       
       <div className='flex items-center justify-center mr-4'>
-        <Circle size={10} color='#00A884' className='dark:fill-[#005F4E]' />
+        <Circle size={10} color='#00A884' className={`dark:fill-[#005F4E] ${isActive ? "fill-[#00A884]" : ""}`} />
       </div>
     </div>
   );
