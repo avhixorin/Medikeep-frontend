@@ -7,6 +7,7 @@ import { useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { io, Socket } from "socket.io-client";
+import useNotifyMusic from "./useNotify";
 let sharedSocket: Socket | null = null;
 
 const initializeSocket = (): Socket => {
@@ -29,11 +30,12 @@ const initializeSocket = (): Socket => {
 
 const useSockets = () => {
   const dispatch = useDispatch();
-
+  const { generalNotify} = useNotifyMusic();
   const handleNewConnectionNotification = useCallback((data: notification) => {
     toast.success(data.message);
+    generalNotify();
     dispatch(addConnectionRequest(data.from!));
-  }, [dispatch]);
+  }, [dispatch, generalNotify]);
 
   const handleAcceptConnectionResponse = useCallback((data: acceptConnectionResponse) => {
     toast.success(data.message);
@@ -48,7 +50,7 @@ const useSockets = () => {
   }, [dispatch]);
 
   const handleRejectConnectionResponse = useCallback((data: rejectConnectionResponse) => {
-    toast.error(data.message);
+    toast.success(data.message);
     dispatch(removeConnectionRequest(data.data.requesterId));
   }, [dispatch]);
 
@@ -79,9 +81,10 @@ const useSockets = () => {
   }) => {
     if(data.statusCode === 200) {
     toast.success(data.message);
+    generalNotify();
     dispatch(addAppointmentRequest(data.data));
     }
-  }, [dispatch]);
+  }, [dispatch, generalNotify]);
 
   const handleAppointmentAcception = useCallback((data: {
     statusCode: number;
@@ -90,10 +93,11 @@ const useSockets = () => {
   }) => {
     if(data.statusCode === 200) {
     toast.success(data.message);
+    generalNotify();
     dispatch(removeAppointmentRequest(data.data._id));
     dispatch(addAppointment(data.data));
     }
-  }, [dispatch]);
+  }, [dispatch, generalNotify]);
 
   const handleAppointmentRescheduling = useCallback((data: {
     statusCode: number;
@@ -112,7 +116,6 @@ const useSockets = () => {
     data: Appointment;
   }) => {
     if(data.statusCode === 200) {
-    toast.error(data.message);
     dispatch(removeAppointment(data.data._id));
     }
   }, [dispatch]);
@@ -123,7 +126,7 @@ const useSockets = () => {
     data: Appointment;
   }) => {
     if(data.statusCode === 200) {
-    toast.error(data.message);
+    toast.success(data.message);
     dispatch(removeAppointmentRequest(data.data._id));
     }
   }, [dispatch]);
@@ -163,6 +166,7 @@ const useSockets = () => {
     if (!socket.hasListeners(SOCKET_EVENTS.NOTIFICATION)) {
       socket.on(SOCKET_EVENTS.NOTIFICATION, (data: notification) => {
         toast.success(data.message);
+        generalNotify();
         dispatch(addNotification(data));
       });
     }
@@ -216,7 +220,7 @@ const useSockets = () => {
         console.log("Disconnected from the socket server.");
       });
     }
-  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentCompletion, handleAppointmentRequestRejection, handleAppointmentAcception]);
+  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentCompletion, handleAppointmentRequestRejection, handleAppointmentAcception, generalNotify]);
 
   useEffect(() => {
     const socket = initializeSocket();

@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
 
 interface DocotorAppointmentCardProps {
   appointment: Appointment;
@@ -38,7 +39,17 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
     }
     return age;
   };
-  const handleCancel = () => {
+  const handleCancel = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `Do you really want to cancel the appointment with ${appointment.patient.firstName} ${appointment.patient.lastName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, cancel",
+      cancelButtonText: "No, keep",
+      reverseButtons: true,
+    });
+    if (!result.isConfirmed) return;
     socket?.emit(SOCKET_EVENTS.CANCELLED_APPOINTMENT, {
       appointmentId: appointment._id,
     });
@@ -132,7 +143,17 @@ export function DocotorAppointmentCardMobile({
     }
     return age;
   };
-  const handleCancel = () => {
+  const handleCancel = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `Do you really want to cancel the appointment with ${appointment.patient.firstName} ${appointment.patient.lastName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, cancel",
+      cancelButtonText: "No, keep",
+      reverseButtons: true,
+    });
+    if (!result.isConfirmed) return;
     socket?.emit(SOCKET_EVENTS.CANCELLED_APPOINTMENT, {
       appointmentId: appointment._id,
     });
@@ -152,9 +173,13 @@ export function DocotorAppointmentCardMobile({
       <CardContent className="p-6">
         <div className="flex items-center space-x-4">
           <Avatar className="w-16 h-16 border-2 border-primary">
-            <AvatarImage src={appointment?.patient.profilePicture} alt={appointment?.patient.firstName} />
+            <AvatarImage
+              src={appointment?.patient.profilePicture}
+              alt={appointment?.patient.firstName}
+            />
             <AvatarFallback>
-              {appointment?.patient.firstName[0]}{appointment?.patient.lastName[0]}
+              {appointment?.patient.firstName[0]}
+              {appointment?.patient.lastName[0]}
             </AvatarFallback>
           </Avatar>
           <div>
@@ -170,7 +195,9 @@ export function DocotorAppointmentCardMobile({
           <div className="flex items-center text-gray-700 dark:text-gray-300">
             <CalendarIcon className="w-5 h-5 mr-2 text-primary" />
             <span className="font-semibold">Date:</span>
-            <span className="ml-2">{format(appointment?.date, "dd MMM yyyy")}</span>
+            <span className="ml-2">
+              {format(appointment?.date, "dd MMM yyyy")}
+            </span>
           </div>
           <div className="flex items-center text-gray-700 dark:text-gray-300">
             <ClockIcon className="w-5 h-5 mr-2 text-primary" />
