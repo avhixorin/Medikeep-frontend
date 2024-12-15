@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -17,7 +16,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
       <div>
         <h1 className="text-lg font-semibold">{user.role === "doctor" ? "Dr." : ""} {user.firstName} {user.lastName}</h1>
         <p className="text-sm text-muted-foreground">
-          View and update your personal details, medical information, and preferences.
+          {user.role === "patient" ? "View and update your personal details, medical information, and preferences." : "View and update your professional details, qualifications, and availability."} 
         </p>
       </div>
       <div className="flex items-center gap-4">
@@ -31,9 +30,6 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
             className="w-[200px] pl-8"
           />
         </div>
-        <Button size="sm" variant="outline">
-          Edit Profile
-        </Button>
         <Avatar className="h-8 w-8">
           <AvatarImage src={user.profilePicture || "/placeholder-avatar.jpg"} alt="User Avatar" />
           <AvatarFallback>{user.firstName[0]}</AvatarFallback>

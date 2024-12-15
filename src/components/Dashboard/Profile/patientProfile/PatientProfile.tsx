@@ -29,7 +29,7 @@ const PatientProfile: React.FC<PatientProfileProps> = ({ user }) => {
   };
 
   return (
-    <Card className="w-full p-6 md:p-8 bg-white shadow-md rounded-lg">
+    <Card className="w-full p-6 md:p-8 bg-transparent shadow-md">
       {uploadClicked && <Upload cancelUpload={cancelUpload} setUploadClicked={setUploadClicked} />}
 
       <CardHeader className="border-b pb-4 mb-6">
