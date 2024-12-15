@@ -34,14 +34,12 @@ const PatientAppointments: React.FC = () => {
           setIsManagingAppointmentRequests={setIsManagingAppointmentRequests}
         />
       )}
-      {
-        (isSomeOneCalling && appointInQuestion) && (
-          <HandleCallScreen
-            setIsAppointmentOnline={setIsSomeOneCalling}
-            appointment={appointInQuestion}
-          />
-        )
-      }
+      {isSomeOneCalling && appointInQuestion && (
+        <HandleCallScreen
+          setIsAppointmentOnline={setIsSomeOneCalling}
+          appointment={appointInQuestion}
+        />
+      )}
       {isSchedulingAppointment && (
         <SearchDoctorsForAppointments
           setIsSchedulingAppointment={setIsSchedulingAppointment}
@@ -63,26 +61,26 @@ const PatientAppointments: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           <Button
-            className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+            className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
             onClick={() => setIsManagingAppointmentRequests(true)}
           >
             Manage Appointment Requests
           </Button>
           <Button
-            className="bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-600 dark:hover:bg-green-800"
+            className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
             onClick={() => setIsSchedulingAppointment(true)}
           >
             Schedule an Appointment
           </Button>
           {(user?.notifications?.length ?? 0) > 0 ? (
-            <Bell
-              size={22}
+            <BellDotIcon
+              size={58}
               className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
               onClick={() => setIsOpen(true)}
             />
           ) : (
-            <BellDotIcon
-              size={22}
+            <Bell
+              size={58}
               className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
               onClick={() => setIsOpen(true)}
             />
@@ -146,7 +144,7 @@ const PatientAppointments: React.FC = () => {
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500 dark:text-gray-400">
+          <p className="w-full h-full text-center text-gray-500 dark:text-gray-400 grid place-content-center text-xl font-semibold">
             No appointments found.
           </p>
         )}

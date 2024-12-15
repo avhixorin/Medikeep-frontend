@@ -25,10 +25,14 @@ const Chat: React.FC = () => {
   const { socket } = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
   const allUsers = useSelector((state: RootState) => state.allUsers);
-  const selectedUser = useSelector((state: RootState) => state.selectedUser.selectedUser);
+  const selectedUser = useSelector(
+    (state: RootState) => state.selectedUser.selectedUser
+  );
   const { fetchAllUsers } = useAllUsers();
   const messages = useSelector((state: RootState) =>
-    selectedUser?._id && state.messages.chatHistories ? state.messages.chatHistories[selectedUser._id] || [] : []
+    selectedUser?._id && state.messages.chatHistories
+      ? state.messages.chatHistories[selectedUser._id] || []
+      : []
   );
   const dispatch = useDispatch();
   useEffect(() => {
@@ -38,15 +42,17 @@ const Chat: React.FC = () => {
     }
   }, [messages, selectedUser]);
   useEffect(() => {
-      if (allUsers?.users?.length === 0) {
-         fetchAllUsers();
-      }
+    if (allUsers?.users?.length === 0) {
+      fetchAllUsers();
+    }
   }, [allUsers, fetchAllUsers]);
 
   const handleSendMessage = () => {
     if (!message.trim() || !socket || !selectedUser) return;
     const messageId = uuid();
-    dispatch(addMyMessage({ message, to: selectedUser, messageId, sender: user! }));
+    dispatch(
+      addMyMessage({ message, to: selectedUser, messageId, sender: user! })
+    );
     socket.emit(SOCKET_EVENTS.PRIVATE_MESSAGE, {
       message: message.trim(),
       sender: user?._id,
@@ -94,17 +100,19 @@ const Chat: React.FC = () => {
             >
               Add Connections
             </Button>
-            {
-          (user?.notifications?.length ?? 0) > 0 ? (
-            <Bell size={58} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
-            onClick={() => setIsOpen(true)}
-            />
-          ) : (
-            <BellDotIcon size={58} className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer" 
-            onClick={() => setIsOpen(true)}
-            />
-          )
-        }
+            {(user?.notifications?.length ?? 0) > 0 ? (
+              <BellDotIcon
+                size={58}
+                className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
+                onClick={() => setIsOpen(true)}
+              />
+            ) : (
+              <Bell
+                size={58}
+                className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
+                onClick={() => setIsOpen(true)}
+              />
+            )}
           </div>
         </div>
 
@@ -126,10 +134,7 @@ const Chat: React.FC = () => {
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex shadow-xl overflow-hidden">
         <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
           {user?.connections?.map((connUser) => (
-            <ChatCard
-              key={connUser._id}
-              user={connUser}
-            />
+            <ChatCard key={connUser._id} user={connUser} />
           ))}
         </aside>
 
@@ -160,7 +165,11 @@ const Chat: React.FC = () => {
                 {messages.map((msg) => (
                   <div
                     key={msg.messageId}
-                    className={`flex ${msg.sender._id === user?._id ? "justify-end" : "justify-start"} mb-2`}
+                    className={`flex ${
+                      msg.sender._id === user?._id
+                        ? "justify-end"
+                        : "justify-start"
+                    } mb-2`}
                   >
                     <Bubble currentUserId={user?._id || ""} msg={msg} />
                   </div>

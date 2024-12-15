@@ -20,7 +20,9 @@ import PatientDetailsCard from "./PatientDetailsCard/PatientDetailsCard";
 const Patients: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isViewingDetails, setIsViewingDetails] = React.useState(false);
-  const [selectedPatient, setSelectedPatient] = React.useState<User | null>(null);
+  const [selectedPatient, setSelectedPatient] = React.useState<User | null>(
+    null
+  );
   const [searchQuery, setSearchQuery] = React.useState("");
   const [patients, setPatients] = React.useState<User[]>([]);
   const user = useSelector((state: RootState) => state.auth.user);
@@ -48,7 +50,13 @@ const Patients: React.FC = () => {
   return (
     <div className="w-full min-h-screen bg-[#F9F8F4] flex flex-col items-center px-6 py-4 dark:bg-[#141414]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
-      {isViewingDetails && selectedPatient && <PatientDetailsCard patient={selectedPatient} setIsViewingDetails={setIsViewingDetails} calcAge={calcAge}/>}
+      {isViewingDetails && selectedPatient && (
+        <PatientDetailsCard
+          patient={selectedPatient}
+          setIsViewingDetails={setIsViewingDetails}
+          calcAge={calcAge}
+        />
+      )}
       <div className="w-full flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100">
@@ -58,13 +66,13 @@ const Patients: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           {(user?.notifications?.length ?? 0) > 0 ? (
-            <Bell
+            <BellDotIcon
               size={24}
               className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white cursor-pointer"
               onClick={() => setIsOpen(true)}
             />
           ) : (
-            <BellDotIcon
+            <Bell
               size={24}
               className="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white cursor-pointer"
               onClick={() => setIsOpen(true)}
@@ -133,7 +141,8 @@ const Patients: React.FC = () => {
                 <Button
                   className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
                   onClick={() =>
-                    patient && (setSelectedPatient(patient), setIsViewingDetails(true))
+                    patient &&
+                    (setSelectedPatient(patient), setIsViewingDetails(true))
                   }
                 >
                   View Full Details
@@ -142,7 +151,7 @@ const Patients: React.FC = () => {
             </Card>
           ))
         ) : (
-          <p className="text-gray-500 dark:text-gray-400 text-center col-span-1 md:col-span-2 lg:col-span-3">
+          <p className="w-full h-full text-center text-gray-500 dark:text-gray-400 grid place-content-center text-xl font-semibold">
             No patients found.
           </p>
         )}

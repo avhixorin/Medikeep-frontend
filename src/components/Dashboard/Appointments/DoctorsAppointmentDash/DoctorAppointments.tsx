@@ -96,13 +96,13 @@ const DoctorAppointments: React.FC = () => {
               Manage Appointment Requests
             </Button>
             {(user?.notifications?.length ?? 0) > 0 ? (
-              <Bell
+              <BellDotIcon
                 size={22}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
               />
             ) : (
-              <BellDotIcon
+              <Bell
                 size={22}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
