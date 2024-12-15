@@ -13,7 +13,6 @@ const PatientDetailsCard: React.FC<Props> = ({ patient, setIsViewingDetails, cal
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
       <div className="relative max-w-4xl w-full max-h-[90vh] bg-white dark:bg-[#1e293b] shadow-lg rounded-lg overflow-y-auto p-6">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Patient Details</h1>
           <button
@@ -24,7 +23,6 @@ const PatientDetailsCard: React.FC<Props> = ({ patient, setIsViewingDetails, cal
           </button>
         </div>
 
-        {/* Profile Section */}
         <div className="flex items-center gap-6 mb-6">
           <img
             src={patient.profilePicture || "https://via.placeholder.com/150"}
@@ -41,7 +39,6 @@ const PatientDetailsCard: React.FC<Props> = ({ patient, setIsViewingDetails, cal
           </div>
         </div>
 
-        {/* Medical History Sections */}
         <div>
           {patient.medicalHistory ? (
             <>

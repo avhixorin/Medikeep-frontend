@@ -128,14 +128,12 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
     };
 
     const handleDragEnd = () => {
-      // Remove event listeners when dragging ends
       window.removeEventListener("mousemove", handleDragMove);
       window.removeEventListener("mouseup", handleDragEnd);
       window.removeEventListener("touchmove", handleDragMove);
       window.removeEventListener("touchend", handleDragEnd);
     };
 
-    // Add event listeners for drag
     window.addEventListener("mousemove", handleDragMove);
     window.addEventListener("mouseup", handleDragEnd);
     window.addEventListener("touchmove", handleDragMove);
@@ -144,7 +142,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
 
   return (
     <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
-      {/* Close Button */}
       <button
         onClick={() => setIsAppointmentOnline(false)}
         className="absolute top-4 right-4 bg-gray-100/80 dark:bg-gray-900/60 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-2 rounded-full transition-colors z-50"
@@ -153,9 +150,7 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
         <X className="w-6 h-6" />
       </button>
 
-      {/* Main Video Container */}
       <div className="w-full h-full bg-black relative overflow-hidden">
-        {/* Remote Stream */}
         {isCallActive ? (
           <video
             ref={remoteVideoRef}
@@ -169,7 +164,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
           </div>
         )}
 
-        {/* Local Stream (Draggable) */}
         <div
           ref={localStreamRef}
           className="absolute w-48 h-48 bottom-4 right-4 bg-gradient-to-br from-pink-500 to-red-500 rounded-lg overflow-hidden cursor-pointer"
@@ -193,7 +187,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
           )}
         </div>
 
-        {/* Controls */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
           <button
             onClick={toggleMic}

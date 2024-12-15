@@ -15,19 +15,6 @@ const Bubble: React.FC<BubbleProps> = ({ msg, currentUserId }) => {
         isSentByCurrentUser ? "chat-end" : "chat-start"
       }`}
     >
-      {/* {!isSentByCurrentUser && (
-        <div className="chat-image avatar">
-          <div className="w-10 rounded-full">
-            <img
-              src={
-                msg.sender.profilePicture ||
-                "https://randomuser.me/api/portraits"
-              }
-              alt="Sender"
-            />
-          </div>
-        </div>
-      )} */}
       <div
         className={`chat-bubble ${
           isSentByCurrentUser

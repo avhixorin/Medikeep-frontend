@@ -56,7 +56,6 @@ const NavBar: React.FC = () => {
       </div>
       <div className="hidden md:block">
         <ul className="flex flex-row space-x-7 text-slate-500">
-          {/** Features Link */}
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
               onClick={scrollToFeatures}
@@ -70,7 +69,6 @@ const NavBar: React.FC = () => {
             />
           </motion.li>
 
-          {/** Pricing Link */}
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
               onClick={scrollToPricing}
@@ -84,7 +82,6 @@ const NavBar: React.FC = () => {
             />
           </motion.li>
 
-          {/** About Us Link */}
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <Link to="/about" className="hover:text-blue-600 transition-colors duration-300">
               About Us
@@ -94,7 +91,6 @@ const NavBar: React.FC = () => {
             />
           </motion.li>
 
-          {/** Contact Link */}
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
               onClick={scrollToContact}

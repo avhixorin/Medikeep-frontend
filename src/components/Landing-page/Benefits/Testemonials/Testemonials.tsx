@@ -31,7 +31,6 @@ const TestimonialCarousel: React.FC = () => {
             ))}
           </Marquee>
 
-          {/* Second Marquee moving in opposite direction */}
           <Marquee
             gradient={true}
             speed={50}

@@ -87,7 +87,6 @@ const SignInForm: React.FC = () => {
             >
               {() => (
                 <Form className="form flex flex-col gap-4">
-                  {/* Email Field */}
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700">
                       Email<span className="text-red-500">*</span>
@@ -103,8 +102,6 @@ const SignInForm: React.FC = () => {
                       className="text-red-500 text-sm"
                     />
                   </div>
-
-                  {/* Password Field */}
                   <div className="w-full relative space-y-2">
                     <label className="text-sm font-semibold text-gray-700">
                       Password<span className="text-red-500">*</span>

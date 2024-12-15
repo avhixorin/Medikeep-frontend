@@ -68,7 +68,6 @@ export default function LeftSidebar() {
 
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8 dark:bg-[#0A0A0A]">
-      {/* Logo Section */}
       <div className="w-full flex flex-col gap-12 md:gap-8">
         <div
           className="flex w-full justify-center items-center p-2 gap-2 my-8 cursor-pointer"
@@ -84,7 +83,6 @@ export default function LeftSidebar() {
           </p>
         </div>
 
-        {/* Navigation Links */}
         <nav className="flex flex-col items-center w-full space-y-4 px-2">
           <SidebarLink
             to="/dashboard"
@@ -131,7 +129,6 @@ export default function LeftSidebar() {
         </nav>
       </div>
 
-      {/* Bottom Section */}
       <div className="flex flex-col items-center w-full space-y-4 px-2">
         <SidebarButton
           icon={<LogOut size={24} />}

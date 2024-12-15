@@ -150,7 +150,6 @@ export default function SettingsPage() {
           <div>
             <h2 className="text-lg font-medium">Preferences</h2>
             <div className="mt-6 space-y-6">
-              {/* Theme Setting */}
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <Label>Theme</Label>
@@ -162,7 +161,6 @@ export default function SettingsPage() {
                 />
               </div>
 
-              {/* Time Zone Setting */}
               <div className="space-y-1">
                 <Label>Time Zone</Label>
                 <Select defaultValue="GMT+07:00">
@@ -184,7 +182,6 @@ export default function SettingsPage() {
                 </Select>
               </div>
 
-              {/* Language Setting */}
               <div className="space-y-1">
                 <Label>Language</Label>
                 <Select defaultValue="en-GB">
@@ -217,7 +214,6 @@ export default function SettingsPage() {
                 </Select>
               </div> */}
 
-              {/* Date Format Setting */}
               <div className="space-y-1">
                 <Label>Date Format</Label>
                 <Select defaultValue="dd/mm/yyyy">
@@ -232,7 +228,6 @@ export default function SettingsPage() {
                 </Select>
               </div>
 
-              {/* Notifications Setting */}
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <Label>Enable Notifications</Label>
@@ -241,7 +236,6 @@ export default function SettingsPage() {
                 <Switch />
               </div>
 
-              {/* Account Privacy Setting */}
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <Label>Account Privacy</Label>

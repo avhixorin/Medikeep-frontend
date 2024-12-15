@@ -179,7 +179,6 @@ const SignUpA: React.FC = () => {
         totalSteps={isDoctor === "Yes" ? 3 : 2}
       />
 
-      {/* Already Have an Account Section */}
       <div className="text-center mb-6 w-full flex justify-end">
         <p className="text-gray-600">
           Already have an account?{" "}

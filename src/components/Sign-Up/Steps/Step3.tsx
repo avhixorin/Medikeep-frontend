@@ -26,7 +26,6 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
   return (
     <div className="space-y-6 w-full">
       <div className="grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-6">
-        {/* Medical Licence Field */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">
             Medical License Number
@@ -41,7 +40,6 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
           />
         </div>
 
-        {/* Specialization Field */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">
             Specialization
@@ -70,7 +68,6 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
         </div>
       </div>
 
-      {/* Experience Field */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-700">
           Years of Experience
@@ -85,7 +82,6 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
         />
       </div>
 
-      {/* Password Field */}
       <div className="grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-4">
         <div className="space-y-2">
           <label className="text-sm text-gray-600">Password</label>

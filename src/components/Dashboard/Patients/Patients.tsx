@@ -49,7 +49,6 @@ const Patients: React.FC = () => {
     <div className="w-full min-h-screen bg-[#F9F8F4] flex flex-col items-center px-6 py-4 dark:bg-[#141414]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {isViewingDetails && selectedPatient && <PatientDetailsCard patient={selectedPatient} setIsViewingDetails={setIsViewingDetails} calcAge={calcAge}/>}
-      {/* Header Section */}
       <div className="w-full flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100">
@@ -73,7 +72,6 @@ const Patients: React.FC = () => {
           )}
         </div>
       </div>
-      {/* Search Bar */}
       <div className="relative w-full mb-8">
         <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
         <Input
@@ -94,7 +92,6 @@ const Patients: React.FC = () => {
           </Button>
         )}
       </div>
-      {/* Patient Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
         {patients.length > 0 ? (
           patients.map((patient, index) => (

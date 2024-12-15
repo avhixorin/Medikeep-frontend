@@ -41,7 +41,6 @@ const Step2: React.FC<Step2Props> = ({
 }) => {
   return (
     <div className="space-y-4 w-full">
-      {/* Date of Birth */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-700">
           Date of Birth<span className="text-red-500">*</span>
@@ -89,7 +88,6 @@ const Step2: React.FC<Step2Props> = ({
         />
       </div>
 
-      {/* Gender */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-700">
           Gender<span className="text-red-500">*</span>
@@ -116,7 +114,6 @@ const Step2: React.FC<Step2Props> = ({
         />
       </div>
 
-      {/* Phone */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-700">
           Phone<span className="text-red-500">*</span>
@@ -136,11 +133,9 @@ const Step2: React.FC<Step2Props> = ({
         />
       </div>
 
-      {/* Password and Confirm Password */}
       {isDoctor === "No" && currentStep === totalSteps && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Password */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
                 Password<span className="text-red-500">*</span>
@@ -160,8 +155,6 @@ const Step2: React.FC<Step2Props> = ({
                 className="text-red-500 text-sm"
               />
             </div>
-
-            {/* Confirm Password */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
                 Confirm Password<span className="text-red-500">*</span>

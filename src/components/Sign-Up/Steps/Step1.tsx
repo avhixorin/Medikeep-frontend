@@ -21,7 +21,6 @@ const Step1: React.FC<Step1Props> = ({
 }) => {
   return (
     <div className="w-full space-y-8">
-      {/* Role Selection */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
         <label className="text-base font-medium text-gray-800">
           Are you registering as a doctor?
@@ -46,9 +45,7 @@ const Step1: React.FC<Step1Props> = ({
         </p>
       ) : null}
 
-      {/* Personal Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* First Name */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">
             First Name<span className="text-red-500">*</span>
@@ -68,7 +65,6 @@ const Step1: React.FC<Step1Props> = ({
           />
         </div>
 
-        {/* Last Name */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">
             Last Name<span className="text-red-500">*</span>
@@ -89,7 +85,6 @@ const Step1: React.FC<Step1Props> = ({
         </div>
       </div>
 
-      {/* Email */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-700">
           Email<span className="text-red-500">*</span>
@@ -109,7 +104,6 @@ const Step1: React.FC<Step1Props> = ({
         />
       </div>
 
-      {/* Username */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-700">
           Username<span className="text-red-500">*</span>

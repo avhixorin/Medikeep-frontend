@@ -65,7 +65,6 @@ const Upload: React.FC<UploadProps> = ({ cancelUpload, setUploadClicked }) => {
             <input type="file" accept="image/*" required id="file-input" />
           </label>
 
-          {/* Button Section */}
           <div className="button-container">
             <button
               type="button"

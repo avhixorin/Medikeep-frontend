@@ -55,10 +55,8 @@ const Hero: React.FC = () => {
             whileHover={{ scale: 1.05 }}
           >
           </motion.img>
-          {/* Left gradient */}
           <div className="absolute inset-y-0 left-0 z-0 w-1/2 bg-gradient-to-r from-blue-50 to-blue-200"></div>
 
-          {/* Right gradient */}
           <div className="absolute inset-y-0 right-0 z-0 w-1/2 bg-gradient-to-l from-blue-50 to-blue-200"></div>
         </div>
       </div>

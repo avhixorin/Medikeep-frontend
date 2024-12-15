@@ -27,7 +27,6 @@ const About: React.FC = () => {
         </div>
 
         <div className="grid gap-12 md:grid-cols-2 mb-12">
-          {/* For Patients */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
             <h3 className="text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-400">For Patients</h3>
             <p className="text-lg mb-4">
@@ -45,7 +44,6 @@ const About: React.FC = () => {
             </p>
           </div>
 
-          {/* For Doctors */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
             <h3 className="text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-400">For Doctors</h3>
             <p className="text-lg mb-4">
@@ -64,7 +62,6 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        {/* Vision and Values */}
         <div className="mt-16">
           <h2 className="text-3xl font-bold mb-6 text-blue-700 dark:text-blue-400">Our Vision</h2>
           <p className="text-lg mb-6 text-gray-700 dark:text-gray-300">
@@ -80,7 +77,6 @@ const About: React.FC = () => {
           </ul>
         </div>
 
-        {/* Contact */}
         <div className="mt-16 text-center">
           <h2 className="text-3xl font-bold mb-6 text-blue-700 dark:text-blue-400">Get in Touch</h2>
           <p className="text-lg mb-4 text-gray-700 dark:text-gray-300">

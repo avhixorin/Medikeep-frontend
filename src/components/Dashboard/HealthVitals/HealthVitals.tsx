@@ -93,10 +93,8 @@ const HealthDashboard: React.FC = () => {
             <ActivityChart />
         </div>
       </div>
-      {/* Right Sidebar */}
       <div className="lg:w-80 w-full bg-gray-800 dark:bg-gray-950 p-4 lg:p-6 text-white flex flex-col space-y-6 h-full">
         <div className="flex flex-col flex-grow space-y-6">
-          {/* BMI Calculator Section */}
           <div className="flex flex-col space-y-4">
             <h2 className="text-lg font-semibold">BMI Calculator</h2>
             <div className="space-y-2">
@@ -138,7 +136,6 @@ const HealthDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Body Measurements Section */}
           <div className="flex-grow overflow-hidden">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Body Measurements</h2>

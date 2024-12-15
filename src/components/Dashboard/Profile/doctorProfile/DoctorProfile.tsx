@@ -40,7 +40,6 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 bg-gradient-to-r from-blue-500 to-green-300 p-6 md:p-10">
       {uploadClicked && <Upload cancelUpload={cancelUpload} setUploadClicked={setUploadClicked} />}
-      {/* Left Profile Section */}
       <Card className="shadow-2xl rounded-lg">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-green-500 text-white rounded-t-lg">
           <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
@@ -127,7 +126,6 @@ const DoctorProfile:React.FC<DoctorProfileProps> = ({user}) => {
         </CardFooter>
       </Card>
 
-      {/* Right Profile Section (Professional and Medical Information) */}
       <Card className="shadow-2xl rounded-lg">
         <CardContent className="p-6">
 

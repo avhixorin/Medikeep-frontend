@@ -17,7 +17,6 @@ const Footer: React.FC = () => {
                     </span>
                     
                 </div>
-            {/* Newsletter Section */}
                 <div className="mb-6 md:mb-0">
                     <h2 className="text-lg font-semibold text-gray-300 mb-4">Subscribe to Our Newsletter</h2>
                     <div className="flex">

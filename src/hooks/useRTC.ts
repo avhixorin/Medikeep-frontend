@@ -42,7 +42,6 @@ const useRTC = () => {
     async (appointment: Appointment) => {
       console.log("Creating peer connection...");
       const peerConnection = new RTCPeerConnection(servers);
-      // Handle remote tracks
       peerConnection.ontrack = (event) => {
         console.log("Remote track received.");
         setRemoteStream((prevStream) => {
@@ -63,7 +62,6 @@ const useRTC = () => {
         peerConnection.addTrack(track, localStream);
       });
 
-      // Handle ICE candidates
       peerConnection.onicecandidate = (event) => {
         console.log("ICE candidate event received.");
         if (event.candidate) {
@@ -128,7 +126,6 @@ const useRTC = () => {
         } catch (error) {
           console.error("Error setting remote description:", error);
         }
-        // await peerConnection.setRemoteDescription(offer);
         console.log("Remote description set.");
         console.log("Creating answer...");
         const answer = await peerConnection.createAnswer();
@@ -136,7 +133,6 @@ const useRTC = () => {
         console.log("Setting local description for answer...");
         await peerConnection.setLocalDescription(answer);
 
-        // Ensure emit is called after setting local description
         if (socket) {
           console.log("Sending answer to doctor...");
           socket.emit(SOCKET_EVENTS.RTC_EVENT, {

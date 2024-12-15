@@ -31,7 +31,6 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center">
       <div className="relative rounded-lg bg-white dark:bg-[#1e293b] shadow-md p-6 max-w-lg w-[90%]">
-        {/* Close Button */}
         <button
           onClick={() => setIsManagingAppointmentRequests(false)}
           className="absolute top-3 right-3 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors text-2xl"

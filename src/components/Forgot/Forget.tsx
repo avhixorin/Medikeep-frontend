@@ -78,7 +78,6 @@ const Forget = () => {
             <Form className="flex flex-col space-y-6">
               {!credentialsTrue ? (
                 <>
-                  {/* Email Input */}
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700">
                       Email<span className="text-red-500">*</span>
@@ -97,7 +96,6 @@ const Forget = () => {
                     />
                   </div>
 
-                  {/* Date of Birth Input */}
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700">
                       Date of Birth<span className="text-red-500">*</span>
@@ -142,14 +140,12 @@ const Forget = () => {
                     />
                   </div>
 
-                  {/* Submit Button */}
                   <Button type="submit" className="w-full">
                     Submit
                   </Button>
                 </>
               ) : (
                 <>
-                  {/* Password Fields */}
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700">
                       New Password<span className="text-red-500">*</span>
@@ -186,7 +182,6 @@ const Forget = () => {
                     />
                   </div>
 
-                  {/* Submit Password Button */}
                   <Button type="submit" className="w-full">
                     Update Password
                   </Button>

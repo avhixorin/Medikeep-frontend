@@ -65,7 +65,6 @@ const Chat: React.FC = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-[#fffcf8] dark:bg-[#141414] p-8">
-      {/* Connection Management */}
       {isManagingConnections && (
         <ManageConnections
           setIsManagingConnections={setIsManagingConnections}
@@ -73,7 +72,6 @@ const Chat: React.FC = () => {
       )}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
-      {/* Connections Section */}
       <div className="h-[25%] w-full flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -127,9 +125,7 @@ const Chat: React.FC = () => {
         </div>
       </div>
 
-      {/* Chat Area */}
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex shadow-xl overflow-hidden">
-        {/* Sidebar */}
         <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
           {user?.connections?.map((connUser) => (
             <ChatCard
@@ -139,11 +135,9 @@ const Chat: React.FC = () => {
           ))}
         </aside>
 
-        {/* Main Chat */}
         <main className="flex flex-col h-full w-full">
           {selectedUser ? (
             <>
-              {/* Header */}
               <header className="w-full py-2 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200">
                 <div className="flex items-center gap-6">
                   <img
@@ -161,7 +155,6 @@ const Chat: React.FC = () => {
                 <h3 className="text-slate-400">Active now</h3>
               </header>
 
-              {/* Chat Messages */}
               <div
                 ref={chatContainerRef}
                 className="flex-grow p-4 overflow-y-auto scrollbar-webkit dark:bg-[#1e0e1a]"
@@ -176,7 +169,6 @@ const Chat: React.FC = () => {
                 ))}
               </div>
 
-              {/* Input Section */}
               <footer className="w-full py-2 px-4 flex gap-2 border-t-2 dark:border-gray-800 bg-transparent dark:bg-[#0A0A0A]">
                 <Input
                   placeholder="Type your message..."
