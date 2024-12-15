@@ -1,15 +1,12 @@
-import { cn } from "@/lib/utils"
-import { Link } from "react-router-dom"
+import { cn } from "@/lib/utils";
+import { NavLink } from "react-router-dom";
 
-interface SettingsNavProps extends React.HTMLAttributes<HTMLElement> {
-  items: {
-    href: string
-    title: string
-  }[]
-  currentPath: string
+export interface SettingsNavProps {
+  items: { href: string; title: string }[];
+  className?: string;
 }
 
-export function SettingsNav({ className, items, currentPath, ...props }: SettingsNavProps) {
+export function SettingsNav({ className, items, ...props }: SettingsNavProps) {
   return (
     <nav
       className={cn(
@@ -19,19 +16,22 @@ export function SettingsNav({ className, items, currentPath, ...props }: Setting
       {...props}
     >
       {items.map((item) => (
-        <Link
+        <NavLink
           key={item.href}
           to={item.href}
-          className={cn(
-            "flex py-4 border-b-2 border-transparent text-sm font-medium text-muted-foreground transition-colors hover:text-primary",
-            currentPath === item.href &&
-              "border-primary text-primary"
-          )}
+          end // Ensures exact match for root paths
+          className={({ isActive }) =>
+            cn(
+              "flex py-4 border-b-2 border-transparent text-sm font-medium transition-colors",
+              "text-gray-700 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200",
+              isActive &&
+                "border-primary text-black dark:text-white dark:border-secondary"
+            )
+          }
         >
           {item.title}
-        </Link>
+        </NavLink>
       ))}
     </nav>
-  )
+  );
 }
-

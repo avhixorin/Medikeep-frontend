@@ -32,7 +32,9 @@ const DashboadChatPage = lazy(() => import("./components/Dashboard/Chat/Chat"));
 const DashboardMedicalRecordsPage = lazy(
   () => import("./components/Dashboard/Records/MedicalRecords")
 );
-const DashboardPatientsPage = lazy(() => import("./components/Dashboard/Patients/Patients"));
+const DashboardPatientsPage = lazy(
+  () => import("./components/Dashboard/Patients/Patients")
+);
 const DashboardHealthVitalsPage = lazy(
   () => import("./components/Dashboard/HealthVitals/HealthVitals")
 );
@@ -41,6 +43,22 @@ const DashboardProfilePage = lazy(
 );
 const DashboardSettingsPage = lazy(
   () => import("./components/Dashboard/Settings/DashboardSettings")
+);
+const DashboardGeneralSettingsPage = lazy(
+  () => import("./components/Dashboard/Settings/General/General")
+);
+const DashboardBillingSettingsPage = lazy(
+  () => import("./components/Dashboard/Settings/Billing/Billing")
+);
+const DashboardNotificationsSettingsPage = lazy(
+  () =>
+    import("./components/Dashboard/Settings/Notifications/NotificationSetting")
+);
+const DashboardSecuritySettingsPage = lazy(
+  () => import("./components/Dashboard/Settings/Security/Security")
+);
+const DashboardSharingSettingsPage = lazy(
+  () => import("./components/Dashboard/Settings/Sharing/Sharing")
 );
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -182,7 +200,56 @@ const router = createBrowserRouter(
               <DashboardSettingsPage />
             </Suspense>
           }
-        />
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardGeneralSettingsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="general"
+            element={
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardGeneralSettingsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="security"
+            element={
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardSecuritySettingsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="billing"
+            element={
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardBillingSettingsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="notifications"
+            element={
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardNotificationsSettingsPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="sharing"
+            element={
+              <Suspense fallback={<LoadingScreen />}>
+                <DashboardSharingSettingsPage />
+              </Suspense>
+            }
+          />
+        </Route>
       </Route>
     </Route>
   )
