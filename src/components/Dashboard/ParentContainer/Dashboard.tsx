@@ -10,7 +10,6 @@ const Dashboard: React.FC = () => {
       console.warn("Socket2 is undefined");
     }
     
-    console.log("Setting up socket listeners for events");
   }, [ socket]);
 
   return (

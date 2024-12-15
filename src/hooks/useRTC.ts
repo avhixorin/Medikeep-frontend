@@ -40,12 +40,9 @@ const useRTC = () => {
   }, [constraints]);
   const createPeerConnection = useCallback(
     async (appointment: Appointment) => {
-      console.log("Creating peer connection...");
       const peerConnection = new RTCPeerConnection(servers);
       peerConnection.ontrack = (event) => {
-        console.log("Remote track received.");
         setRemoteStream((prevStream) => {
-          console.log("Remote stream updated.");
           const updatedStream = prevStream || new MediaStream();
           event.streams[0].getTracks().forEach((track) => {
             updatedStream.addTrack(track);
@@ -63,9 +60,7 @@ const useRTC = () => {
       });
 
       peerConnection.onicecandidate = (event) => {
-        console.log("ICE candidate event received.");
         if (event.candidate) {
-          console.log("Sending ICE candidate...");
           socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
             type: "candidate",
             candidate: event.candidate,
@@ -85,63 +80,45 @@ const useRTC = () => {
   );
 
   const createOffer = async (appointment: Appointment) => {
-    console.log("Creating offer started...");
     if (!localStream)
       throw new Error("Local stream not initialized. Call startRTC first.");
-    console.log("Local stream available.");
     const peerConnection = await createPeerConnection(appointment);
     if (!peerConnection) {
-      console.log("Peer connection not available.");
       return;
     }
-    console.log("Peer connection created.");
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
-    console.log("Offer created:", offer);
-    console.log("Sending offer to patient...");
     socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
       type: "offer",
       offer,
       to: appointment.patient?._id,
       appointment,
     });
-    console.log("Offer sent to patient.");
   };
 
   const createAnswer = useCallback(
     async (offer: RTCSessionDescriptionInit, appointment: Appointment) => {
       try {
         if (!localStream) await grabLocalMedia();
-        console.log("Creating answer started...");
-        console.log("Creating peer connection...");
         const peerConnection = await createPeerConnection(appointment);
         if (!peerConnection) {
-          console.log("Peer connection not available.");
           return;
         }
-        console.log("Peer connection created.");
-        console.log("Setting remote description for offer...");
         try {
           await peerConnection.setRemoteDescription(offer);
         } catch (error) {
           console.error("Error setting remote description:", error);
         }
-        console.log("Remote description set.");
-        console.log("Creating answer...");
         const answer = await peerConnection.createAnswer();
-        console.log("Answer created:", answer);
-        console.log("Setting local description for answer...");
         await peerConnection.setLocalDescription(answer);
 
         if (socket) {
-          console.log("Sending answer to doctor...");
           socket.emit(SOCKET_EVENTS.RTC_EVENT, {
             type: "answer",
             answer,
             to: appointment.doctor?._id,
             appointment,
           });
-          console.log("Answer sent to doctor.");
         }
       } catch (error) {
         console.error("Error while creating or sending the answer:", error);
@@ -152,11 +129,9 @@ const useRTC = () => {
 
   const addAnswer = useCallback(async (answer: RTCSessionDescriptionInit) => {
     try {
-      console.log("Adding answer...");
       if (!peerConnectionRef.current?.currentRemoteDescription) {
         await peerConnectionRef.current?.setRemoteDescription(answer);
       }
-      console.log("Answer added.");
     } catch (error) {
       console.error("Error adding answer:", error);
     }
@@ -179,26 +154,20 @@ const useRTC = () => {
     }) => {
       switch (data.type) {
         case "offer":
-          console.log("Offer received:", data.offer);
           await createAnswer(data.offer!, data.appointment);
           break;
 
         case "answer":
-          console.log("Answer received:", data.answer);
           await addAnswer(data.answer!);
           break;
 
         case "candidate":
-          console.log("ICE candidate received");
           if (peerConnectionRef.current) {
             try {
-              console.log("Adding ICE candidate in component");
               await peerConnectionRef.current.addIceCandidate(data.candidate);
             } catch (error) {
               console.error("Error adding ICE candidate:", error);
             }
-          } else {
-            console.log("Peer connection not available in component.");
           }
           break;
 
@@ -210,7 +179,6 @@ const useRTC = () => {
     socket?.on(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
 
     return () => {
-      console.log("Cleaning up RTC_EVENT listener.");
       socket?.off(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
       closePeerConnection();
     };

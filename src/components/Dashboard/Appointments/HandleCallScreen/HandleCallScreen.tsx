@@ -75,7 +75,6 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
       return;
     }
     if (localStream) {
-      console.log("Creating offer...");
       await createOffer(appointment);
       setIsCallActive(true);
     }

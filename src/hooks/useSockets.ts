@@ -31,13 +31,11 @@ const useSockets = () => {
   const dispatch = useDispatch();
 
   const handleNewConnectionNotification = useCallback((data: notification) => {
-    console.log("Received NEW_CONNECTION_NOTIFICATION:", data);
     toast.success(data.message);
     dispatch(addConnectionRequest(data.from!));
   }, [dispatch]);
 
   const handleAcceptConnectionResponse = useCallback((data: acceptConnectionResponse) => {
-    console.log("Received ACCEPT_CONNECTION_RESPONSE:", data);
     toast.success(data.message);
     dispatch(addConnection(data.data.requester));
     dispatch(removeConnectionRequest(data.data.requester._id!));
@@ -50,14 +48,11 @@ const useSockets = () => {
   }, [dispatch]);
 
   const handleRejectConnectionResponse = useCallback((data: rejectConnectionResponse) => {
-    console.log("Received REJECT_CONNECTION_RESPONSE:", data);
     toast.error(data.message);
     dispatch(removeConnectionRequest(data.data.requesterId));
   }, [dispatch]);
 
   const handleNewPrivateMessage = useCallback((data: PrivateMessage) => {
-    console.log("Received new private message:", data);
-    toast.success("New message received!");
     dispatch(addFriendMessage(data));
   }, [dispatch]);
 
@@ -233,7 +228,7 @@ const useSockets = () => {
 
     return () => {
       if (sharedSocket?.connected) {
-        console.log("Socket remains connected as it is shared globally.");
+        //do not disconnect the socket
       } else {
         sharedSocket?.off();
       }

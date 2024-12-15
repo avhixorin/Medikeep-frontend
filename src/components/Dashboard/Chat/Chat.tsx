@@ -46,7 +46,6 @@ const Chat: React.FC = () => {
   const handleSendMessage = () => {
     if (!message.trim() || !socket || !selectedUser) return;
     const messageId = uuid();
-    console.log("Adding my message to the store", message, messageId);
     dispatch(addMyMessage({ message, to: selectedUser, messageId, sender: user! }));
     socket.emit(SOCKET_EVENTS.PRIVATE_MESSAGE, {
       message: message.trim(),
@@ -55,7 +54,6 @@ const Chat: React.FC = () => {
       messageId,
     });
     setMessage("");
-    console.log("The messages of the in the user are", user?.messages);
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {

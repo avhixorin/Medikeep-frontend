@@ -23,7 +23,6 @@ const Upload: React.FC<UploadProps> = ({ cancelUpload, setUploadClicked }) => {
         const formData = new FormData();
         formData.append("avatar", file); 
         const uploadUrl = import.meta.env.VITE_AVATAR_UPLOAD_URL;
-        console.log("uploadUrl", uploadUrl);
         const response = await fetch(uploadUrl, {
           method: "POST",
           credentials: "include", 

@@ -19,13 +19,11 @@ const ManageConnections: React.FC<ManageConnectionsProps> = ({
 
   const handleAcceptConnection = (requestId: string) => {
     if(!socket) return;
-    console.log("Accepting connection request with id:", requestId);
     socket.emit(SOCKET_EVENTS.ACCEPT_CONNECTION, { accepterId : user?._id,requestId });
   };
 
   const handleDeclineConnection = (requestId: string) => {
     if(!socket) return;
-    console.log("Declining connection request with id:", requestId);
     socket.emit(SOCKET_EVENTS.REJECT_CONNECTION, { rejecterId : user?._id,requestId });
   };
 
