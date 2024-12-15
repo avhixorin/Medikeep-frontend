@@ -65,7 +65,7 @@ const Forget = () => {
 
   return (
     <div className="flex min-h-screen px-6 py-8 bg-gradient-to-tl from-blue-200 via-green-200 to-yellow-200 dark:from-[#3f3f3f] dark:via-[#191919] dark:to-[#020202] dark:text-white justify-center items-center">
-      <div className="w-full max-w-md bg-white dark:bg-[#1c1c1c] rounded-lg shadow-lg p-6 space-y-6">
+      <div className="w-full max-w-md bg-white dark:bg-[#010332] rounded-lg shadow-lg p-6 space-y-6">
         <h2 className="text-xl font-bold text-center text-gray-800 dark:text-gray-300">
           Forgot Password
         </h2>

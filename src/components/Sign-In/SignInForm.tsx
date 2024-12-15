@@ -74,10 +74,10 @@ const SignInForm: React.FC = () => {
 
   return (
     <div className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200
-    dark:from-[#323232] dark:via-[#222222] dark:to-[#181818] dark:text-white
+    dark:from-[#000000] dark:to-[#4D4855] dark:text-white
     ">
       <div className="flex items-center justify-center col-span-1 lg:p-8">
-        <div className="lform-container w-[75%] flex justify-center items-center dark:bg-[#141414]">
+        <div className="lform-container w-[75%] flex justify-center items-center dark:bg-[#010332]">
           <div className="w-full">
             <div className="w-full mb-9 flex items-center justify-center">
               <p className="sititle text-center w-full dark:text-gray-400">Welcome back</p>
