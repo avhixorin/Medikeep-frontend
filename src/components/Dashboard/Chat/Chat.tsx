@@ -102,9 +102,9 @@ const Chat: React.FC = () => {
       <div className="w-full flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold text-zinc-700 dark:text-gray-200">
-            Connections
-          </h1>
+            <h1 className="text-2xl font-semibold text-zinc-700 dark:text-gray-200">
+              Connections
+            </h1>
           </div>
           <div className="flex items-center gap-4">
             <Button
@@ -151,101 +151,98 @@ const Chat: React.FC = () => {
       </div>
 
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex shadow-xl overflow-hidden">
-        {
-          user?.connections?.length > 0 ? (
-            <>
-        <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
-          {user?.connections?.map((connUser) => (
-            <ChatCard
-              key={connUser._id}
-              user={connUser}
-              isActive={
-                getUserStatus(connUser._id!) === "Active now" ? true : false
-              }
-            />
-          ))}
-        </aside>
-
-        <main className="flex flex-col h-full w-full">
-          {selectedUser ? (
-            <>
-              <header className="w-full py-2 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200">
-                <div className="flex items-center gap-6">
-                  <img
-                    src={
-                      selectedUser.profilePicture ||
-                      "https://randomuser.me/api/portraits"
-                    }
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <h3 className="font-medium text-lg">
-                    {selectedUser.username}
-                  </h3>
-                </div>
-                <h3
-                  className={`${
-                    getUserStatus(selectedUser._id!) === "Active now"
-                      ? "text-gray-100"
-                      : "text-gray-300"
-                  }`}
-                >
-                  {getUserStatus(selectedUser._id!)}
-                </h3>
-              </header>
-
-              <div
-                ref={chatContainerRef}
-                className="flex-grow p-4 overflow-y-auto scrollbar-webkit dark:bg-[#1e0e1a]"
-              >
-                {messages.map((msg) => (
-                  <div
-                    key={msg.messageId}
-                    className={`flex ${
-                      msg.sender._id === user?._id
-                        ? "justify-end"
-                        : "justify-start"
-                    } mb-2`}
-                  >
-                    <Bubble currentUserId={user?._id || ""} msg={msg} />
-                  </div>
-                ))}
-              </div>
-
-              <footer className="w-full py-2 px-4 flex gap-2 border-t-2 dark:border-gray-800 bg-transparent dark:bg-[#0A0A0A]">
-                <Input
-                  placeholder="Type your message..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="flex-grow bg-transparent text-gray-700 dark:text-gray-200 placeholder-gray-200 border-none outline-none"
+        {user?.connections && user?.connections?.length > 0 ? (
+          <>
+            <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
+              {user?.connections?.map((connUser) => (
+                <ChatCard
+                  key={connUser._id}
+                  user={connUser}
+                  isActive={
+                    getUserStatus(connUser._id!) === "Active now" ? true : false
+                  }
                 />
-                <Button
-                  onClick={handleSendMessage}
-                  className="dark:bg-[#212121] dark:text-gray-200"
-                >
-                  Send
-                </Button>
-              </footer>
-            </>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                Select a user to start chatting
-              </h1>
-            </div>
-          )}
-        </main>
-        </>
-          ) : (
-            <div className="flex items-center justify-center h-full w-full">
-              <h1 className="text-xl font-semibold text-gray-500 dark:text-gray-200 text-center">
-                No connections found. Add some connections to start chatting
-              </h1>
-            </div>
-          )
-        }
-        
+              ))}
+            </aside>
+
+            <main className="flex flex-col h-full w-full">
+              {selectedUser ? (
+                <>
+                  <header className="w-full py-2 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200">
+                    <div className="flex items-center gap-6">
+                      <img
+                        src={
+                          selectedUser.profilePicture ||
+                          "https://randomuser.me/api/portraits"
+                        }
+                        alt="Profile"
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <h3 className="font-medium text-lg">
+                        {selectedUser.username}
+                      </h3>
+                    </div>
+                    <h3
+                      className={`${
+                        getUserStatus(selectedUser._id!) === "Active now"
+                          ? "text-gray-100"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      {getUserStatus(selectedUser._id!)}
+                    </h3>
+                  </header>
+
+                  <div
+                    ref={chatContainerRef}
+                    className="flex-grow p-4 overflow-y-auto scrollbar-webkit dark:bg-[#1e0e1a]"
+                  >
+                    {messages.map((msg) => (
+                      <div
+                        key={msg.messageId}
+                        className={`flex ${
+                          msg.sender._id === user?._id
+                            ? "justify-end"
+                            : "justify-start"
+                        } mb-2`}
+                      >
+                        <Bubble currentUserId={user?._id || ""} msg={msg} />
+                      </div>
+                    ))}
+                  </div>
+
+                  <footer className="w-full py-2 px-4 flex gap-2 border-t-2 dark:border-gray-800 bg-transparent dark:bg-[#0A0A0A]">
+                    <Input
+                      placeholder="Type your message..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      className="flex-grow bg-transparent text-gray-700 dark:text-gray-200 placeholder-gray-200 border-none outline-none"
+                    />
+                    <Button
+                      onClick={handleSendMessage}
+                      className="dark:bg-[#212121] dark:text-gray-200"
+                    >
+                      Send
+                    </Button>
+                  </footer>
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                    Select a user to start chatting
+                  </h1>
+                </div>
+              )}
+            </main>
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full w-full">
+            <h1 className="text-xl font-semibold text-gray-500 dark:text-gray-200 text-center">
+              No connections found. Add some connections to start chatting
+            </h1>
+          </div>
+        )}
       </div>
     </div>
   );
