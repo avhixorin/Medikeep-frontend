@@ -16,6 +16,7 @@ export type User = {
   notifications?: {
     type: string;
     message: string;
+    time: string;
     read: boolean;
   }[];
   messages? : Messages;

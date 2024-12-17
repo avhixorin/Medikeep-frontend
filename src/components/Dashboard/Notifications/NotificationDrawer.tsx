@@ -1,8 +1,9 @@
-import { RootState } from '@/redux/store/store';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { RootState } from "@/redux/store/store";
+import React from "react";
+import { useSelector } from "react-redux";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 
 interface NotificationDrawerProps {
   setIsOpen: (isOpen: boolean) => void;
@@ -14,6 +15,12 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
   const notifications = useSelector(
     (state: RootState) => state.auth.user?.notifications
   );
+
+  const sortedNotifications = notifications
+    ? [...notifications].sort(
+        (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+      )
+    : [];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md">
@@ -32,14 +39,17 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
         </div>
 
         <div className="max-h-80 overflow-y-auto p-4 space-y-4">
-          {notifications && notifications.length > 0 ? (
-            notifications.map((notification, index) => (
+          {sortedNotifications.length > 0 ? (
+            sortedNotifications.map((notification, index) => (
               <div
                 key={index}
-                className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg shadow-sm"
+                className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg shadow-sm flex justify-between items-start"
               >
-                <p className="text-sm text-gray-700 dark:text-gray-300">
+                <p className="text-sm text-gray-700 dark:text-gray-300 flex-1">
                   {notification.message}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 ml-4 whitespace-nowrap">
+                  {format(new Date(notification.time), "MM/dd/yy hh:mm a")}
                 </p>
               </div>
             ))

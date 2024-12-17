@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { AppointmentStatus } from "@/types/types";
@@ -17,17 +17,19 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import toast from "react-hot-toast";
 
 const PatientAppointmentForm: React.FC<{
   doctorName: string;
   doctorId: string;
-  onCancel: () => void;
+  setIsRequesting: (value: boolean) => void;
+  setIsSchedulingAppointment: (value: boolean) => void;
   setAppointmentStatuses: (
     value: (prevStatuses: { [doctorId: string]: AppointmentStatus }) => {
       [doctorId: string]: AppointmentStatus;
     }
   ) => void;
-}> = ({ doctorName, doctorId, onCancel, setAppointmentStatuses }) => {
+}> = ({ doctorName, doctorId, setIsRequesting, setAppointmentStatuses, setIsSchedulingAppointment }) => {
   const [date, setDate] = useState<string | undefined>(undefined);
   const [time, setTime] = useState("");
   const [reason, setReason] = useState("");
@@ -55,7 +57,15 @@ const PatientAppointmentForm: React.FC<{
       time,
       reason,
     });
+    setIsRequesting(false);
+    setIsSchedulingAppointment(false);
   };
+  useEffect(() => {
+    if(date && date < new Date().toISOString()){
+      toast.error("Please select a future date");
+      setDate(undefined);
+    }
+  }, [date]);
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center py-6 px-4">
@@ -158,7 +168,7 @@ const PatientAppointmentForm: React.FC<{
         </div>
 
         <div className="flex justify-end mt-6 space-x-4">
-          <Button variant="secondary" onClick={onCancel}>
+          <Button variant="secondary" onClick={() => setIsRequesting(false)}>
             Cancel
           </Button>
           <Button onClick={handleRequest}>Request</Button>

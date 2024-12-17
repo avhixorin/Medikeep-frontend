@@ -35,7 +35,8 @@ const SearchDoctorsForAppointments = ({
         <AppointmentForm
           doctorName={`${requestedDoctors?.firstName} ${requestedDoctors?.lastName}`}
           doctorId={requestedDoctors?._id || ""}
-          onCancel={() => setIsRequesting(false)}
+          setIsRequesting={setIsRequesting}
+          setIsSchedulingAppointment={setIsSchedulingAppointment}
           setAppointmentStatuses={setAppointmentStatuses}
         />
       )}

@@ -4,6 +4,7 @@ import { RootState } from "@/redux/store/store";
 import { Appointment } from "@/types/types";
 import React from "react";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 type ManageAppointmentRequestsProps = {
   setIsManagingAppointmentRequests: (value: boolean) => void;
@@ -22,10 +23,23 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
     });
   };
 
-  const handleDeclineAppointment = (appointmentId: string) => {
+  const handleDeclineAppointment = async (appointmentId: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, decline it!",
+    })
+    if(result.isConfirmed) {
     socket?.emit(SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST, {
       appointmentId,
     });
+    }else{
+      return;
+    }
   };
 
   return (
@@ -54,8 +68,8 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
                     <p className="text-gray-800 dark:text-gray-200 font-medium">
                       {user?.role === "doctor" ? "Patient: " : "Doctor: "}
                       {user?.role === "doctor"
-                        ? `${request.patient.firstName} ${request.patient.lastName}`
-                        : `${request.doctor.firstName} ${request.doctor.lastName}`}
+                        ? `${request?.patient?.firstName} ${request?.patient?.lastName}`
+                        : `${request?.doctor?.firstName} ${request?.doctor?.lastName}`}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Reason: {request.reason}
