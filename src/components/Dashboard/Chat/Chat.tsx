@@ -151,6 +151,9 @@ const Chat: React.FC = () => {
       </div>
 
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex shadow-xl overflow-hidden">
+        {
+          user?.connections?.length > 0 ? (
+            <>
         <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
           {user?.connections?.map((connUser) => (
             <ChatCard
@@ -233,6 +236,16 @@ const Chat: React.FC = () => {
             </div>
           )}
         </main>
+        </>
+          ) : (
+            <div className="flex items-center justify-center h-full w-full">
+              <h1 className="text-xl font-semibold text-gray-500 dark:text-gray-200 text-center">
+                No connections found. Add some connections to start chatting
+              </h1>
+            </div>
+          )
+        }
+        
       </div>
     </div>
   );
