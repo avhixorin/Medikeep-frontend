@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatCard from "./ChatCard";
-import { Bell, BellDotIcon, Users } from "lucide-react";
+import { Bell, BellDotIcon } from "lucide-react";
 import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ const Chat: React.FC = () => {
   const [isManagingConnections, setIsManagingConnections] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [activeFriends,setActiveFriends] = useState<User[]>([]);
+  const [activeFriends, setActiveFriends] = useState<User[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
@@ -69,29 +69,29 @@ const Chat: React.FC = () => {
     }
   };
   useEffect(() => {
-    if(socket){
+    if (socket) {
       socket.emit(SOCKET_EVENTS.GET_ONLINE_FRIENDS, user?._id);
     }
-    socket?.on(SOCKET_EVENTS.GET_ONLINE_FRIENDS, (data: {
-      statusCode: number,
-      message: string,
-      data: User[]
-    }) => {
-      setActiveFriends(data.data);
-    });
+    socket?.on(
+      SOCKET_EVENTS.GET_ONLINE_FRIENDS,
+      (data: { statusCode: number; message: string; data: User[] }) => {
+        setActiveFriends(data.data);
+      }
+    );
 
     return () => {
       socket?.off(SOCKET_EVENTS.GET_ONLINE_FRIENDS);
-    }
-
+    };
   }, [socket, user]);
 
   const getUserStatus = (userId: string) => {
-    return activeFriends.find((user) => user._id === userId) ? "Active now" : "Offline";
-  }
+    return activeFriends.find((user) => user._id === userId)
+      ? "Active now"
+      : "Offline";
+  };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-8">
+    <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-6 gap-4">
       {isManagingConnections && (
         <ManageConnections
           setIsManagingConnections={setIsManagingConnections}
@@ -99,18 +99,14 @@ const Chat: React.FC = () => {
       )}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
-      <div className="h-[25%] w-full flex flex-col gap-6">
+      <div className="w-full flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-zinc-700 dark:text-gray-200">
-              Connections
-            </h1>
-            <Users
-              size={24}
-              className="stroke-[#3f3f46] dark:stroke-gray-200"
-            />
+          <h1 className="text-2xl font-semibold text-zinc-700 dark:text-gray-200">
+            Connections
+          </h1>
           </div>
-          <div className="flex gap-6 items-center">
+          <div className="flex items-center gap-4">
             <Button
               className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
               onClick={() => setIsManagingConnections(true)}
@@ -121,17 +117,17 @@ const Chat: React.FC = () => {
               className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
               onClick={() => setIsSearching(true)}
             >
-              Add Connections
+              Add Connection
             </Button>
             {(user?.notifications?.length ?? 0) > 0 ? (
               <BellDotIcon
-                size={60}
+                size={58}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
               />
             ) : (
               <Bell
-                size={60}
+                size={58}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
               />
@@ -157,7 +153,13 @@ const Chat: React.FC = () => {
       <div className="h-full w-full bg-[#fbf1e3] rounded-md flex shadow-xl overflow-hidden">
         <aside className="h-full w-64 md:w-72 bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
           {user?.connections?.map((connUser) => (
-            <ChatCard key={connUser._id} user={connUser} isActive={getUserStatus(connUser._id!) === "Active now" ? true : false} />
+            <ChatCard
+              key={connUser._id}
+              user={connUser}
+              isActive={
+                getUserStatus(connUser._id!) === "Active now" ? true : false
+              }
+            />
           ))}
         </aside>
 
@@ -178,7 +180,15 @@ const Chat: React.FC = () => {
                     {selectedUser.username}
                   </h3>
                 </div>
-                <h3 className={`${getUserStatus(selectedUser._id!) === "Active now" ? "text-gray-100" : "text-gray-300"}`}>{getUserStatus(selectedUser._id!)}</h3>
+                <h3
+                  className={`${
+                    getUserStatus(selectedUser._id!) === "Active now"
+                      ? "text-gray-100"
+                      : "text-gray-300"
+                  }`}
+                >
+                  {getUserStatus(selectedUser._id!)}
+                </h3>
               </header>
 
               <div

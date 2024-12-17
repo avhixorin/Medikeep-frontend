@@ -1,5 +1,5 @@
 import { RootState } from "@/redux/store/store";
-import { Bell, BellDotIcon, Users } from "lucide-react";
+import { Bell, BellDotIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -57,7 +57,6 @@ const PatientAppointments: React.FC = () => {
           <h1 className="text-2xl font-semibold text-zinc-700 dark:text-gray-200">
             Appointments
           </h1>
-          <Users size={24} className="stroke-[#3f3f46] dark:stroke-gray-200" />
         </div>
         <div className="flex items-center gap-4">
           <Button
