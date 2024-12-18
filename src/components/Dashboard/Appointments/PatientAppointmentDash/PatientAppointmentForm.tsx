@@ -69,7 +69,7 @@ const PatientAppointmentForm: React.FC<{
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center py-6 px-4">
-      <div className="w-full max-w-lg p-6 bg-white dark:bg-gray-800 rounded-md shadow-md space-y-6">
+      <div className="w-full max-w-lg p-6 bg-white dark:bg-[#0d121a] rounded-md shadow-md space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">

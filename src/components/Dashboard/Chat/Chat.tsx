@@ -157,10 +157,10 @@ const Chat: React.FC = () => {
               ))}
             </aside>
 
-            <main className="flex flex-col h-full w-full">
+            <main className="flex flex-col h-full w-full dark:bg-[#1e0e1a]">
               {selectedUser ? (
                 <>
-                  <header className="w-full py-2 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200">
+                  <header className="w-full py-3 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200 border-l dark:border-l-slate-700">
                     <div className="flex items-center gap-6">
                       <img
                         src={
