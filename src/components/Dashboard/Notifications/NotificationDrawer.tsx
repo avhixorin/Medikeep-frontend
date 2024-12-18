@@ -24,7 +24,7 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md">
-      <div className="relative w-[90%] max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+      <div className="relative w-[90%] max-w-md bg-white dark:bg-[#0d121a] rounded-lg shadow-lg">
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
             Notifications
@@ -45,12 +45,19 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
                 key={index}
                 className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg shadow-sm flex justify-between items-start"
               >
-                <p className="text-sm text-gray-700 dark:text-gray-300 flex-1">
+                <p className="text-sm text-gray-700 dark:text-gray-300 flex-1 font-medium">
                   {notification.message}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 ml-4 whitespace-nowrap">
+                <p className="text-xs text-gray-500 dark:text-gray-400 ml-4 whitespace-nowrap font-medium">
                   {format(new Date(notification.time), "MM/dd/yy hh:mm a")}
                 </p>
+                {/* <button
+                  onClick={() => handleRemoveNotification(notification.time)}
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition ml-4"
+                  aria-label="Clear Notification"
+                >
+                  <X className="w-4 h-4" />
+                </button> */}
               </div>
             ))
           ) : (

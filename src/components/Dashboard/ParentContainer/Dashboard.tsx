@@ -2,15 +2,19 @@ import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import LeftSidebar from "./LeftSideBar/LeftSideBar";
 import useSockets from "@/hooks/useSockets";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
+import useAllUsers from "@/hooks/useAllUsers";
 
 const Dashboard: React.FC = () => {
-  const { socket } = useSockets();
+  useSockets();
+  const { fetchAllUsers } = useAllUsers();
+  const allUsers = useSelector((state: RootState) => state.allUsers)
   useEffect(() => {
-    if (!socket) {
-      console.warn("Socket2 is undefined");
+    if (allUsers?.users?.length === 0) {
+      fetchAllUsers();
     }
-    
-  }, [ socket]);
+  }, [allUsers, fetchAllUsers]);
 
   return (
     <div className="w-full max-h-[100dvh] bg-[#FFFCF8] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">

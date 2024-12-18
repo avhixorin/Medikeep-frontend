@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import useSockets from "@/hooks/useSockets";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import useAllUsers from "@/hooks/useAllUsers";
 import SearchBox from "./SearchBox/SearchBox";
 import ManageConnections from "./ManageConnections/ManageConnections";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
@@ -26,11 +25,9 @@ const Chat: React.FC = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
-  const allUsers = useSelector((state: RootState) => state.allUsers);
   const selectedUser = useSelector(
     (state: RootState) => state.selectedUser.selectedUser
   );
-  const { fetchAllUsers } = useAllUsers();
   const messages = useSelector((state: RootState) =>
     selectedUser?._id && state.messages.chatHistories
       ? state.messages.chatHistories[selectedUser._id] || []
@@ -43,11 +40,6 @@ const Chat: React.FC = () => {
         chatContainerRef.current.scrollHeight;
     }
   }, [messages, selectedUser]);
-  useEffect(() => {
-    if (allUsers?.users?.length === 0) {
-      fetchAllUsers();
-    }
-  }, [allUsers, fetchAllUsers]);
 
   const handleSendMessage = () => {
     if (!message.trim() || !socket || !selectedUser) return;

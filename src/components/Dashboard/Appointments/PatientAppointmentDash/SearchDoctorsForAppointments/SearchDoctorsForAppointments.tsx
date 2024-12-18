@@ -40,7 +40,7 @@ const SearchDoctorsForAppointments = ({
           setAppointmentStatuses={setAppointmentStatuses}
         />
       )}
-      <div className="relative rounded-lg bg-white dark:bg-[#1e293b] shadow-md p-6 max-w-2xl w-[90%]">
+      <div className="relative rounded-lg bg-white dark:bg-[#0d121a] shadow-md p-6 max-w-2xl w-[90%]">
         <button
           onClick={() => setIsSchedulingAppointment(false)}
           className="absolute top-3 right-3 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors text-2xl"
