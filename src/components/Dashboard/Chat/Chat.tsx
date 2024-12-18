@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatCard from "./ChatCard";
-import { Bell, BellDotIcon, Video } from "lucide-react";
+import { Bell, BellDotIcon, Video, VideoOff } from "lucide-react";
 import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import NotificationDrawer from "../Notifications/NotificationDrawer";
 import { User } from "@/types/types";
 import Swal from "sweetalert2";
 import VideoCallScreen from "./VideoCallScreen/VideoCallScreen";
+import toast from "react-hot-toast";
 
 const Chat: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
@@ -93,8 +94,8 @@ const Chat: React.FC = () => {
       showCancelButton: true,
       confirmButtonText: "Start Call",
       cancelButtonText: "Cancel",
-    })
-    if(result.isConfirmed){
+    });
+    if (result.isConfirmed) {
       setIsVideoCalling(true);
     }
   };
@@ -107,7 +108,10 @@ const Chat: React.FC = () => {
         />
       )}
       {isVideoCalling && (
-        <VideoCallScreen setIsVideoCalling={setIsVideoCalling} selectedUser={selectedUser!}/>
+        <VideoCallScreen
+          setIsVideoCalling={setIsVideoCalling}
+          selectedUser={selectedUser!}
+        />
       )}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
@@ -195,12 +199,24 @@ const Chat: React.FC = () => {
                       </h3>
                     </div>
                     <div className="flex items-center gap-4">
-                      <button
-                        onClick={handleVideoCall}
-                        className="text-gray-200 p-3 rounded-full"
-                      >
-                        <Video className="w-6 h-6" />
-                      </button>
+                      {getUserStatus(selectedUser._id!) === "Active now" ? (
+                        <button
+                          onClick={handleVideoCall}
+                          className="text-gray-200 p-3 rounded-full"
+                        >
+                          <Video className="w-6 h-6" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            toast.error("User is offline");
+                          }}
+                          className="text-gray-200 p-3 rounded-full"
+                        >
+                          <VideoOff className="w-6 h-6" />
+                        </button>
+                      )}
+
                       <h3
                         className={`${
                           getUserStatus(selectedUser._id!) === "Active now"

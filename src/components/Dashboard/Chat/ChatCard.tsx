@@ -27,7 +27,7 @@ const ChatCard: React.FC<Props> = ({ user, isActive }) => {
       </div>
       
       <div className='flex items-center justify-center mr-4'>
-        <Circle size={10} color='#00A884' className={`dark:fill-[#005F4E] ${isActive ? "fill-[#00A884]" : ""}`} />
+        <Circle size={10} color='#00A884' className={`dark:fill-[#005F4E] ${isActive ? "fill-[#00A884] dark:fill-[#cdd1d0]" : ""}`} />
       </div>
     </div>
   );
