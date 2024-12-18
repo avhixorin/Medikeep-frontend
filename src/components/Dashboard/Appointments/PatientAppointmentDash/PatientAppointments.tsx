@@ -9,7 +9,7 @@ import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import { Button } from "@/components/ui/button";
 import NotificationDrawer from "../../Notifications/NotificationDrawer";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
-import HandleCallScreen from "../HandleCallScreen/HandleCallScreen";
+import AppointmentCallScreen from "../AppointmentCallScreen/AppointmentCallScreen";
 
 const PatientAppointments: React.FC = () => {
   const [isSchedulingAppointment, setIsSchedulingAppointment] = useState(false);
@@ -35,7 +35,7 @@ const PatientAppointments: React.FC = () => {
         />
       )}
       {isSomeOneCalling && appointInQuestion && (
-        <HandleCallScreen
+        <AppointmentCallScreen
           setIsAppointmentOnline={setIsSomeOneCalling}
           appointment={appointInQuestion}
         />

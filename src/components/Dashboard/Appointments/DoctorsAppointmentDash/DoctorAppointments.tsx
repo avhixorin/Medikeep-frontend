@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/popover";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
-import HandleCallScreen from "../HandleCallScreen/HandleCallScreen";
 import {
   DocotorAppointmentCard,
   DocotorAppointmentCardMobile,
@@ -20,6 +19,7 @@ import {
 import NotificationDrawer from "../../Notifications/NotificationDrawer";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
+import AppointmentCallScreen from "../AppointmentCallScreen/AppointmentCallScreen";
 const DoctorAppointments: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -66,7 +66,7 @@ const DoctorAppointments: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col bg-transparent p-6 gap-2 dark:bg-[#141414]">
       {isAppointmentOnline && (
-        <HandleCallScreen
+        <AppointmentCallScreen
           setIsAppointmentOnline={setIsAppointmentOnline}
           appointment={selectedAppointment}
         />

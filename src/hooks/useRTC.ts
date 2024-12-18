@@ -1,9 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import useSockets from "./useSockets";
-import { Appointment } from "@/types/types";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
 
 const useRTC = () => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -13,7 +10,6 @@ const useRTC = () => {
     video: { width: 1280, height: 720 },
   });
   const { socket } = useSockets();
-  const user = useSelector((state: RootState) => state.auth.user);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
   const servers = useMemo(
@@ -39,10 +35,12 @@ const useRTC = () => {
     }
   }, [constraints]);
   const createPeerConnection = useCallback(
-    async (appointment: Appointment) => {
+    async (to: string) => {
+      console.log("Creating peer connection with:", to);
       const peerConnection = new RTCPeerConnection(servers);
       peerConnection.ontrack = (event) => {
         setRemoteStream((prevStream) => {
+          console.log("Received remote stream.");
           const updatedStream = prevStream || new MediaStream();
           event.streams[0].getTracks().forEach((track) => {
             updatedStream.addTrack(track);
@@ -61,14 +59,11 @@ const useRTC = () => {
 
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
+          console.log("Sending ICE candidate to:", to);
           socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
             type: "candidate",
             candidate: event.candidate,
-            to:
-              user?.role === "doctor"
-                ? appointment.patient?._id
-                : appointment.doctor?._id,
-            appointment,
+            to,
           });
         }
       };
@@ -76,31 +71,31 @@ const useRTC = () => {
       peerConnectionRef.current = peerConnection;
       return peerConnectionRef.current;
     },
-    [localStream, grabLocalMedia, socket, user, servers]
+    [localStream, grabLocalMedia, socket, servers]
   );
 
-  const createOffer = async (appointment: Appointment) => {
+  const createOffer = async (to: string) => {
     if (!localStream)
       throw new Error("Local stream not initialized. Call startRTC first.");
-    const peerConnection = await createPeerConnection(appointment);
+    const peerConnection = await createPeerConnection(to);
     if (!peerConnection) {
       return;
     }
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
+    console.log("Sending offer to:", to);
     socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
       type: "offer",
       offer,
-      to: appointment.patient?._id,
-      appointment,
+      to,
     });
   };
 
   const createAnswer = useCallback(
-    async (offer: RTCSessionDescriptionInit, appointment: Appointment) => {
+    async (offer: RTCSessionDescriptionInit, from: string) => {
       try {
         if (!localStream) await grabLocalMedia();
-        const peerConnection = await createPeerConnection(appointment);
+        const peerConnection = await createPeerConnection(from);
         if (!peerConnection) {
           return;
         }
@@ -111,13 +106,12 @@ const useRTC = () => {
         }
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
-
+        console.log("Sending answer to:", from);
         if (socket) {
           socket.emit(SOCKET_EVENTS.RTC_EVENT, {
             type: "answer",
             answer,
-            to: appointment.doctor?._id,
-            appointment,
+            to: from,
           });
         }
       } catch (error) {
@@ -150,11 +144,11 @@ const useRTC = () => {
       offer?: RTCSessionDescriptionInit;
       answer?: RTCSessionDescriptionInit;
       candidate?: RTCIceCandidate;
-      appointment: Appointment;
+      from?: string;
     }) => {
       switch (data.type) {
         case "offer":
-          await createAnswer(data.offer!, data.appointment);
+          await createAnswer(data.offer!, data.from!);
           break;
 
         case "answer":
