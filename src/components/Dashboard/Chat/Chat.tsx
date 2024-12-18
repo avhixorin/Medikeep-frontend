@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatCard from "./ChatCard";
-import { Bell, BellDotIcon } from "lucide-react";
+import { Bell, BellDotIcon, Video } from "lucide-react";
 import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,10 +15,13 @@ import { v4 as uuid } from "uuid";
 import { setSelectedUser } from "@/redux/features/selectedUserSlice";
 import NotificationDrawer from "../Notifications/NotificationDrawer";
 import { User } from "@/types/types";
+import Swal from "sweetalert2";
+import VideoCallScreen from "./VideoCallScreen/VideoCallScreen";
 
 const Chat: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isManagingConnections, setIsManagingConnections] = useState(false);
+  const [isVideoCalling, setIsVideoCalling] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [activeFriends, setActiveFriends] = useState<User[]>([]);
@@ -82,12 +85,29 @@ const Chat: React.FC = () => {
       : "Offline";
   };
 
+  const handleVideoCall = async () => {
+    const result = await Swal.fire({
+      title: "Video Call",
+      text: `Do you want to start a video call with ${selectedUser?.username}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Start Call",
+      cancelButtonText: "Cancel",
+    })
+    if(result.isConfirmed){
+      setIsVideoCalling(true);
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-6 gap-4">
       {isManagingConnections && (
         <ManageConnections
           setIsManagingConnections={setIsManagingConnections}
         />
+      )}
+      {isVideoCalling && (
+        <VideoCallScreen setIsVideoCalling={setIsVideoCalling} selectedUser={selectedUser!}/>
       )}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
@@ -174,15 +194,23 @@ const Chat: React.FC = () => {
                         {selectedUser.username}
                       </h3>
                     </div>
-                    <h3
-                      className={`${
-                        getUserStatus(selectedUser._id!) === "Active now"
-                          ? "text-gray-100"
-                          : "text-gray-300"
-                      }`}
-                    >
-                      {getUserStatus(selectedUser._id!)}
-                    </h3>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={handleVideoCall}
+                        className="text-gray-200 p-3 rounded-full"
+                      >
+                        <Video className="w-6 h-6" />
+                      </button>
+                      <h3
+                        className={`${
+                          getUserStatus(selectedUser._id!) === "Active now"
+                            ? "text-gray-100"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        {getUserStatus(selectedUser._id!)}
+                      </h3>
+                    </div>
                   </header>
 
                   <div

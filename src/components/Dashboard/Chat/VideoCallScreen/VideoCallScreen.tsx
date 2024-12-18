@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
 import useRTC from "@/hooks/useRTC";
-import { Appointment } from "@/types/types";
+import { User } from "@/types/types";
 import {
   Mic,
   MicOff,
@@ -10,12 +9,11 @@ import {
   VideoOff,
   X,
 } from "lucide-react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
+import React, { useEffect, useRef, useState } from "react";
 
-type HandleScreenProps = {
-  setIsAppointmentOnline: (value: boolean) => void;
-  appointment: Appointment;
+type VideoCallScreenProps = {
+  setIsVideoCalling: (value: boolean) => void;
+  selectedUser: User;
 };
 
 type Position = {
@@ -23,20 +21,21 @@ type Position = {
   y: number;
 };
 
-const HandleCallScreen: React.FC<HandleScreenProps> = ({
-  setIsAppointmentOnline,
-  appointment,
+const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
+  setIsVideoCalling,
+  selectedUser,
 }) => {
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMyVideoActive, setIsMyVideoActive] = useState(false);
-
-  const { localStream, remoteStream, grabLocalMedia, createOffer } = useRTC();
+  const [localStreamPosition, setLocalStreamPosition] = useState<Position>({
+    x: 16,
+    y: 16,
+  });
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const user = useSelector((state: RootState) => state.auth.user);
-
+  const { localStream, remoteStream, grabLocalMedia, createOffer } = useRTC();
   useEffect(() => {
     if (localVideoRef.current && localStream) {
       localVideoRef.current.srcObject = localStream;
@@ -45,63 +44,14 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
       remoteVideoRef.current.srcObject = remoteStream;
     }
   }, [localStream, remoteStream]);
-
-  const toggleMic = () => {
-    if (localStream) {
-      localStream.getAudioTracks().forEach((track) => {
-        track.enabled = !track.enabled;
-      });
-      setIsMicOn((prev) => !prev);
-    }
-  };
-
-  const toggleVideo = () => {
-    if (localStream) {
-      localStream.getVideoTracks().forEach((track) => {
-        track.enabled = !track.enabled;
-      });
-      setIsVideoOn((prev) => !prev);
-    }
-  };
-
-  const startMyVideo = async () => {
-    await grabLocalMedia();
-    setIsMyVideoActive(true);
-  };
-
-  const startCall = async () => {
-    if (user?.role === "patient") {
-      setIsCallActive(true);
-      return;
-    }
-    if (localStream) {
-      await createOffer(appointment);
-      setIsCallActive(true);
-    }
-  };
-
-  const endCall = () => {
-    if (localStream) {
-      localStream.getTracks().forEach((track) => track.stop());
-    }
-    setIsCallActive(false);
-    setIsMyVideoActive(false);
-    setIsAppointmentOnline(false);
-  };
-  const [localStreamPosition, setLocalStreamPosition] = useState<Position>({
-    x: 16,
-    y: 16,
-  }); // Initial position
   const localStreamRef = useRef<HTMLDivElement | null>(null);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    const startX =
-      "clientX" in e ? e.clientX : e.touches[0].clientX; // Get initial pointer position
-    const startY =
-      "clientY" in e ? e.clientY : e.touches[0].clientY;
+    const startX = "clientX" in e ? e.clientX : e.touches[0].clientX;
+    const startY = "clientY" in e ? e.clientY : e.touches[0].clientY;
 
     const element = localStreamRef.current;
-    if (!element) return; // Ensure the ref is valid
+    if (!element) return;
 
     const rect = element.getBoundingClientRect();
 
@@ -110,19 +60,21 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
 
     const handleDragMove = (event: MouseEvent | TouchEvent) => {
       const moveX =
-        event instanceof MouseEvent
-          ? event.clientX
-          : event.touches[0]?.clientX;
+        event instanceof MouseEvent ? event.clientX : event.touches[0]?.clientX;
       const moveY =
-        event instanceof MouseEvent
-          ? event.clientY
-          : event.touches[0]?.clientY;
+        event instanceof MouseEvent ? event.clientY : event.touches[0]?.clientY;
 
       if (moveX === undefined || moveY === undefined) return;
 
       setLocalStreamPosition({
-        x: Math.max(0, Math.min(window.innerWidth - rect.width, moveX - offsetX)),
-        y: Math.max(0, Math.min(window.innerHeight - rect.height, moveY - offsetY)),
+        x: Math.max(
+          0,
+          Math.min(window.innerWidth - rect.width, moveX - offsetX)
+        ),
+        y: Math.max(
+          0,
+          Math.min(window.innerHeight - rect.height, moveY - offsetY)
+        ),
       });
     };
 
@@ -139,10 +91,31 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
     window.addEventListener("touchend", handleDragEnd);
   };
 
+  const toggleMic = () => setIsMicOn((prev) => !prev);
+  const toggleVideo = () => setIsVideoOn((prev) => !prev);
+  const startCall = async () => {
+    if (localStream) {
+      await createOffer(selectedUser._id!);
+      setIsCallActive(true);
+    }
+  };
+
+  const endCall = () => {
+    if (localStream) {
+      localStream.getTracks().forEach((track) => track.stop());
+    }
+    setIsCallActive(false);
+    setIsMyVideoActive(false);
+    setIsVideoCalling(false);
+  };
+  const startMyVideo = async () => {
+    await grabLocalMedia();
+    setIsMyVideoActive(true);
+  };
   return (
     <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
       <button
-        onClick={() => setIsAppointmentOnline(false)}
+        onClick={() => setIsVideoCalling(false)}
         className="absolute top-4 right-4 bg-gray-100/80 dark:bg-gray-900/60 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-2 rounded-full transition-colors z-50"
         aria-label="Close"
       >
@@ -249,4 +222,4 @@ const HandleCallScreen: React.FC<HandleScreenProps> = ({
   );
 };
 
-export default HandleCallScreen;
+export default VideoCallScreen;
