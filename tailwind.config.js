@@ -62,7 +62,7 @@ export default {
         "sign-up": 'url("./src/assets/sign-up.png")',
         herobg: 'url("./src/assets/homepage/herobg.png")',
         dashboard: 'url("./images/dashboardBg.jpg")',
-        dashboard2: 'url("./images/dashboardBg2.png")',
+        dashboard2: 'url("https://res.cloudinary.com/avhixorin/image/upload/v1735625128/dashboardBg2_h6odqa.png")',
         dashboard3: 'url("./images/dashboardBg3.png")',
       },
       fontFamily: {

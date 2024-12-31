@@ -195,7 +195,7 @@ const Chat: React.FC = () => {
                         className="w-10 h-10 rounded-full"
                       />
                       <h3 className="font-medium text-lg">
-                        {selectedUser.username}
+                        {selectedUser.firstName} {selectedUser.lastName}
                       </h3>
                     </div>
                     <div className="flex items-center gap-4">
