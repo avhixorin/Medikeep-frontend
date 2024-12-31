@@ -111,6 +111,7 @@ const Chat: React.FC = () => {
         <VideoCallScreen
           setIsVideoCalling={setIsVideoCalling}
           selectedUser={selectedUser!}
+          caller={"self"}
         />
       )}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
