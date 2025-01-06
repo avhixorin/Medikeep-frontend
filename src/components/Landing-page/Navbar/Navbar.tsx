@@ -59,7 +59,7 @@ const NavBar: React.FC = () => {
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
               onClick={scrollToFeatures}
-              href="/features"
+              href="#features"
               className="hover:text-blue-600 cursor-pointer transition-colors duration-300"
             >
               Features
@@ -72,7 +72,7 @@ const NavBar: React.FC = () => {
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
               onClick={scrollToPricing}
-              href="/pricing"
+              href="#pricing"
               className="hover:text-blue-600 cursor-pointer transition-colors duration-300"
             >
               Pricing
@@ -94,7 +94,7 @@ const NavBar: React.FC = () => {
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
               onClick={scrollToContact}
-              href="/contact"
+              href="#contact"
               className="hover:text-blue-600 cursor-pointer transition-colors duration-300"
             >
               Contact
