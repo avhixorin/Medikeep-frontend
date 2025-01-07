@@ -14,7 +14,7 @@ interface PricingCardProps {
 }
 
 const PricingCard: React.FC<PricingCardProps> = ({ plan, isPopular = false }) => (
-  <div className={`relative cursor-pointer flex flex-col justify-between p-6 bg-white rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${isPopular ? 'border-2 border-blue-500' : ''}`}>
+  <div className={`relative cursor-pointer flex flex-col justify-between p-6 bg-white rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl ${isPopular ? 'border-2 border-blue-500' : ''}`} id='pricing'>
     {isPopular && (
       <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
         Most Popular
