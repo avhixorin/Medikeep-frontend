@@ -20,13 +20,13 @@ export default function SettingsPage() {
   return (
     <div className="w-full h-full bg-transparent">
       <header className="flex items-center justify-between border-b px-4 py-3 md:px-6">
-        <div>
+        <div className="hidden md:block">
           <h1 className="text-lg font-semibold">{user?.firstName}</h1>
           <p className="text-sm text-muted-foreground">
             Manage your details and personal preferences here.
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -49,12 +49,11 @@ export default function SettingsPage() {
           />
         </div>
       </header>
-
+      
       <SettingsNav 
         items={navItems}
       />
-
-      <div className="p-6 overflow-y-auto scrollbar-webkit">
+      <div className="md:p-6 overflow-y-auto scrollbar-webkit">
         <Outlet />
       </div>
     </div>
