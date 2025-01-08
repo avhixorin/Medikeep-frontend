@@ -163,16 +163,16 @@ export function DocotorAppointmentCardMobile({
     );
   };
   return (
-    <Card className="w-full max-w-md mx-auto overflow-hidden transition-all duration-300 hover:shadow-lg dark:bg-[#141414]">
+    <Card className="w-full transition-all duration-300 hover:shadow-lg dark:bg-[#141414]">
       {isRescheduling ? (
         <RescheduleForm
           appointment={appointment}
           setIsRescheduling={setIsRescheduling}
         />
       ) : null}
-      <CardContent className="p-6">
-        <div className="flex items-center space-x-4">
-          <Avatar className="w-16 h-16 border-2 border-primary">
+      <CardContent className="p-3">
+        <div className="flex items-center space-x-2">
+          <Avatar className="w-8 h-8 border-2 border-primary">
             <AvatarImage
               src={appointment?.patient.profilePicture}
               alt={appointment?.patient.firstName}
@@ -183,46 +183,51 @@ export function DocotorAppointmentCardMobile({
             </AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
               {appointment?.patient.firstName} {appointment?.patient.lastName}
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Age: {calcAge(appointment?.patient.dateOfBirth)} years
             </p>
           </div>
         </div>
-        <div className="mt-6 space-y-2">
-          <div className="flex items-center text-gray-700 dark:text-gray-300">
-            <CalendarIcon className="w-5 h-5 mr-2 text-primary" />
-            <span className="font-semibold">Date:</span>
-            <span className="ml-2">
-              {format(appointment?.date, "dd MMM yyyy")}
-            </span>
+        <div className="w-full flex justify-between items-center">
+          <div className="mt-3 space-y-1">
+            <div className="flex items-center text-gray-700 dark:text-gray-300">
+              <CalendarIcon className="w-3 h-3 mr-1 text-primary" />
+              <span className="font-semibold text-xs">Date:</span>
+              <span className="ml-2 text-xs">
+                {format(appointment?.date, "dd MMM yyyy")}
+              </span>
+            </div>
+            <div className="flex items-center text-gray-700 dark:text-gray-300">
+              <ClockIcon className="w-3 h-3 mr-1 text-primary" />
+              <span className="font-semibold text-xs">Time:</span>
+              <span className="ml-2 text-xs">{appointment?.time}</span>
+            </div>
           </div>
-          <div className="flex items-center text-gray-700 dark:text-gray-300">
-            <ClockIcon className="w-5 h-5 mr-2 text-primary" />
-            <span className="font-semibold">Time:</span>
-            <span className="ml-2">{appointment?.time}</span>
+          <div>
+            <Button
+              onClick={onStartSession}
+              className=" bg-primary hover:bg-primary/90 text-white transition-colors duration-300 text-xs w-full"
+            >
+              Start session
+            </Button>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="px-6 py-4 bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
+      <CardFooter className="px-2 py-2 bg-gray-50 dark:bg-gray-700 flex justify-between items-center gap-4">
         <Button
           onClick={handleReschedule}
-          className=" bg-primary hover:bg-primary/90 text-white transition-colors duration-300"
+          className="bg-primary hover:bg-primary/90 text-white transition-colors duration-300 w-full"
         >
           Reschedule
         </Button>
-        <Button
-          onClick={onStartSession}
-          className=" bg-primary hover:bg-primary/90 text-white transition-colors duration-300"
-        >
-          Start online session
-        </Button>
+
         <Button
           onClick={handleCancel}
           variant="destructive"
-          className="hover:bg-destructive/90 transition-colors duration-300"
+          className="hover:bg-destructive/90 transition-colors w-full duration-300 "
         >
           Cancel
         </Button>

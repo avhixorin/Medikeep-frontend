@@ -23,7 +23,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <Card className="w-full h-full p-6 md:p-8 bg-transparent shadow-md">
+    <Card className="w-full h-full md:p-8 bg-transparent shadow-md">
       <CardHeader className="border-b pb-4 mb-6">
         <div className="flex items-center space-x-6">
           <Avatar className="w-24 h-24">
@@ -42,16 +42,16 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ user }) => {
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent >
         <Tabs defaultValue="info" className="w-full">
-          <TabsList className="mb-4 border-b">
+          <TabsList className="mb-4 border-b flex w-full px-0 mx-0">
             <TabsTrigger value="info">Basic Info</TabsTrigger>
             <TabsTrigger value="credentials">Credentials</TabsTrigger>
             <TabsTrigger value="appointments">Appointments</TabsTrigger>
           </TabsList>
 
           <TabsContent value="info">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 overflow-y-auto">
               <div>
                 <Label htmlFor="firstName">First Name</Label>
                 <Input id="firstName" defaultValue={user?.firstName || ""} readOnly={!isEditing} />

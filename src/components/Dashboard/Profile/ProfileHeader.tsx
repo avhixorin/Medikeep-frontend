@@ -19,7 +19,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
           {user.role === "patient" ? "View and update your personal details, medical information, and preferences." : "View and update your professional details, qualifications, and availability."} 
         </p>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 max-md:hidden">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input

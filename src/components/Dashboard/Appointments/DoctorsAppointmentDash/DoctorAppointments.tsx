@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { format, compareAsc, parseISO } from "date-fns";
-import { Bell, BellDotIcon, CalendarIcon, SearchIcon, X } from "lucide-react";
+import {
+  Bell,
+  BellDotIcon,
+  CalendarIcon,
+  MenuIcon,
+  SearchIcon,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -21,6 +28,7 @@ import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppoin
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import AppointmentCallScreen from "../AppointmentCallScreen/AppointmentCallScreen";
 const DoctorAppointments: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -84,11 +92,41 @@ const DoctorAppointments: React.FC = () => {
         />
       ) : null}
       <div className="w-full flex flex-col gap-8">
-        <div className="w-full flex items-center justify-between">
-          <h1 className="text-3xl font-semibold text-zinc-700 dark:text-gray-200">
-            Appointments
-          </h1>
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="max-md:w-full flex justify-between md:justify-normal items-start md:items-center gap-3 relative">
+            <h1 className="text-lg md:text-2xl font-semibold text-zinc-700 dark:text-gray-200">
+              Appointments
+            </h1>
+            <MenuIcon
+              className="md:hidden cursor-pointer"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
+            <div
+              className={`absolute top-12 right-0 bg-white dark:bg-[#1A1A1D] shadow-xl rounded-md p-2 w-48 transition-transform text-sm flex flex-col justify-evenly items-center space-y-2 duration-300 ${
+                isMenuOpen ? "scale-100" : "scale-0"
+              }`}
+            >
+              <button
+                className="w-full dark:text-white text-black"
+                onClick={() => {
+                  setIsManagingAppointmentRequests(true);
+                  setIsMenuOpen(false);
+                }}
+              >
+                Manage Requests
+              </button>
+              <button
+                className="w-full dark:text-white text-black"
+                onClick={() => {
+                  setIsOpen(true);
+                  setIsMenuOpen(false);
+                }}
+              >
+                Notifications
+              </button>
+            </div>
+          </div>
+          <div className="hidden md:flex items-center gap-4">
             <Button
               className="w-full py-2 dark:bg-zinc-300 dark:hover:bg-white"
               onClick={() => setIsManagingAppointmentRequests(true)}
@@ -97,13 +135,13 @@ const DoctorAppointments: React.FC = () => {
             </Button>
             {(user?.notifications?.length ?? 0) > 0 ? (
               <BellDotIcon
-                size={22}
+                size={24}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
               />
             ) : (
               <Bell
-                size={22}
+                size={24}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
                 onClick={() => setIsOpen(true)}
               />
@@ -111,7 +149,7 @@ const DoctorAppointments: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-3">
+        <div className="flex flex-col md:flex-row max-md:items-start items-center gap-3">
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -136,7 +174,7 @@ const DoctorAppointments: React.FC = () => {
             </PopoverContent>
           </Popover>
 
-          <div className="relative flex-grow bg-white border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 dark:bg-[#0A0A0A] dark:border-gray-700 dark:focus-within:ring-blue-400">
+          <div className="relative max-md:w-full flex-grow bg-white border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 dark:bg-[#0A0A0A] dark:border-gray-700 dark:focus-within:ring-blue-400">
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
             <Input
               placeholder="Search patients..."
@@ -155,7 +193,6 @@ const DoctorAppointments: React.FC = () => {
               </Button>
             )}
           </div>
-
           <Button
             variant="outline"
             onClick={clearFilters}
@@ -172,7 +209,8 @@ const DoctorAppointments: React.FC = () => {
           </Button>
         </div>
       </div>
-      <div className="mt-6 flex-grow bg-white dark:bg-[#0A0A0A] rounded-md p-6 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
+
+      <div className="mt-6 bg-white dark:bg-[#0A0A0A] rounded-md p-2 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
         {filteredAppointments.length > 0 ? (
           <div className={isMobile ? "space-y-4" : "grid grid-cols-1 gap-2"}>
             {filteredAppointments.map((appointment) =>
