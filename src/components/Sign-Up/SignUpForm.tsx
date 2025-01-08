@@ -183,7 +183,7 @@ const SignUpA: React.FC = () => {
         <p className="text-gray-600">
           Already have an account?{" "}
           <Link
-            to="/sign-in"
+            to="/login"
             className="text-blue-500 font-semibold hover:underline"
           >
             Sign in instead

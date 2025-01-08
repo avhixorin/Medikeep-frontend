@@ -13,12 +13,12 @@ const About: React.FC = () => {
             Welcome to MediKeep, where we revolutionize healthcare management through technology, connecting patients with healthcare professionals for better health outcomes.
           </p>
           <div className="flex justify-center gap-6">
-            <Link to="/sign-in">
+            <Link to="/login">
               <button className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
                 Login
               </button>
             </Link>
-            <Link to="/sign-up">
+            <Link to="/register">
               <button className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-400">
                 Sign Up
               </button>

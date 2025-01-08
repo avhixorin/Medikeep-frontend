@@ -56,7 +56,7 @@ export default function LeftSidebar() {
         if (response.status === 200) {
           dispatch(clearAuthUser());
           toast.success("Logged out successfully.");
-          setTimeout(() => navigate("/sign-in"), 0);
+          setTimeout(() => navigate("/login"), 0);
         } else {
           toast.error(response.data.message || "Failed to log out.");
         }

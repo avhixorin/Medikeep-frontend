@@ -58,7 +58,7 @@ const Forget = () => {
       toast.error("Password update failed. Please try again.");
       return;
     }
-      navigate("/sign-in");
+      navigate("/login");
     }
 
   };

@@ -16,7 +16,7 @@ import Upload from "@/utils/Upload";
 
 const General = () => {
   const [uploadClicked, setUploadClicked] = React.useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { toggleTheme } = useTheme();
   const user = useSelector((state: RootState) => state.auth.user)
   const cancelUpload = () => {
     setUploadClicked(false);
@@ -86,7 +86,7 @@ const General = () => {
                 <div>Light / Dark</div>
               </div>
               <Switch
-                checked={theme === "dark"}
+                checked={user?.theme === "dark"}
                 onCheckedChange={toggleTheme}
               />
             </div>
