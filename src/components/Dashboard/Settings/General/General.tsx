@@ -13,12 +13,15 @@ import React from "react";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
 import Upload from "@/utils/Upload";
+import { useTranslation } from "react-i18next";
 
 const General = () => {
   const [uploadClicked, setUploadClicked] = React.useState(false);
+  const { t, i18n } = useTranslation();
+  const [language, setLanguage] = React.useState(i18n.language);
   const { toggleTheme } = useTheme();
-  const localTheme = localStorage.getItem("theme")
-  const user = useSelector((state: RootState) => state.auth.user)
+  const localTheme = localStorage.getItem("theme");
+  const user = useSelector((state: RootState) => state.auth.user);
   const cancelUpload = () => {
     setUploadClicked(false);
   };
@@ -32,11 +35,11 @@ const General = () => {
       )}
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-medium">General</h2>
+          <h2 className="text-lg font-medium">{t("settings.general.title")}</h2>
           <div className="mt-6 space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <Label>Photo</Label>
+                <Label>{t("settings.general.photo")}</Label>
                 <div className="mt-2">
                   <img
                     src={user?.profilePicture}
@@ -52,39 +55,39 @@ const General = () => {
                 size="sm"
                 onClick={() => setUploadClicked(true)}
               >
-                Edit
+                {t("settings.general.edit")}
               </Button>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label>Name</Label>
-                <div>{user?.firstName}</div>
+                <Label>{t("settings.general.name")}</Label>
+                <div>{user?.firstName} {user?.lastName}</div>
               </div>
               <Button variant="outline" size="sm">
-                Edit
+              {t("settings.general.edit")}
               </Button>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label>Email address</Label>
+                <Label>{t("settings.general.email")}</Label>
                 <div>{user?.email}</div>
               </div>
               <Button variant="outline" size="sm">
-                Edit
+              {t("settings.general.edit")}
               </Button>
             </div>
           </div>
         </div>
 
         <div>
-          <h2 className="text-lg font-medium">Preferences</h2>
+          <h2 className="text-lg font-medium">{t("settings.general.preferences")}</h2>
           <div className="mt-6 space-y-6">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label>Theme</Label>
-                <div>Light / Dark</div>
+                <Label>{t("settings.general.theme")}</Label>
+                <div>{t("settings.general.light")} / {t("settings.general.dark")}</div>
               </div>
               <Switch
                 checked={user?.theme === "dark" || localTheme === "dark"}
@@ -93,22 +96,27 @@ const General = () => {
             </div>
 
             <div className="space-y-1">
-              <Label>Language</Label>
-              <Select defaultValue="en-GB">
+              <Label>{t("settings.general.language")}</Label>
+              <Select
+                defaultValue="en"
+                value={language}
+                onValueChange={(value) => {
+                  i18n.changeLanguage(value);
+                  setLanguage(value);
+                }}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="en-GB">English UK</SelectItem>
-                  <SelectItem value="en-US">English US</SelectItem>
-                  <SelectItem value="fr-FR">French</SelectItem>
-                  <SelectItem value="es-ES">Spanish</SelectItem>
+                  <SelectItem value="en">{t("settings.general.english")}</SelectItem>
+                  <SelectItem value="hi">{t("settings.general.hindi")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-1">
-              <Label>Date Format</Label>
+              <Label>{t("settings.general.dateFormat")}</Label>
               <Select defaultValue="dd/mm/yyyy">
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select format" />
@@ -123,16 +131,16 @@ const General = () => {
 
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label>Enable Notifications</Label>
-                <div>Turn notifications on or off</div>
+                <Label>{t("settings.general.enableNotifications")}</Label>
+                <div>{t("settings.general.text1")}</div>
               </div>
               <Switch />
             </div>
 
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label>Account Privacy</Label>
-                <div>Private / Public</div>
+                <Label>{t("settings.general.accountPrivacy")}</Label>
+                <div>{t("settings.general.private")} / {t("settings.general.public")}</div>
               </div>
               <Switch />
             </div>

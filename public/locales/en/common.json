@@ -1,0 +1,41 @@
+{
+    "translation": {
+      "sidebar": {
+        "title": "MediKeep",
+        "dashboard": "Dashboard",
+        "appointments": "Appointments",
+        "chats": "Chats",
+        "records": "Records",
+        "patients": "Patients",
+        "settings": "Settings",
+        "logout": "Logout"
+      },
+      "welcome": {
+        "title": "Welcome",
+        "subtitle1":
+          "Ready to manage your patients and appointments efficiently? Let's make healthcare seamless!",
+        "cards": {
+          "card1": {
+            "title": "Upcoming Appointments",
+            "subtitle": "Check your scheduled appointments with your doctors.",
+            "button": "View Appointments"
+          },
+          "card2": {
+            "title": "Prescriptions",
+            "subtitle": "Access your recent and saved prescriptions.",
+            "button": "View Prescriptions"
+          },
+          "card3": {
+            "title": "Messages",
+            "subtitle": "Check messages from your doctors and clinics.",
+            "button": "View Messages"
+          },
+          "card4": {
+            "title": "Health Overview",
+            "subtitle": "Monitor patient health trends and stats at a glance.",
+            "button": "View Overview"
+          }
+        }
+      }
+    }
+  }

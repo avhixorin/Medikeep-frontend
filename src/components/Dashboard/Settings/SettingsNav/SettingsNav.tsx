@@ -1,12 +1,15 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 
 export interface SettingsNavProps {
-  items: { href: string; title: string }[];
+  items: { href: string; title: string }[]; // `title` should be a translation key
   className?: string;
 }
 
 export function SettingsNav({ className, items, ...props }: SettingsNavProps) {
+  const { t } = useTranslation(); 
+
   return (
     <nav
       className={cn(
@@ -29,7 +32,7 @@ export function SettingsNav({ className, items, ...props }: SettingsNavProps) {
             )
           }
         >
-          {item.title}
+          {t(item.title)}
         </NavLink>
       ))}
     </nav>

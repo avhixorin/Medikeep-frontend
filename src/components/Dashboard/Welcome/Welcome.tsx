@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useNavigate } from "react-router-dom";
 import { setChatHistory } from "@/redux/features/messageSlice";
+import { useTranslation } from "react-i18next";
 
 export default function Welcome() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -18,38 +19,39 @@ export default function Welcome() {
   if (user && user.messages) {
     dispatch(setChatHistory(user.messages));
   }
+  const { t } = useTranslation();
   const cards = [
     {
-      title: "Upcoming Appointments",
+      title: t("welcome.cards.card1.title"),
       description:
         user?.role === "Doctor"
-          ? "View and prepare for your upcoming consultations."
-          : "Check your scheduled appointments with your doctors.",
-      action: "View Appointments",
+          ? t("welcome.cards.card1.subtitle1")
+          : t("welcome.cards.card1.subtitle2"),
+      action: t("welcome.cards.card1.button"),
     },
     {
-      title: "Prescriptions",
+      title: t("welcome.cards.card2.title"),
       description:
         user?.role === "Doctor"
-          ? "Manage and send prescriptions to your patients."
-          : "Access your recent and saved prescriptions.",
-      action: "View Prescriptions",
+          ? t("welcome.cards.card2.subtitle1")
+          : t("welcome.cards.card2.subtitle2"),
+      action: t("welcome.cards.card2.button"),
     },
     {
-      title: "Messages",
+      title: t("welcome.cards.card3.title"),
       description:
         user?.role === "Doctor"
-          ? "Communicate with your patients effectively."
-          : "Check messages from your doctors and clinics.",
-      action: "View Messages",
+          ? t("welcome.cards.card3.subtitle1")
+          : t("welcome.cards.card3.subtitle2"),
+      action: t("welcome.cards.card3.button"),
     },
     {
-      title: "Health Overview",
+      title: t("welcome.cards.card4.title"),
       description:
         user?.role === "doctor"
-          ? "Monitor patient health trends and stats at a glance."
-          : "Get a quick overview of your health status.",
-      action: "View Overview",
+          ? t("welcome.cards.card4.subtitle1")
+          : t("welcome.cards.card4.subtitle2"),
+      action: t("welcome.cards.card4.button"),
     },
   ];
   const navigate = useNavigate();
@@ -74,7 +76,7 @@ export default function Welcome() {
       <div className="max-w-7xl mx-auto flex flex-col gap-8">
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl dark:text-[#fafafa]">
-            {user?.role === "doctor" ? "Welcome" : "Hello"},
+            {user?.role === "doctor" ? t("welcome.title") : "Hello"},
             <br />
             {
               user?.role === "doctor" ? "Dr." : ""
@@ -83,8 +85,8 @@ export default function Welcome() {
           </h1>
           <p className="text-muted-foreground max-w-[700px] text-base sm:text-lg md:text-xl">
             {user?.role === "doctor"
-              ? "Ready to manage your patients and appointments efficiently? Let's make healthcare seamless!"
-              : "Your health is our priority. Track appointments, prescriptions, and more with ease."}
+              ? t("welcome.subtitle1")
+              : t("welcome.subtitle2")}
           </p>
         </div>
 
