@@ -1,16 +1,20 @@
 import React, { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import LeftSidebar from "./LeftSideBar/LeftSideBar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 
 const Dashboard: React.FC = () => {
-  const userTheme = useSelector((state: RootState) => state.auth.user?.theme);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const localTheme = localStorage.getItem("theme");
   useEffect(() => {
     const htmlElement = document.querySelector("html");
     htmlElement?.classList.remove("dark","light");
-    htmlElement?.classList.add(userTheme || "light");
+    htmlElement?.classList.add(user?.theme || localTheme || "light");
   })
+  if (user === null) {
+    return <Navigate to="/unauthorized" replace />;
+  }
   return (
     <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">
       <LeftSidebar />
