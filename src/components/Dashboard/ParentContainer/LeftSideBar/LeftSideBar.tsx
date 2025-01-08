@@ -30,12 +30,12 @@ export default function LeftSidebar() {
 
   const handleLogout = async () => {
     const result = await Swal.fire({
-      title: t("logout.confirmTitle"),
-      text: t("logout.confirmText"),
+      title: "Are you sure?",
+      text: "You will be logged out of your account.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: t("logout.confirmButton"),
-      cancelButtonText: t("logout.cancelButton"),
+      confirmButtonText: "Yes, log me out",
+      cancelButtonText: "No, cancel",
       reverseButtons: true,
     });
 
@@ -56,19 +56,19 @@ export default function LeftSidebar() {
 
         if (response.status === 200) {
           dispatch(clearAuthUser());
-          toast.success(t("logout.success"));
+          toast.success("You have been logged out successfully.");
           setTimeout(() => navigate("/login"), 0);
         } else {
-          toast.error(response.data.message || t("logout.failure"));
+          toast.error(response.data.message || "An error occurred.");
         }
       } catch (error) {
         console.error(error);
         toast.error(
-          error instanceof Error ? error.message : t("logout.errorOccurred")
+          error instanceof Error ? error.message : "An error occurred."
         );
       }
     } else {
-      toast.error(t("logout.cancelled"));
+      toast("Logout cancelled.");
     }
   };
 
