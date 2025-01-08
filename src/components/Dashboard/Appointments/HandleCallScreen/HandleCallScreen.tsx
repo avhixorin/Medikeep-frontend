@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import useRTC from "@/hooks/useRTC";
+import { Appointment } from "@/types/types";
 import {
   Mic,
   MicOff,
@@ -8,16 +10,12 @@ import {
   VideoOff,
   X,
 } from "lucide-react";
-import useRTC from "@/hooks/useRTC";
-import useSockets from "@/hooks/useSockets";
-import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { User } from "@/types/types";
-import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
-type VideoCallScreenProps = {
-  setIsVideoCalling: (value: boolean) => void;
-  selectedUser: User;
-  caller: "other" | "self";
+type HandleScreenProps = {
+  setIsAppointmentOnline: (value: boolean) => void;
+  appointment: Appointment;
 };
 
 type Position = {
@@ -25,28 +23,20 @@ type Position = {
   y: number;
 };
 
-const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
-  setIsVideoCalling,
-  selectedUser,
-  caller,
+const HandleCallScreen: React.FC<HandleScreenProps> = ({
+  setIsAppointmentOnline,
+  appointment,
 }) => {
-  // States
   const [isMicOn, setIsMicOn] = useState(true);
-  const [buttonText, setButtonText] = useState("Start Call");
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMyVideoActive, setIsMyVideoActive] = useState(false);
-  const [localStreamPosition, setLocalStreamPosition] = useState<Position>({
-    x: 16,
-    y: 16,
-  });
-
-  const localVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const localStreamRef = useRef<HTMLDivElement | null>(null);
 
   const { localStream, remoteStream, grabLocalMedia, createOffer } = useRTC();
-  const { socket } = useSockets();
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const user = useSelector((state: RootState) => state.auth.user);
+
   useEffect(() => {
     if (localVideoRef.current && localStream) {
       localVideoRef.current.srcObject = localStream;
@@ -74,47 +64,65 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
     }
   };
 
-  const startMyVideo = useCallback(async () => {
+  const startMyVideo = async () => {
     await grabLocalMedia();
-    console.log("Local Stream:", localStream);
     setIsMyVideoActive(true);
-  }, [grabLocalMedia, localStream]);
-  
-  const startCall = useCallback(() => {
-    setButtonText("Calling...");
-    socket?.emit(SOCKET_EVENTS.VIDEO_CALL_REQUEST, {
-      to: selectedUser._id,
-    });
-    setIsCallActive(true);
-  }, [socket, selectedUser]);
+  };
+
+  const startCall = async () => {
+    if (user?.role === "patient") {
+      setIsCallActive(true);
+      return;
+    }
+    if (localStream) {
+      await createOffer(appointment.patient._id!);
+      setIsCallActive(true);
+    }
+  };
+
+  const endCall = () => {
+    if (localStream) {
+      localStream.getTracks().forEach((track) => track.stop());
+    }
+    setIsCallActive(false);
+    setIsMyVideoActive(false);
+    setIsAppointmentOnline(false);
+  };
+  const [localStreamPosition, setLocalStreamPosition] = useState<Position>({
+    x: 16,
+    y: 16,
+  }); // Initial position
+  const localStreamRef = useRef<HTMLDivElement | null>(null);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    const startX = "clientX" in e ? e.clientX : e.touches[0].clientX;
-    const startY = "clientY" in e ? e.clientY : e.touches[0].clientY;
+    const startX =
+      "clientX" in e ? e.clientX : e.touches[0].clientX; // Get initial pointer position
+    const startY =
+      "clientY" in e ? e.clientY : e.touches[0].clientY;
 
     const element = localStreamRef.current;
-    if (!element) return;
+    if (!element) return; // Ensure the ref is valid
 
     const rect = element.getBoundingClientRect();
+
     const offsetX = startX - rect.left;
     const offsetY = startY - rect.top;
 
     const handleDragMove = (event: MouseEvent | TouchEvent) => {
       const moveX =
-        event instanceof MouseEvent ? event.clientX : event.touches[0]?.clientX;
+        event instanceof MouseEvent
+          ? event.clientX
+          : event.touches[0]?.clientX;
       const moveY =
-        event instanceof MouseEvent ? event.clientY : event.touches[0]?.clientY;
+        event instanceof MouseEvent
+          ? event.clientY
+          : event.touches[0]?.clientY;
+
       if (moveX === undefined || moveY === undefined) return;
 
       setLocalStreamPosition({
-        x: Math.max(
-          0,
-          Math.min(window.innerWidth - rect.width, moveX - offsetX)
-        ),
-        y: Math.max(
-          0,
-          Math.min(window.innerHeight - rect.height, moveY - offsetY)
-        ),
+        x: Math.max(0, Math.min(window.innerWidth - rect.width, moveX - offsetX)),
+        y: Math.max(0, Math.min(window.innerHeight - rect.height, moveY - offsetY)),
       });
     };
 
@@ -131,47 +139,16 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
     window.addEventListener("touchend", handleDragEnd);
   };
 
-  const endCall = useCallback(() => {
-    if (localStream) {
-      localStream.getTracks().forEach((track) => track.stop());
-    }
-    setIsCallActive(false);
-    setIsMyVideoActive(false);
-    setIsVideoCalling(false);
-  }, [localStream, setIsVideoCalling]);
-
-  useEffect(() => {
-    if (!localStream) startMyVideo();
-    if (caller === "other") {
-      setIsCallActive(true);
-    }
-  }, [caller, localStream, startMyVideo]);
-  useEffect(() => {
-    const handleVideoCall = async (data: { from: User; verdict: string }) => {
-      if (data.verdict === "accept") {
-        toast.success("Call accepted");
-        await createOffer(data.from._id!);
-      } else {
-        toast.error("Call declined");
-        endCall();
-      }
-    };
-
-    socket?.on(SOCKET_EVENTS.VIDEO_CALL_RESPONSE, handleVideoCall);
-    return () => {
-      socket?.off(SOCKET_EVENTS.VIDEO_CALL_RESPONSE, handleVideoCall);
-    };
-  }, [localStream, startMyVideo, createOffer, endCall, socket]);
-
   return (
     <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
       <button
-        onClick={() => setIsVideoCalling(false)}
+        onClick={() => setIsAppointmentOnline(false)}
         className="absolute top-4 right-4 bg-gray-100/80 dark:bg-gray-900/60 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-2 rounded-full transition-colors z-50"
         aria-label="Close"
       >
         <X className="w-6 h-6" />
       </button>
+
       <div className="w-full h-full bg-black relative overflow-hidden">
         {isCallActive ? (
           <video
@@ -212,9 +189,11 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
           <button
             onClick={toggleMic}
-            className={`p-3 rounded-full ${
-              isMicOn ? "bg-gray-200 dark:bg-gray-800" : "bg-red-500"
-            }`}
+            className={`${
+              isMicOn
+                ? "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
+                : "bg-red-500 hover:bg-red-600"
+            } text-gray-800 dark:text-gray-200 p-3 rounded-full`}
           >
             {isMicOn ? (
               <Mic className="w-6 h-6" />
@@ -222,11 +201,14 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
               <MicOff className="w-6 h-6" />
             )}
           </button>
+
           <button
             onClick={toggleVideo}
-            className={`p-3 rounded-full ${
-              isVideoOn ? "bg-gray-200 dark:bg-gray-800" : "bg-red-500"
-            }`}
+            className={`${
+              isVideoOn
+                ? "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
+                : "bg-red-500 hover:bg-red-600"
+            } text-gray-800 dark:text-gray-200 p-3 rounded-full`}
           >
             {isVideoOn ? (
               <Video className="w-6 h-6" />
@@ -234,6 +216,7 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
               <VideoOff className="w-6 h-6" />
             )}
           </button>
+
           {isCallActive ? (
             <button
               onClick={endCall}
@@ -248,21 +231,22 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full flex items-center"
             >
               <PhoneCall className="w-6 h-6" />
-              <span className="ml-2">{buttonText}</span>
+              <span className="ml-2">Start Call</span>
             </button>
           )}
-          {/* {!isMyVideoActive && (
+
+          {!isMyVideoActive && (
             <button
-              onClick={startMyVideo}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full"
+              onClick={startMyVideo}
             >
               Start my video
             </button>
-          )} */}
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default VideoCallScreen;
+export default HandleCallScreen;

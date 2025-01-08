@@ -37,7 +37,7 @@ const ManageConnections: React.FC<ManageConnectionsProps> = ({
           &times;
         </button>
 
-        <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">
+        <h2 className="text-sm md:text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">
           Manage Connection Requests
         </h2>
 
@@ -72,7 +72,7 @@ const ManageConnections: React.FC<ManageConnectionsProps> = ({
             ))}
           </ul>
         ) : (
-          <p className="text-center text-gray-600 dark:text-gray-400">
+          <p className="text-xs text-center text-gray-600 dark:text-gray-400">
             No connection requests at the moment.
           </p>
         )}

@@ -4,6 +4,7 @@ import { User } from '@/types/types';
 import { Circle } from 'lucide-react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Pulse from './Pulse';
 
 interface Props {
   user: User;
@@ -15,7 +16,7 @@ const ChatCard: React.FC<Props> = ({ user, isActive }) => {
   const dispatch = useDispatch();
 
   return (
-    <div className={`w-full flex py-3 px-4 gap-4 items-center justify-around hover:bg-gray-100  dark:hover:bg-[#212121] transition-colors duration-300 border-b  cursor-pointer ${selectedUser?._id === user._id ? 'bg-red-100 dark:bg-[#212121] border-gray-400 hover:bg-red-200' : 'bg-white dark:bg-[#1A1A1D] border-gray-300'}`}
+    <div className={`w-full max-md:rounded-t-lg flex py-3 px-4 gap-4 items-center justify-around hover:bg-gray-100  dark:hover:bg-[#212121] transition-colors duration-300 border-b  cursor-pointer ${selectedUser?._id === user._id ? 'bg-red-100 dark:bg-[#212121] border-gray-400 hover:bg-red-200' : 'bg-white dark:bg-[#1A1A1D] border-gray-300'}`}
     onClick={() => dispatch(setSelectedUser(user))}
     >
 
@@ -27,7 +28,13 @@ const ChatCard: React.FC<Props> = ({ user, isActive }) => {
       </div>
       
       <div className='flex items-center justify-center mr-4'>
-        <Circle size={10} color='#00A884' className={`dark:fill-[#005F4E] ${isActive ? "fill-[#00A884]" : ""}`} />
+        {
+          isActive ? (
+            <Pulse size='2' />
+          ) : (
+            <Circle size={10} color='#00A884' className={`dark:fill-[#005F4E]`} />
+          )
+        }
       </div>
     </div>
   );

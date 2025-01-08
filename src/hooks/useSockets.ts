@@ -215,6 +215,12 @@ const useSockets = () => {
       });
     }
 
+    if (!socket.hasListeners(SOCKET_EVENTS.ERROR)) {
+      socket.on(SOCKET_EVENTS.ERROR, (data) => {
+        toast.error(data?.message);
+      });
+    }
+
     if (!socket.hasListeners(SOCKET_EVENTS.DISCONNECT)) {
       socket.on(SOCKET_EVENTS.DISCONNECT, () => {
         console.log("Disconnected from the socket server.");

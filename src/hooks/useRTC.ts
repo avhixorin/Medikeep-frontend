@@ -28,12 +28,21 @@ const useRTC = () => {
 
   const grabLocalMedia = useCallback(async () => {
     try {
+      console.log(
+        "Attempting to access media devices with constraints:",
+        constraints
+      );
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log("Media stream acquired:", stream);
       setLocalStream(stream);
     } catch (error) {
       console.error("Error accessing media devices:", error);
+      alert(
+        "Could not access your camera and microphone. Please check permissions."
+      );
     }
   }, [constraints]);
+
   const createPeerConnection = useCallback(
     async (to: string) => {
       console.log("Creating peer connection with:", to);
@@ -75,12 +84,24 @@ const useRTC = () => {
   );
 
   const createOffer = async (to: string) => {
-    if (!localStream)
-      throw new Error("Local stream not initialized. Call startRTC first.");
+    if (!localStream) {
+      console.log(
+        "Local stream not initialized. Attempting to grab local media..."
+      );
+      await grabLocalMedia();
+    }
+
+    if (!localStream) {
+      throw new Error(
+        "Local stream still not available after attempting to initialize."
+      );
+    }
+
     const peerConnection = await createPeerConnection(to);
     if (!peerConnection) {
       return;
     }
+
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
     console.log("Sending offer to:", to);

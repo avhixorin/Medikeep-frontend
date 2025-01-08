@@ -16,10 +16,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import VideoCallScreen from "../../Chat/VideoCallScreen/VideoCallScreen";
+import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import { useEffect, useState } from "react";
+import { User as loggedInUser } from "@/types/types";
+import useSockets from "@/hooks/useSockets";
 
 export default function LeftSidebar() {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -65,9 +70,45 @@ export default function LeftSidebar() {
       toast.error("Logout cancelled");
     }
   };
-
+  const { socket } = useSockets();
+  const [someCalling, setSomeoneCalling] = useState(false);
+  const [data, setData] = useState<{ from?: loggedInUser }>({});
+  useEffect(() => {
+    const handleVideoCallRequest = async (data: { from: loggedInUser }) => {
+      console.log("Video call request received", data);
+      setData(data);
+      const result = await Swal.fire({
+        title: `${data.from?.username} is calling you!`,
+        showDenyButton: true,
+        confirmButtonText: `Accept`,
+        denyButtonText: `Reject`,
+      });
+  
+      const verdict = result.isConfirmed ? "accept" : "reject";
+      socket?.emit(SOCKET_EVENTS.VIDEO_CALL_RESPONSE, {
+        verdict,
+        to: data.from?._id,
+      });
+  
+      if (verdict === "accept") setSomeoneCalling(true);
+    };
+  
+    socket?.on(SOCKET_EVENTS.VIDEO_CALL_REQUEST, handleVideoCallRequest);
+  
+    return () => {
+      socket?.off(SOCKET_EVENTS.VIDEO_CALL_REQUEST, handleVideoCallRequest);
+    };
+  }, [socket]);
+  
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8 dark:bg-[#0A0A0A]">
+      {someCalling ? (
+        <VideoCallScreen
+          setIsVideoCalling={setSomeoneCalling}
+          selectedUser={data.from!}
+          caller={"other"}
+        />
+      ) : null}
       <div className="w-full flex flex-col gap-12 md:gap-8">
         <div
           className="flex w-full justify-center items-center p-2 gap-2 my-8 cursor-pointer"

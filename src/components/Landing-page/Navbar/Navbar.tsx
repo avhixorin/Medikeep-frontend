@@ -20,22 +20,9 @@ const NavBar: React.FC = () => {
     };
   }, []);
 
-  const scrollToContact = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-  };
-
-  const scrollToFeatures = () => {
-    const features = document.getElementById("features");
-    features?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const scrollToPricing = () => {
-    const pricing = document.getElementById("pricing");
-    pricing?.scrollIntoView({ behavior: "smooth" });
-  };
-
- const scrollTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+    section?.scrollIntoView({ behavior: "smooth" });
   };
 
   const navigate = useNavigate();
@@ -45,21 +32,22 @@ const NavBar: React.FC = () => {
       className={`${
         scrolled ? "bg-white shadow-md backdrop:blur-sm" : "bg-transparent"
       } fixed w-full z-50 transition-all duration-300 p-4 flex justify-between items-center font-lato`}
+      id="navbar"
     >
-      <div className="text-2xl font-bold text-gray-800">
+      <div className="text-2xl font-bold text-gray-800" onClick={() => scrollToSection("navbar")}>
         <img
           src="https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Logo_kletrg.png"
           alt="logo"
           className="h-5 md:h-10 m-1 hover:cursor-pointer"
-          onClick={scrollTop}
+          
         />
       </div>
       <div className="hidden md:block">
         <ul className="flex flex-row space-x-7 text-slate-500">
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
-              onClick={scrollToFeatures}
-              href="/features"
+              onClick={() => scrollToSection("features")}
+              href="#features"
               className="hover:text-blue-600 cursor-pointer transition-colors duration-300"
             >
               Features
@@ -71,8 +59,8 @@ const NavBar: React.FC = () => {
 
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
-              onClick={scrollToPricing}
-              href="/pricing"
+              onClick={() => scrollToSection("pricing")}
+              href="#pricing"
               className="hover:text-blue-600 cursor-pointer transition-colors duration-300"
             >
               Pricing
@@ -93,8 +81,8 @@ const NavBar: React.FC = () => {
 
           <motion.li whileHover={{ scale: 1.05 }} className="relative group">
             <a
-              onClick={scrollToContact}
-              href="/contact"
+              onClick={() => scrollToSection("contact")}
+              href="#contact"
               className="hover:text-blue-600 cursor-pointer transition-colors duration-300"
             >
               Contact
