@@ -2,24 +2,26 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 
 const Sharing: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <div className="container max-w-screen-lg py-6 bg-transparent">
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-medium">Sharing</h2>
+          <h2 className="text-lg font-medium">{t("settings.sharing.title1")}</h2>
           <p className="text-sm text-muted-foreground">
-            Manage how your account and content are shared with others.
+          {t("settings.sharing.text1")}
           </p>
         </div>
         <div className="mt-6 space-y-6">
           <div className="space-y-2">
-            <h3 className="text-md font-medium">Sharing Preferences</h3>
+            <h3 className="text-md font-medium">{t("settings.sharing.title2")}</h3>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  Allow others to share your content.
+                {t("settings.sharing.text2")}
                 </p>
               </div>
               <Switch />
@@ -27,29 +29,29 @@ const Sharing: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  Receive notifications when your content is shared.
+                {t("settings.sharing.text2B")}
                 </p>
               </div>
               <Switch />
             </div>
           </div>
           <div className="space-y-2">
-            <h3 className="text-md font-medium">Linked Accounts</h3>
+            <h3 className="text-md font-medium">{t("settings.sharing.title3")}</h3>
             <p className="text-sm text-muted-foreground">
-              Manage accounts linked for sharing purposes (e.g., social media).
+            {t("settings.sharing.text3")}
             </p>
             <Button size="sm" variant="secondary">
-              Manage Linked Accounts
+            {t("settings.sharing.manageLinked")}
             </Button>
           </div>
           <div className="space-y-2">
-            <h3 className="text-md font-medium">Invite Others</h3>
+            <h3 className="text-md font-medium">{t("settings.sharing.title4")}</h3>
             <p className="text-sm text-muted-foreground">
-              Share an invite link with others to join the platform.
+            {t("settings.sharing.text4")}
             </p>
             <div className="flex items-center space-x-2">
-              <Input type="text" placeholder="Enter email address" />
-              <Button size="sm">Send Invite</Button>
+              <Input type="text" placeholder={t("settings.sharing.enterEmail")} />
+              <Button size="sm">{t("settings.sharing.sendInvite")}</Button>
             </div>
           </div>
         </div>

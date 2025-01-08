@@ -5,17 +5,19 @@ import { SettingsNav } from "./SettingsNav/SettingsNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const navItems = [
-  { href: "/dashboard/settings/general", title: "General" },
-  { href: "/dashboard/settings/security", title: "Security" },
-  { href: "/dashboard/settings/billing", title: "Billing" },
-  { href: "/dashboard/settings/notifications", title: "Notifications" },
-  { href: "/dashboard/settings/sharing", title: "Sharing" },
+  { href: "/dashboard/settings/general", title: "settings.navItems.general" },
+  { href: "/dashboard/settings/security", title: "settings.navItems.security" },
+  { href: "/dashboard/settings/billing", title: "settings.navItems.billing" },
+  { href: "/dashboard/settings/notifications", title: "settings.navItems.notifications" },
+  { href: "/dashboard/settings/sharing", title: "settings.navItems.sharing" },
 ];
 
 export default function SettingsPage() {
   const { user } = useSelector((state: RootState) => state.auth);
+  const { t } = useTranslation();
 
   return (
     <div className="w-full h-full bg-transparent">
@@ -23,7 +25,7 @@ export default function SettingsPage() {
         <div className="hidden md:block">
           <h1 className="text-lg font-semibold">{user?.firstName}</h1>
           <p className="text-sm text-muted-foreground">
-            Manage your details and personal preferences here.
+            {t("settings.header.text")}
           </p>
         </div>
         <div className="hidden md:flex items-center gap-4">
@@ -31,15 +33,15 @@ export default function SettingsPage() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search"
+              placeholder={t("settings.header.search")}
               className="w-[200px] pl-8"
             />
           </div>
           <Button variant="outline" size="sm">
             <Plus className="mr-2 h-4 w-4" />
-            Invite
+            {t("settings.header.invite")}
           </Button>
-          <Button size="sm">Upgrade</Button>
+          <Button size="sm">{t("settings.header.upgrade")}</Button>
           <img
             src={user?.profilePicture}
             alt="Avatar"
@@ -49,10 +51,8 @@ export default function SettingsPage() {
           />
         </div>
       </header>
-      
-      <SettingsNav 
-        items={navItems}
-      />
+
+      <SettingsNav items={navItems} />
       <div className="md:p-6 overflow-y-auto scrollbar-webkit">
         <Outlet />
       </div>

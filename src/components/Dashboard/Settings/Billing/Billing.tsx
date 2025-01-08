@@ -1,47 +1,49 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 
 const Billing: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <div className="container max-w-screen-lg py-6 bg-transparent">
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-medium">Billing</h2>
+          <h2 className="text-lg font-medium">{t("settings.billing.title1")}</h2>
           <p className="text-sm text-muted-foreground">
-            Manage your billing details, subscription, and payment methods.
+          {t("settings.billing.text1")}
           </p>
         </div>
         <div className="mt-6 space-y-6">
           <div className="space-y-2">
-            <h3 className="text-md font-medium">Subscription Plan</h3>
+            <h3 className="text-md font-medium">{t("settings.billing.title2")}</h3>
             <p className="text-sm text-muted-foreground">
-              You are currently subscribed to the <strong>Premium Plan</strong>.
+            {t("settings.billing.text2")} <strong className='dark:text-white text-black'>Premium Plan</strong>.
             </p>
             <Button size="sm" variant="secondary">
-              Change Plan
+            {t("settings.billing.changePlan")}
             </Button>
           </div>
           <div className="space-y-2">
-            <h3 className="text-md font-medium">Payment Method</h3>
+            <h3 className="text-md font-medium">{t("settings.billing.paymentMethod")}</h3>
             <p className="text-sm text-muted-foreground">
-              Update your credit card or other payment methods.
+            {t("settings.billing.text3")}
             </p>
             <div className="space-y-4">
               <Input
                 type="text"
-                placeholder="Enter new credit card number"
+                placeholder={t("settings.billing.enterNew")}
               />
-              <Button size="sm">Update Payment Method</Button>
+              <Button size="sm">{t("settings.billing.updatePayment")}</Button>
             </div>
           </div>
           <div className="space-y-2">
-            <h3 className="text-md font-medium">Billing History</h3>
+            <h3 className="text-md font-medium">{t("settings.billing.billingHistory")}</h3>
             <p className="text-sm text-muted-foreground">
-              View your past invoices and payment history.
+            {t("settings.billing.text4")}
             </p>
             <Button size="sm" variant="outline">
-              View History
+            {t("settings.billing.viewHistory")}
             </Button>
           </div>
         </div>

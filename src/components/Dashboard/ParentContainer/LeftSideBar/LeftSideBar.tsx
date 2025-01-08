@@ -13,28 +13,29 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import VideoCallScreen from "../../Chat/VideoCallScreen/VideoCallScreen";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { useEffect, useState } from "react";
-import { User as loggedInUser } from "@/types/types";
+import { User as LoggedInUser } from "@/types/types";
 import useSockets from "@/hooks/useSockets";
+import { useTranslation } from "react-i18next";
 
 export default function LeftSidebar() {
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you really want to log out? You will need to log in again to access your account.",
+      title: t("logout.confirmTitle"),
+      text: t("logout.confirmText"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, log out",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t("logout.confirmButton"),
+      cancelButtonText: t("logout.cancelButton"),
       reverseButtons: true,
     });
 
@@ -55,60 +56,64 @@ export default function LeftSidebar() {
 
         if (response.status === 200) {
           dispatch(clearAuthUser());
-          toast.success("Logged out successfully.");
+          toast.success(t("logout.success"));
           setTimeout(() => navigate("/login"), 0);
         } else {
-          toast.error(response.data.message || "Failed to log out.");
+          toast.error(response.data.message || t("logout.failure"));
         }
       } catch (error) {
         console.error(error);
         toast.error(
-          error instanceof Error ? error.message : "An error occurred"
+          error instanceof Error ? error.message : t("logout.errorOccurred")
         );
       }
     } else {
-      toast.error("Logout cancelled");
+      toast.error(t("logout.cancelled"));
     }
   };
+
   const { socket } = useSockets();
-  const [someCalling, setSomeoneCalling] = useState(false);
-  const [data, setData] = useState<{ from?: loggedInUser }>({});
+  const [someoneCalling, setSomeoneCalling] = useState(false);
+  const [data, setData] = useState<{ from?: LoggedInUser }>({});
+
   useEffect(() => {
-    const handleVideoCallRequest = async (data: { from: loggedInUser }) => {
+    const handleVideoCallRequest = async (data: { from: LoggedInUser }) => {
       console.log("Video call request received", data);
       setData(data);
+
       const result = await Swal.fire({
-        title: `${data.from?.username} is calling you!`,
+        title: `${data.from?.username} ${t("videoCall.incoming")}`,
         showDenyButton: true,
-        confirmButtonText: `Accept`,
-        denyButtonText: `Reject`,
+        confirmButtonText: t("videoCall.accept"),
+        denyButtonText: t("videoCall.reject"),
       });
-  
+
       const verdict = result.isConfirmed ? "accept" : "reject";
       socket?.emit(SOCKET_EVENTS.VIDEO_CALL_RESPONSE, {
         verdict,
         to: data.from?._id,
       });
-  
+
       if (verdict === "accept") setSomeoneCalling(true);
     };
-  
+
     socket?.on(SOCKET_EVENTS.VIDEO_CALL_REQUEST, handleVideoCallRequest);
-  
+
     return () => {
       socket?.off(SOCKET_EVENTS.VIDEO_CALL_REQUEST, handleVideoCallRequest);
     };
-  }, [socket]);
-  
+  }, [socket, t]);
+
   return (
     <div className="flex flex-col items-center justify-between w-16 md:w-48 h-[100dvh] py-2 space-y-8 dark:bg-[#0A0A0A]">
-      {someCalling ? (
+      {someoneCalling ? (
         <VideoCallScreen
           setIsVideoCalling={setSomeoneCalling}
           selectedUser={data.from!}
           caller={"other"}
         />
       ) : null}
+
       <div className="w-full flex flex-col gap-12 md:gap-8">
         <div
           className="flex w-full justify-center items-center p-2 gap-2 my-8 cursor-pointer"
@@ -120,7 +125,7 @@ export default function LeftSidebar() {
             className="w-6 object-cover"
           />
           <p className="text-2xl font-bold tracking-wide text-gray-800 hidden md:block dark:text-white">
-            MediKeep
+          {t(`sidebar.title`)}
           </p>
         </div>
 
@@ -128,43 +133,34 @@ export default function LeftSidebar() {
           <SidebarLink
             to="/dashboard"
             icon={<LayoutGrid size={24} />}
-            label="Dashboard"
-            end
+            label={t(`sidebar.dashboard`)}
           />
           <SidebarLink
             to="/dashboard/appointments"
             icon={<Calendar size={24} />}
-            label="Appointments"
+            label={t("sidebar.appointments")}
           />
-          {/* {
-            user?.role === "doctor" && (
-              <SidebarLink
-                to="/dashboard/consultations"
-                icon={<MessageSquare size={24} />}
-                label="Consultations"
-              />)
-          } */}
           <SidebarLink
             to="/dashboard/chats"
             icon={<MessageSquare size={24} />}
-            label="Chats"
+            label={t("sidebar.chats")}
           />
           <SidebarLink
             to="/dashboard/medical-records"
             icon={<HeartPulse size={24} />}
-            label="Records"
+            label={t("sidebar.records")}
           />
           {user?.role === "doctor" ? (
             <SidebarLink
               to="/dashboard/patients"
               icon={<User size={24} />}
-              label="Patients"
+              label={t("sidebar.patients")}
             />
           ) : (
             <SidebarLink
               to="/dashboard/vitals"
               icon={<User size={24} />}
-              label="Health Profile"
+              label={t("sidebar.vitals")}
             />
           )}
         </nav>
@@ -173,13 +169,13 @@ export default function LeftSidebar() {
       <div className="flex flex-col items-center w-full space-y-4 px-2">
         <SidebarButton
           icon={<LogOut size={24} />}
-          label="Logout"
+          label={t("sidebar.logout")}
           onClick={handleLogout}
         />
         <SidebarLink
           to="/dashboard/settings"
           icon={<Settings size={24} />}
-          label="Settings"
+          label={t("sidebar.settings")}
         />
         <div
           className="flex w-full items-center gap-4 p-2 bg-gray-100 dark:bg-transparent border border-gray-300 rounded-md cursor-pointer dark:border-gray-700"
@@ -191,7 +187,7 @@ export default function LeftSidebar() {
             className="w-10 h-10 rounded-full object-cover"
           />
           <div className="hidden md:block">
-            <div className="w-full h-full flex flex-col justify-center ">
+            <div className="w-full h-full flex flex-col justify-center">
               <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                 {user?.username}
               </p>

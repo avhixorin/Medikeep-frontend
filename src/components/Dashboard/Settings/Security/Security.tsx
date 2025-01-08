@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useNavigate } from "react-router-dom";
 import { clearAuthUser } from "@/redux/features/authSlice";
+import { useTranslation } from "react-i18next";
 
 const Security: React.FC = () => {
   const id = useSelector((state: RootState) => state.auth.user?._id);
@@ -56,58 +57,47 @@ const Security: React.FC = () => {
       toast("Your account is safe");
     }
   };
+  const { t } = useTranslation();
   return (
     <div className="container max-w-screen-lg py-6 bg-transparent">
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-medium">Security</h2>
+          <h2 className="text-lg font-medium">{t("settings.security.title1")}</h2>
           <p className="text-sm text-muted-foreground">
-            Manage your account privacy and security settings.
+          {t("settings.security.text1")}
           </p>
         </div>
         <div className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label>Account Privacy</Label>
+              <Label>{t("settings.security.title2")}</Label>
               <div className="text-sm text-muted-foreground">
-                Toggle between private and public account settings.
-              </div>
-            </div>
-            <Switch />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <Label>Two-Factor Authentication</Label>
-              <div className="text-sm text-muted-foreground">
-                Add an extra layer of security to your account.
+              {t("settings.security.text2")}
               </div>
             </div>
             <Switch />
           </div>
 
           <div className="border-t pt-6 mt-6">
-            <h3 className="text-md font-medium">Account Management</h3>
+            <h3 className="text-md font-medium">{t("settings.security.title3")}</h3>
             <div className="space-y-2 mt-4">
               <p className="text-sm text-muted-foreground">
-                Deactivating your account will disable your profile and remove
-                your data from public view. You can reactivate your account at
-                any time by logging in again.
+              {t("settings.security.text4")}
               </p>
               <Button variant="destructive" size="sm">
-                Deactivate Account
+              {t("settings.security.title4")}
               </Button>
             </div>
             <div className="space-y-2 mt-6">
               <p className="text-sm text-muted-foreground">
-                Permanently delete your account and all associated data. This
-                action is irreversible.
+              {t("settings.security.text5")}
               </p>
               <Button
                 variant="destructive"
                 size="sm"
                 onClick={handleAccountDeletion}
               >
-                Delete Account
+                {t("settings.security.title5")}
               </Button>
             </div>
           </div>
