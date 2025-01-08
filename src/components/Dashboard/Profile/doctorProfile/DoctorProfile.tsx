@@ -47,7 +47,6 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ user }) => {
           <TabsList className="max-sm:flex-wrap mb-4 border-b flex w-full">
             <TabsTrigger value="info">Basic Info</TabsTrigger>
             <TabsTrigger value="credentials">Credentials</TabsTrigger>
-            <TabsTrigger value="appointments">Appointments</TabsTrigger>
           </TabsList>
 
           <TabsContent value="info">
@@ -89,26 +88,6 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ user }) => {
                 <Label htmlFor="experience">Years of Experience</Label>
                 <Input id="experience" type="number" defaultValue={user?.yearsOfExperience?.toString() || "0"} readOnly />
               </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="appointments">
-            <div className="space-y-4">
-              <div>
-                <Label>Upcoming Appointments</Label>
-                <ul className="list-disc list-inside text-sm">
-                  <li>May 20, 2023 - Consultation with John Doe</li>
-                  <li>June 5, 2023 - Follow-up with Jane Smith</li>
-                </ul>
-              </div>
-              <div>
-                <Label>Past Appointments</Label>
-                <ul className="list-disc list-inside text-sm">
-                  <li>April 10, 2023 - Check-up with Anna Brown</li>
-                  <li>March 1, 2023 - Surgery follow-up with Mark Lee</li>
-                </ul>
-              </div>
-              <Button variant="outline">Schedule New Appointment</Button>
             </div>
           </TabsContent>
         </Tabs>
