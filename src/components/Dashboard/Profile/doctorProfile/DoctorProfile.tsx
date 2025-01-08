@@ -44,7 +44,7 @@ const DoctorProfile: React.FC<DoctorProfileProps> = ({ user }) => {
 
       <CardContent >
         <Tabs defaultValue="info" className="w-full">
-          <TabsList className="mb-4 border-b flex w-full px-0 mx-0">
+          <TabsList className="max-sm:flex-wrap mb-4 border-b flex w-full">
             <TabsTrigger value="info">Basic Info</TabsTrigger>
             <TabsTrigger value="credentials">Credentials</TabsTrigger>
             <TabsTrigger value="appointments">Appointments</TabsTrigger>
