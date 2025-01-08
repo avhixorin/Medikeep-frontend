@@ -97,13 +97,13 @@ const NavBar: React.FC = () => {
       <div className="space-x-4">
         <button
           className="text-gray-800 hover:text-blue-600 transition-colors duration-300"
-          onClick={() => navigate("/sign-in")}
+          onClick={() => navigate("/login")}
         >
           Login
         </button>
         <button
           className="bg-blue-600 text-white py-1 px-2 md:py-2 md:px-4 rounded hover:bg-blue-700 transition-colors duration-300"
-          onClick={() => navigate("/sign-up")}
+          onClick={() => navigate("/register")}
         >
           Sign Up
         </button>

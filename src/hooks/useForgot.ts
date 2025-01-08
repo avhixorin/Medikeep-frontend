@@ -54,10 +54,8 @@ const useForgot = () => {
       if (passwordUpdateData.statusCode === 200) {
         toast.success("Password updated successfully.");
         return passwordUpdateData;
-      } else {
-        throw new Error("Password update failed. Please try again.");
       }
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
         throw error;

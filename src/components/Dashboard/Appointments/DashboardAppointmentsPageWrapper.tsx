@@ -14,7 +14,7 @@ const DashboardAppointmentsPageWrapper = () => {
   const role = user?.role;
 
   if (user === null) {
-    return <Navigate to="/sign-in" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   if (!role) {

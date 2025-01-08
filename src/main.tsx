@@ -105,7 +105,7 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="sign-in"
+        path="login"
         element={
           <Suspense fallback={<LoadingScreen />}>
             <SignInPage />
@@ -113,7 +113,7 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="sign-up"
+        path="register"
         element={
           <Suspense fallback={<LoadingScreen />}>
             <SignUpPage />

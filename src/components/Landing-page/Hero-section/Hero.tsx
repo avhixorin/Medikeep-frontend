@@ -31,7 +31,7 @@ const Hero: React.FC = () => {
         <div className="mt-8 space-x-4">
           <button
             className="px-6 py-3 text-white bg-blue-600 rounded hover:bg-blue-700"
-            onClick={() => navigate("/sign-up")}
+            onClick={() => navigate("/register")}
           >
             Get Started
           </button>

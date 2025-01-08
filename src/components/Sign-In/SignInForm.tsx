@@ -178,7 +178,7 @@ const SignInForm: React.FC = () => {
 
             <p className="sign-up-label dark:text-gray-400">
               Don't have an account?
-              <Link to={"/sign-up"} className="sign-up-link dark:text-blue-400 dark:hover:text-blue-300">
+              <Link to={"/register"} className="sign-up-link dark:text-blue-400 dark:hover:text-blue-300">
                 Sign up
               </Link>
             </p>
