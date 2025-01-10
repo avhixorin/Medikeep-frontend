@@ -65,7 +65,7 @@
     "rsuite": "^5.70.2",
     "socket.io-client": "^4.8.1",
     "splitting": "^1.1.0",
-    "styled-components": "^6.1.13",
+    "styled-components": "^6.1.14",
     "sweetalert2": "^11.14.5",
     "tailwind-merge": "^2.5.4",
     "tailwind-scrollbar": "^3.1.0",
