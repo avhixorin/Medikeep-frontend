@@ -1,29 +1,54 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import LeftSidebar from "./LeftSideBar/LeftSideBar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import useAllUsers from "@/hooks/useAllUsers";
+import LeftSidebar from "./LeftSideBar/LeftSideBar";
+
+const useTheme = (userTheme: string | undefined, localTheme: string | null) => {
+  useEffect(() => {
+    const htmlElement = document.querySelector("html");
+    const themeClass = userTheme || localTheme || "light";
+    htmlElement?.classList.remove("dark", "light");
+    htmlElement?.classList.add(themeClass);
+  }, [userTheme, localTheme]);
+};
+const useUnloadEffect = (callback: () => void) => {
+  useEffect(() => {
+    window.addEventListener("unload", callback);
+    return () => {
+      window.removeEventListener("unload", callback);
+    };
+  }, [callback]);
+};
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const localTheme = localStorage.getItem("theme");
-  useEffect(() => {
-    const htmlElement = document.querySelector("html");
-    htmlElement?.classList.remove("dark", "light");
-    htmlElement?.classList.add(user?.theme || localTheme || "light");
-  });
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
   const { fetchAllUsers } = useAllUsers();
+
+  const localTheme = useMemo(() => localStorage.getItem("theme"), []);
+  const userTheme = user?.settingPreferences?.general?.theme;
+  useTheme(userTheme, localTheme);
   useEffect(() => {
-    async function fetchData() {
-      if (allUsers.length === 0) await fetchAllUsers();
+    if (allUsers.length === 0) {
+      fetchAllUsers();
     }
-    fetchData();
   }, [fetchAllUsers, allUsers]);
-  if (user === null) {
+  const updateUrl = import.meta.env.VITE_UPDATE_URL;
+  useUnloadEffect(() => {
+    if (user?._id) {
+      navigator.sendBeacon(
+        updateUrl,
+        JSON.stringify({ userId: user._id, lastSeen: new Date() })
+      );
+    }
+  });
+
+  if (!user) {
     return <Navigate to="/unauthorized" replace />;
   }
+
   return (
     <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">
       <LeftSidebar />

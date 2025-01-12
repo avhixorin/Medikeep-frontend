@@ -15,11 +15,6 @@ const authSlice = createSlice({
     setAuthUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
-    setUserTheme: (state, action: PayloadAction<"light" | "dark" | "retro" | "synthwave" | "cyberpunk">) => {
-      if (state.user) {
-        state.user.theme = action.payload;
-      }
-    },
     clearAuthUser: (state) => {
       state.user = null;
     },
@@ -90,12 +85,75 @@ const authSlice = createSlice({
         });
       }
     },
+    updateGeneralSettings: (
+      state,
+      action: PayloadAction<{
+        key: "theme" | "language" | "accountPrivacy";
+        value: string;
+      }>
+    ) => {
+      const { key, value } = action.payload;
+      if (
+        state.user &&
+        state.user.settingPreferences &&
+        state.user.settingPreferences.general
+      ) {
+        state.user.settingPreferences.general[key] = value;
+      }
+    },
+    updateSecuritySettings: (
+      state,
+      action: PayloadAction<{
+        key: "twoFactorAuth" | "isAccountActive";
+        value: boolean;
+      }>
+    ) => {
+      const { key, value } = action.payload;
+      if (
+        state.user &&
+        state.user.settingPreferences &&
+        state.user.settingPreferences.security
+      ) {
+        state.user.settingPreferences.security[key] = value;
+      }
+    },
+    updateNotificationSettings: (
+      state,
+      action: PayloadAction<{
+        key:
+          | "isEnabled"
+          | "emailNotifications"
+          | "pushNotifications"
+          | "smsNotifications"
+          | "promotionalEmails"
+          | "notificationSound"
+          | "weeklyDigest";
+        value: boolean;
+      }>
+    ) => {
+      const { key, value } = action.payload;
+      if (
+        state.user &&
+        state.user.settingPreferences &&
+        state.user.settingPreferences.notifications
+      ) {
+        state.user.settingPreferences.notifications[key] = value;
+      }
+    },
+    setSharingLink: (state, action: PayloadAction<string>) => {
+      if (
+        state.user &&
+        state.user.settingPreferences &&
+        state.user.settingPreferences.sharing
+      ) {
+        state.user.settingPreferences.sharing.sharingLink = action.payload;
+      }
+    },
   },
 });
 
 export const {
   setAuthUser,
-  setUserTheme,
   clearAuthUser,
   updateUserFields,
   addConnection,
@@ -107,6 +165,10 @@ export const {
   addAppointmentRequest,
   removeAppointmentRequest,
   reScheduleAppointment,
+  updateGeneralSettings,
+  updateSecuritySettings,
+  updateNotificationSettings,
+  setSharingLink,
 } = authSlice.actions;
 
 export default authSlice.reducer;

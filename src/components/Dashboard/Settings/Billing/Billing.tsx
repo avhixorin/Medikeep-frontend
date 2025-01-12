@@ -2,9 +2,12 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store/store';
 
 const Billing: React.FC = () => {
   const { t } = useTranslation();
+  const user = useSelector((state: RootState) => state.auth.user);
   return (
     <div className="container max-w-screen-lg py-6 bg-transparent">
       <div className="space-y-6">
@@ -18,7 +21,7 @@ const Billing: React.FC = () => {
           <div className="space-y-2">
             <h3 className="text-md font-medium">{t("settings.billing.title2")}</h3>
             <p className="text-sm text-muted-foreground">
-            {t("settings.billing.text2")} <strong className='dark:text-white text-black'>Premium Plan</strong>.
+            {t("settings.billing.text2")} <strong className='dark:text-white text-black'>{user?.settingPreferences?.billing.plan} Plan</strong>.
             </p>
             <Button size="sm" variant="secondary">
             {t("settings.billing.changePlan")}

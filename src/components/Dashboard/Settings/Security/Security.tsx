@@ -7,11 +7,11 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useNavigate } from "react-router-dom";
-import { clearAuthUser } from "@/redux/features/authSlice";
+import { clearAuthUser, updateSecuritySettings } from "@/redux/features/authSlice";
 import { useTranslation } from "react-i18next";
 
 const Security: React.FC = () => {
-  const id = useSelector((state: RootState) => state.auth.user?._id);
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleAccountDeletion = async () => {
@@ -33,7 +33,7 @@ const Security: React.FC = () => {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify({ id }),
+          body: JSON.stringify({ id: user?._id }),
         });
         if (!res.ok) {
           throw new Error("An error occurred while deleting your account");
@@ -62,9 +62,11 @@ const Security: React.FC = () => {
     <div className="container max-w-screen-lg py-6 bg-transparent">
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-medium">{t("settings.security.title1")}</h2>
+          <h2 className="text-lg font-medium">
+            {t("settings.security.title1")}
+          </h2>
           <p className="text-sm text-muted-foreground">
-          {t("settings.security.text1")}
+            {t("settings.security.text1")}
           </p>
         </div>
         <div className="mt-6 space-y-6">
@@ -72,25 +74,31 @@ const Security: React.FC = () => {
             <div className="space-y-1">
               <Label>{t("settings.security.title2")}</Label>
               <div className="text-sm text-muted-foreground">
-              {t("settings.security.text2")}
+                {t("settings.security.text2")}
               </div>
             </div>
-            <Switch />
+            <Switch
+              checked={user?.settingPreferences?.security.twoFactorAuth} onCheckedChange={() => dispatch(updateSecuritySettings({key:"twoFactorAuth", value: !user?.settingPreferences?.security.twoFactorAuth}))}
+            />
           </div>
 
           <div className="border-t pt-6 mt-6">
-            <h3 className="text-md font-medium">{t("settings.security.title3")}</h3>
+            <h3 className="text-md font-medium">
+              {t("settings.security.title3")}
+            </h3>
             <div className="space-y-2 mt-4">
               <p className="text-sm text-muted-foreground">
-              {t("settings.security.text4")}
+                {t("settings.security.text4")}
               </p>
               <Button variant="destructive" size="sm">
-              {t("settings.security.title4")}
+                {user?.settingPreferences?.security.isAccountActive
+                  ? "Deactivate Account"
+                  : "Activate Account"}
               </Button>
             </div>
             <div className="space-y-2 mt-6">
               <p className="text-sm text-muted-foreground">
-              {t("settings.security.text5")}
+                {t("settings.security.text5")}
               </p>
               <Button
                 variant="destructive"
