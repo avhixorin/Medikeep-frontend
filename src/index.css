@@ -19,7 +19,6 @@ html,body{
   font-weight: 100 900;
 }
 
-
 @font-face {
   font-family: 'Helmet';
   src: url('./src/assets/fonts/Helmet.ttf') format('truetype');
@@ -82,7 +81,6 @@ html,body{
     --chart-5: 340 75% 55%;
   }
 }
-
 @layer base {
   * {
     @apply border-border;
