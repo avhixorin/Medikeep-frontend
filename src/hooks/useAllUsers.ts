@@ -7,6 +7,7 @@ const useAllUsers = () => {
     const dispatch = useDispatch();
     const fetchAllUsersUrl = import.meta.env.VITE_FETCH_ALL_USERS_URL
     const fetchAllUsers = async () => {
+        console.log("Making request to fetch all users")
         const response = await axios.get(fetchAllUsersUrl,{
             withCredentials: true
         })

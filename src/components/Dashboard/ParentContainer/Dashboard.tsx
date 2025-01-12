@@ -3,15 +3,24 @@ import { Navigate, Outlet } from "react-router-dom";
 import LeftSidebar from "./LeftSideBar/LeftSideBar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import useAllUsers from "@/hooks/useAllUsers";
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const localTheme = localStorage.getItem("theme");
   useEffect(() => {
     const htmlElement = document.querySelector("html");
-    htmlElement?.classList.remove("dark","light");
+    htmlElement?.classList.remove("dark", "light");
     htmlElement?.classList.add(user?.theme || localTheme || "light");
-  })
+  });
+  const allUsers = useSelector((state: RootState) => state.allUsers.users);
+  const { fetchAllUsers } = useAllUsers();
+  useEffect(() => {
+    async function fetchData() {
+      if (allUsers.length === 0) await fetchAllUsers();
+    }
+    fetchData();
+  }, [fetchAllUsers, allUsers]);
   if (user === null) {
     return <Navigate to="/unauthorized" replace />;
   }

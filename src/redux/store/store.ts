@@ -4,7 +4,6 @@ import allUsersSlice from "../features/allUsersSlice";
 import notificationsSlice from "../features/notificationsSlice"
 import messageSlice from "../features/messageSlice";
 import selectedUserSlice from "../features/selectedUserSlice";
-import rtcSlice from "../features/rtcSlice";
 import {
   persistReducer,
   FLUSH,
@@ -28,7 +27,6 @@ const rootReducer = combineReducers({
   notifications: notificationsSlice,
   messages: messageSlice,
   selectedUser: selectedUserSlice,
-  rtc: rtcSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
