@@ -217,6 +217,7 @@ const useSockets = () => {
 
     if (!socket.hasListeners(SOCKET_EVENTS.ERROR)) {
       socket.on(SOCKET_EVENTS.ERROR, (data) => {
+        console.log("Received socket error")
         toast.error(data?.message);
       });
     }
