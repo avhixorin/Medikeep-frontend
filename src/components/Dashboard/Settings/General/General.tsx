@@ -11,9 +11,10 @@ import { Switch } from "@/components/ui/switch";
 import useTheme from "@/hooks/useTheme";
 import React from "react";
 import { RootState } from "@/redux/store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Upload from "@/utils/Upload";
 import { useTranslation } from "react-i18next";
+import { updateGeneralSettings } from "@/redux/features/authSlice";
 
 const General = () => {
   const [uploadClicked, setUploadClicked] = React.useState(false);
@@ -25,6 +26,7 @@ const General = () => {
   const cancelUpload = () => {
     setUploadClicked(false);
   };
+  const dispatch = useDispatch();
   return (
     <div className="container max-w-screen-lg py-6 bg-transparent">
       {uploadClicked && (
@@ -90,7 +92,7 @@ const General = () => {
                 <div>{t("settings.general.light")} / {t("settings.general.dark")}</div>
               </div>
               <Switch
-                checked={user?.theme === "dark" || localTheme === "dark"}
+                checked={user?.settingPreferences?.general.theme === "dark" || localTheme === "dark"}
                 onCheckedChange={toggleTheme}
               />
             </div>
@@ -98,11 +100,12 @@ const General = () => {
             <div className="space-y-1">
               <Label>{t("settings.general.language")}</Label>
               <Select
-                defaultValue="en"
+                defaultValue={user?.settingPreferences?.general.language || i18n.language}
                 value={language}
                 onValueChange={(value) => {
                   i18n.changeLanguage(value);
                   setLanguage(value);
+                  dispatch(updateGeneralSettings({key: "language", value}));
                 }}
               >
                 <SelectTrigger className="w-[180px]">
@@ -115,7 +118,7 @@ const General = () => {
               </Select>
             </div>
 
-            <div className="space-y-1">
+            {/* <div className="space-y-1">
               <Label>{t("settings.general.dateFormat")}</Label>
               <Select defaultValue="dd/mm/yyyy">
                 <SelectTrigger className="w-[180px]">
@@ -127,22 +130,13 @@ const General = () => {
                   <SelectItem value="yyyy/mm/dd">YYYY/MM/DD</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label>{t("settings.general.enableNotifications")}</Label>
-                <div>{t("settings.general.text1")}</div>
-              </div>
-              <Switch />
-            </div>
-
+            </div> */}
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label>{t("settings.general.accountPrivacy")}</Label>
                 <div>{t("settings.general.private")} / {t("settings.general.public")}</div>
               </div>
-              <Switch />
+              <Switch checked={user?.settingPreferences?.general.accountPrivacy === "Private"} onCheckedChange={() => dispatch(updateGeneralSettings({key:"accountPrivacy", value: user?.settingPreferences?.general.accountPrivacy === "Private" ? "Public" : "Private"}))}/>
             </div>
           </div>
         </div>

@@ -24,7 +24,6 @@ export type User = {
   about?: string;
   medicalHistory?: MedicalHistory;
   appointmentRequests?: Appointment[];
-  theme?: "light" | "dark" | "retro" | "synthwave" | "cyberpunk";
   medicalLicenseNumber?: string;
   specialization?: string;
   yearsOfExperience?: number;
@@ -50,6 +49,49 @@ export type User = {
     country: string;
     zipCode: string;
   };
+  settingPreferences?: {
+    general: {
+      theme: string;
+      language: string;
+      accountPrivacy: string;
+    },
+    security: {
+      twoFactorAuth: boolean;
+      isAccountActive: boolean;
+    },
+    billing: {
+      plan: string;
+      creditCard: {
+        cardNumber: string;
+        expiryDate: string;
+        cvv: string;
+      },
+      billingAddress: {
+        address: string;
+        city: string;
+        state: string;
+        zipCode: string;
+      },
+      billingHistory: {
+        date: Date;
+        amount: number;
+        status: string;
+      }
+    },
+    notifications: {
+      isEnabled: boolean;
+      emailNotifications: boolean;
+      pushNotifications: boolean;
+      smsNotifications: boolean;
+      promotionalEmails: boolean;
+      notificationSound: boolean;
+      weeklyDigest: boolean;
+    },
+    sharing: {
+      sharingLink: string;
+    },
+  };
+  lastSeen?: Date;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
