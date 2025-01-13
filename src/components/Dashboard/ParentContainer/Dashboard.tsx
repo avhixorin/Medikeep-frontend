@@ -1,27 +1,25 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import useAllUsers from "@/hooks/useAllUsers";
 import LeftSidebar from "./LeftSideBar/LeftSideBar";
 
-const useTheme = (userTheme: string | undefined, localTheme: string | null) => {
+const useTheme = (userTheme: string | undefined) => {
   useEffect(() => {
     const htmlElement = document.querySelector("html");
-    const themeClass = userTheme || localTheme || "light";
+    const themeClass = userTheme || "light";
     htmlElement?.classList.remove("dark", "light");
     htmlElement?.classList.add(themeClass);
-  }, [userTheme, localTheme]);
+  }, [userTheme]);
 };
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
   const { fetchAllUsers } = useAllUsers();
-
-  const localTheme = useMemo(() => localStorage.getItem("theme"), []);
   const userTheme = user?.settingPreferences?.general?.theme;
-  useTheme(userTheme, localTheme);
+  useTheme(userTheme);
   useEffect(() => {
     if (allUsers.length === 0) {
       fetchAllUsers();

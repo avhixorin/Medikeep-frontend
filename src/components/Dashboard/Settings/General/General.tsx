@@ -21,7 +21,6 @@ const General = () => {
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = React.useState(i18n.language);
   const { toggleTheme } = useTheme();
-  const localTheme = localStorage.getItem("theme");
   const user = useSelector((state: RootState) => state.auth.user);
   const cancelUpload = () => {
     setUploadClicked(false);
@@ -92,7 +91,7 @@ const General = () => {
                 <div>{t("settings.general.light")} / {t("settings.general.dark")}</div>
               </div>
               <Switch
-                checked={user?.settingPreferences?.general.theme === "dark" || localTheme === "dark"}
+                checked={user?.settingPreferences?.general.theme === "dark"}
                 onCheckedChange={toggleTheme}
               />
             </div>

@@ -23,7 +23,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
+import { format } from "date-fns";
 const Chat: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -89,7 +89,7 @@ const Chat: React.FC = () => {
   const getUserStatus = (userId: string) => {
     return activeFriends.find((user) => user._id === userId)
       ? "Active now"
-      : "Offline";
+      : `Last seen: ${format(user?.lastSeen ?? new Date(), "p")}`;
   };
 
   const handleVideoCall = async () => {

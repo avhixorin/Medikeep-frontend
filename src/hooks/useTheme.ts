@@ -14,7 +14,6 @@ const useTheme = () => {
 
     if (htmlElement.classList.contains("dark")) {
       htmlElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
       dispatch(updateGeneralSettings({ key: "theme", value: "light" }));
     } else {
       htmlElement.classList.add("dark");
