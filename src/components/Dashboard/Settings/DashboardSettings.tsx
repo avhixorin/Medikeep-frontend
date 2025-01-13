@@ -6,18 +6,43 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 const navItems = [
   { href: "/dashboard/settings/general", title: "settings.navItems.general" },
   { href: "/dashboard/settings/security", title: "settings.navItems.security" },
   { href: "/dashboard/settings/billing", title: "settings.navItems.billing" },
-  { href: "/dashboard/settings/notifications", title: "settings.navItems.notifications" },
+  {
+    href: "/dashboard/settings/notifications",
+    title: "settings.navItems.notifications",
+  },
   { href: "/dashboard/settings/sharing", title: "settings.navItems.sharing" },
 ];
 
 export default function SettingsPage() {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.auth.user);
   const { t } = useTranslation();
+  const updateUrl = import.meta.env.VITE_UPDATE_SETTINGS_URL;
+  const handleSettingsChange = async () => {
+    try {
+      const res = await fetch(updateUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ user, lastSeen: new Date() }),
+      });
+
+      if (res.ok) {
+        toast.success("Settings updated");
+      } else {
+        toast.error("Failed to update settings");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="w-full h-full bg-transparent">
@@ -55,6 +80,13 @@ export default function SettingsPage() {
       <SettingsNav items={navItems} />
       <div className="md:p-6 overflow-y-auto scrollbar-webkit">
         <Outlet />
+      </div>
+      <div className="md:p-6">
+        <div className="container max-w-screen-lg py-6 bg-transparent flex items-center justify-end">
+          <Button onClick={handleSettingsChange} className="ml-4">
+            {t("settings.footer.save")}
+          </Button>
+        </div>
       </div>
     </div>
   );

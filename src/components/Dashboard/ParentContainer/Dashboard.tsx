@@ -13,14 +13,6 @@ const useTheme = (userTheme: string | undefined, localTheme: string | null) => {
     htmlElement?.classList.add(themeClass);
   }, [userTheme, localTheme]);
 };
-const useUnloadEffect = (callback: () => void) => {
-  useEffect(() => {
-    window.addEventListener("unload", callback);
-    return () => {
-      window.removeEventListener("unload", callback);
-    };
-  }, [callback]);
-};
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -35,15 +27,7 @@ const Dashboard: React.FC = () => {
       fetchAllUsers();
     }
   }, [fetchAllUsers, allUsers]);
-  const updateUrl = import.meta.env.VITE_UPDATE_URL;
-  useUnloadEffect(() => {
-    if (user?._id) {
-      navigator.sendBeacon(
-        updateUrl,
-        JSON.stringify({ userId: user._id, lastSeen: new Date() })
-      );
-    }
-  });
+
 
   if (!user) {
     return <Navigate to="/unauthorized" replace />;

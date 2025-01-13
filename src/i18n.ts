@@ -141,6 +141,9 @@ const resources = {
           text4: "Share an invite link with others to join the platform.",
           enterEmail: "Enter Email Address",
           sendInvite: "Send Invite",
+        },
+        footer: {
+          save: "Save Changes",
         }
       },
     },
@@ -278,6 +281,9 @@ const resources = {
           text4: "दूसरों के साथ प्लेटफ़ॉर्म में शामिल होने के लिए एक आमंत्रण लिंक साझा करें।",
           enterEmail: "ईमेल पता दर्ज करें",
           sendInvite: "आमंत्रण भेजें",
+        },
+        footer: {
+          save: "परिवर्तन सहेजें",
         }
       },
       appointments: {
