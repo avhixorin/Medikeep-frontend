@@ -22,6 +22,7 @@ const UnauthorizedPage = lazy(
 const TermsConditionsPage = lazy(() => import("./components/TnC/TnC"));
 const AboutUsPage = lazy(() => import("./components/AboutUs/About"));
 const ErrorBoundary = lazy(() => import("./components/ErrorBoundary/Error"));
+const SharingProfilePage = lazy(() => import("./components/SharingProfile/SharingProfile"));
 const DashboardContainer = lazy(
   () => import("./components/Dashboard/ParentContainer/Dashboard")
 );
@@ -125,6 +126,14 @@ const router = createBrowserRouter(
         element={
           <Suspense fallback={<LoadingScreen />}>
             <ForgotPasswordPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="profile/:username"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <SharingProfilePage />
           </Suspense>
         }
       />

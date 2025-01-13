@@ -152,8 +152,7 @@ const SignUpA: React.FC = () => {
     if (currentStep === totalSteps) {
       dispatch(updateUserFields(values));
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmPassword, ...filteredValues } = values;
+    const { ...filteredValues } = values;
     await submitForm(filteredValues);
   };
 
