@@ -67,7 +67,7 @@
     "splitting": "^1.1.0",
     "styled-components": "^6.1.14",
     "sweetalert2": "^11.14.5",
-    "tailwind-merge": "^2.5.4",
+    "tailwind-merge": "^2.6.0",
     "tailwind-scrollbar": "^3.1.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.0.3",
