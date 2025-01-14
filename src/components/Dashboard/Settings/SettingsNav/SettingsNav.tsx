@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 
 export interface SettingsNavProps {
-  items: { href: string; title: string }[]; // `title` should be a translation key
+  items: { href: string; title: string }[];
   className?: string;
 }
 

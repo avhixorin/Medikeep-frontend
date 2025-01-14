@@ -4,9 +4,11 @@ import { Search, Plus } from "lucide-react";
 import { SettingsNav } from "./SettingsNav/SettingsNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import InviteScreen from "./InviteScreen";
+import { useState } from "react";
 
 const navItems = [
   { href: "/dashboard/settings/general", title: "settings.navItems.general" },
@@ -22,6 +24,8 @@ const navItems = [
 export default function SettingsPage() {
   const user = useSelector((state: RootState) => state.auth.user);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [isInviting, setIsInviting] = useState(false);
   const updateUrl = import.meta.env.VITE_UPDATE_SETTINGS_URL;
   const handleSettingsChange = async () => {
     try {
@@ -46,6 +50,12 @@ export default function SettingsPage() {
 
   return (
     <div className="w-full h-full bg-transparent">
+      {
+        isInviting && (
+          <InviteScreen
+            onClose={() => setIsInviting(false)} />
+        )
+      }
       <header className="flex items-center justify-between border-b px-4 py-3 md:px-6">
         <div className="hidden md:block">
           <h1 className="text-lg font-semibold">{user?.firstName}</h1>
@@ -62,11 +72,11 @@ export default function SettingsPage() {
               className="w-[200px] pl-8"
             />
           </div>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setIsInviting(true)}>
             <Plus className="mr-2 h-4 w-4" />
             {t("settings.header.invite")}
           </Button>
-          <Button size="sm">{t("settings.header.upgrade")}</Button>
+          <Button size="sm" onClick={() => navigate("/dashboard/settings/billing")}>{t("settings.header.upgrade")}</Button>
           <img
             src={user?.profilePicture}
             alt="Avatar"
