@@ -49,7 +49,8 @@ export default function SettingsPage() {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "/") {
+    if (e.ctrlKey && e.key === "k") {
+      console.log("Ctrl + K pressed");
       e.preventDefault();
       setFocused(true);
     }
