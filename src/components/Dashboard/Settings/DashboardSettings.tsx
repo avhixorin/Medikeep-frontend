@@ -38,13 +38,13 @@ export default function SettingsPage() {
       });
 
       if (response.ok) {
-        toast.success(t("settings.toast.success"));
+        toast.success("Settings updated successfully");
       } else {
-        toast.error(t("settings.toast.failure"));
+        toast.error("Failed to update settings");
       }
     } catch (error) {
       console.error(error);
-      toast.error(t("settings.toast.error"));
+      toast.error("Failed to update settings");
     }
   };
 
