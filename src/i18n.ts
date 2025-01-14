@@ -54,6 +54,9 @@ const resources = {
         header: {
           text: "Manage your details and personal preferences here.",
           search: "Search",
+          searchResults: "Search Results",
+          noResults: "No results found.",
+          close: "Close",
           invite: "Invite",
           upgrade: "Upgrade",
         },
@@ -194,6 +197,9 @@ const resources = {
         header: {
           text: "यहाँ अपना विवरण और व्यक्तिगत पसंद नियंत्रित करें।",
           search: "खोजें",
+          searchResults: "खोज परिणाम",
+          noResults: "कोई परिणाम नहीं मिला।",
+          close: "बंद करें",
           invite: "आमंत्रित करें",
           upgrade: "अपग्रेड",
         },

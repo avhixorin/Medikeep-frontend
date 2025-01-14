@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import InviteScreen from "./InviteScreen";
 import { useState } from "react";
+import SearchScreen from "./SearchScreen";
 
 const navItems = [
   { href: "/dashboard/settings/general", title: "settings.navItems.general" },
@@ -23,6 +24,7 @@ const navItems = [
 
 export default function SettingsPage() {
   const user = useSelector((state: RootState) => state.auth.user);
+  const [search, setSearch] = useState("");
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [isInviting, setIsInviting] = useState(false);
@@ -56,7 +58,12 @@ export default function SettingsPage() {
             onClose={() => setIsInviting(false)} />
         )
       }
-      <header className="flex items-center justify-between border-b px-4 py-3 md:px-6">
+      {
+        search.length > 0 && (
+          <SearchScreen searchText={search} setSearch={setSearch}/>
+        )
+      }
+      <header className="flex items-center justify-between border-b px-4 py-3 md:px-6 relative">
         <div className="hidden md:block">
           <h1 className="text-lg font-semibold">{user?.firstName}</h1>
           <p className="text-sm text-muted-foreground">
@@ -70,6 +77,8 @@ export default function SettingsPage() {
               type="search"
               placeholder={t("settings.header.search")}
               className="w-[200px] pl-8"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <Button variant="outline" size="sm" onClick={() => setIsInviting(true)}>
