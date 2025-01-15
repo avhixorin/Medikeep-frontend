@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import toast from "react-hot-toast";
 import InviteScreen from "./InviteScreen";
 import SearchScreen from "./SearchScreen";
+import useUpdate from "@/hooks/useUpdate";
 
 const navItems = [
   { href: "/dashboard/settings/general", title: "settings.navItems.general" },
@@ -26,27 +26,8 @@ export default function SettingsPage() {
   const [isInviting, setIsInviting] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const updateUrl = import.meta.env.VITE_UPDATE_SETTINGS_URL;
-
-  const handleSettingsChange = async () => {
-    try {
-      const response = await fetch(updateUrl, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ user, lastSeen: new Date() }),
-      });
-
-      if (response.ok) {
-        toast.success("Settings updated successfully");
-      } else {
-        toast.error("Failed to update settings");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update settings");
-    }
-  };
+  const updateUrl = import.meta.env.VITE_UPDATE_URL;
+  const { updateField } = useUpdate(updateUrl);
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.ctrlKey && e.key === "k") {
@@ -55,6 +36,10 @@ export default function SettingsPage() {
       setFocused(true);
     }
   };
+
+  const handleUserUpdate = async () => {
+    await updateField(user!);
+  }
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -110,7 +95,7 @@ export default function SettingsPage() {
 
       <footer className="md:p-6">
         <div className="container max-w-screen-lg py-6 bg-transparent flex items-center justify-end">
-          <Button onClick={handleSettingsChange} className="ml-4">
+          <Button onClick={handleUserUpdate} className="ml-4">
             {t("settings.footer.save")}
           </Button>
         </div>

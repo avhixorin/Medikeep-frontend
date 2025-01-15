@@ -7,11 +7,16 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useNavigate } from "react-router-dom";
-import { clearAuthUser, updateSecuritySettings } from "@/redux/features/authSlice";
+import {
+  clearAuthUser,
+  updateSecuritySettings,
+} from "@/redux/features/authSlice";
 import { useTranslation } from "react-i18next";
+import UpdatePasswordScreen from "./UpdatePasswordScreen";
 
 const Security: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const [isChangingPassword, setIsChangingPassword] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleAccountDeletion = async () => {
@@ -60,6 +65,11 @@ const Security: React.FC = () => {
   const { t } = useTranslation();
   return (
     <div className="container max-w-screen-lg py-6 bg-transparent">
+      {
+        isChangingPassword && (
+          <UpdatePasswordScreen onClose={setIsChangingPassword} />
+        )
+      }
       <div className="space-y-6">
         <div>
           <h2 className="text-lg font-medium">
@@ -78,9 +88,28 @@ const Security: React.FC = () => {
               </div>
             </div>
             <Switch
-              checked={user?.settingPreferences?.security.twoFactorAuth} onCheckedChange={() => dispatch(updateSecuritySettings({key:"twoFactorAuth", value: !user?.settingPreferences?.security.twoFactorAuth}))}
+              checked={user?.settingPreferences?.security.twoFactorAuth}
+              onCheckedChange={() =>
+                dispatch(
+                  updateSecuritySettings({
+                    key: "twoFactorAuth",
+                    value: !user?.settingPreferences?.security.twoFactorAuth,
+                  })
+                )
+              }
             />
           </div>
+          <div className="space-y-2 mt-4">
+          <div className="space-y-1">
+              <Label>{t("settings.security.password")}</Label>
+              <div className="text-sm text-muted-foreground">
+                {t("settings.security.passText")}
+              </div>
+            </div>
+              <Button variant="destructive" size="sm" onClick={() => setIsChangingPassword(true)}>
+                {t("settings.security.changePassword")}
+              </Button>
+            </div>
 
           <div className="border-t pt-6 mt-6">
             <h3 className="text-md font-medium">
