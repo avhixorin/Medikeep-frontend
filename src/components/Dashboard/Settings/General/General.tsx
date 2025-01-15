@@ -28,6 +28,7 @@ const General = () => {
     about: user?.about,
     username: user?.username,
     email: user?.email,
+    phone: user?.phone,
   });
   const [fieldsStatus, setFieldsStatus] = React.useState({
     firstName: false,
@@ -35,6 +36,7 @@ const General = () => {
     about: false,
     username: false,
     email: false,
+    phone: false,
   });
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = React.useState(i18n.language);
@@ -106,6 +108,20 @@ const General = () => {
               >
                 {t("settings.general.edit")}
               </Button>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label>{t("settings.general.gender")}</Label>
+                <div>{user?.gender.toUpperCase()}</div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label>{t("settings.general.dob")}</Label>
+                <div>{user?.dateOfBirth}</div>
+              </div>
             </div>
 
             {Object.keys(fieldState).map((key) => (
