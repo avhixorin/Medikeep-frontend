@@ -51,6 +51,11 @@ export type User = {
   };
   settingPreferences?: {
     general: {
+      firstName: string;
+      lastName: string;
+      about: string;
+      username: string;
+      email: string;
       theme: string;
       language: string;
       accountPrivacy: string;
