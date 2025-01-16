@@ -1,4 +1,4 @@
-const Whatsapp = () => {
+const WhatsApp = () => {
   return (
     <svg
       width="20"
@@ -35,4 +35,4 @@ const Whatsapp = () => {
   );
 };
 
-export default Whatsapp;
+export default WhatsApp;
