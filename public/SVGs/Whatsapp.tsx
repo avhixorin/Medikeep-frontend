@@ -1,4 +1,4 @@
-export const WhatsApp:React.FC = () => {
+const WhatsApp = () => {
   return (
     <svg
       width="20"
@@ -34,3 +34,5 @@ export const WhatsApp:React.FC = () => {
     </svg>
   );
 };
+
+export default WhatsApp;
