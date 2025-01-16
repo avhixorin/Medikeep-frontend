@@ -126,13 +126,13 @@ const General = () => {
             </div>
 
             {Object.keys(fieldState).map((key) => (
-              <div key={key} className="flex items-center justify-between">
-                <div className="space-y-1">
+              <div key={key} className="flex md:flex-row flex-col md:items-center justify-between">
+                <div className="space-y-1 max-md:flex max-md:flex-col max-md:gap-2">
                   <Label>{t(`settings.general.${key}`)}</Label>
                   {fieldsStatus[key as keyof typeof fieldsStatus] ? (
                     <input
                       type="text"
-                      className="border rounded ml-2 px-2 py-1 dark:bg-black bg-white text-slate-800 dark:text-gray-200"
+                      className="border rounded md:ml-2 px-2 py-1 dark:bg-black bg-white text-slate-800 dark:text-gray-200"
                       value={fieldState[key as keyof typeof fieldState] || ""}
                       onChange={(e) => handleFieldChange(key, e.target.value)}
                     />
@@ -142,7 +142,7 @@ const General = () => {
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 max-md:mt-2">
                   {fieldsStatus[key as keyof typeof fieldsStatus] ? (
                     <>
                       <Button
