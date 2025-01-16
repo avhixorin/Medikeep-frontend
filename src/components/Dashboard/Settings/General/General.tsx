@@ -63,7 +63,8 @@ const General = () => {
       field === "lastName" ||
       field === "username" ||
       field === "email" ||
-      field === "about"
+      field === "about" ||
+      field === "phone"
     ) {
       dispatch(updateUserFields(fieldState));
     } else {
