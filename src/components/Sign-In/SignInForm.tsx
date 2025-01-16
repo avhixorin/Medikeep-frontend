@@ -51,9 +51,13 @@ const SignInForm: React.FC = () => {
       const data = await response.json();
       if (data?.statusCode === 200) {
         toast.success("Logged in successfully");
-        if(data.data){
-        dispatch(setAuthUser(data.data));
+        if (data.data) {
+          dispatch(setAuthUser(data.data));
         }
+        console.log("Access Token: ", data.data.accessToken);
+        console.log("Refresh Token: ", data.data.refreshToken);
+        localStorage.setItem("accessToken", data.data.accessToken);
+        localStorage.setItem("refreshToken", data.data.refreshToken);
         navigate("/dashboard");
       }
     } catch (error: unknown) {
@@ -65,7 +69,7 @@ const SignInForm: React.FC = () => {
     }
   };
   useEffect(() => {
-      dispatch(resetAllUsers());
+    dispatch(resetAllUsers());
     dispatch(clearAuthUser());
     dispatch(clearAllMessages());
     dispatch(clearNotifications());
@@ -73,14 +77,18 @@ const SignInForm: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200
+    <div
+      className="grid-cols-1 grid lg:grid-cols-2 min-h-[100dvh] bg-gradient-to-r from-blue-200 via-green-200 to-yellow-200
     dark:from-[#000000] dark:to-[#4D4855] dark:text-white
-    ">
+    "
+    >
       <div className="flex items-center justify-center col-span-1 lg:p-8">
         <div className="lform-container w-[75%] flex justify-center items-center dark:bg-[#010332]">
           <div className="w-full">
             <div className="w-full mb-9 flex items-center justify-center">
-              <p className="sititle text-center w-full dark:text-gray-400">Welcome back</p>
+              <p className="sititle text-center w-full dark:text-gray-400">
+                Welcome back
+              </p>
             </div>
             <Formik
               initialValues={{ email: "", password: "" }}
@@ -91,7 +99,8 @@ const SignInForm: React.FC = () => {
                 <Form className="form flex flex-col gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                      Email<span className="text-red-500 dark:text-red-400">*</span>
+                      Email
+                      <span className="text-red-500 dark:text-red-400">*</span>
                     </label>
                     <Field
                       name="email"
@@ -106,7 +115,8 @@ const SignInForm: React.FC = () => {
                   </div>
                   <div className="w-full relative space-y-2">
                     <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                      Password<span className="text-red-500 dark:text-red-400">*</span>
+                      Password
+                      <span className="text-red-500 dark:text-red-400">*</span>
                     </label>
                     <Field
                       type={showPassword ? "text" : "password"}
@@ -178,7 +188,10 @@ const SignInForm: React.FC = () => {
 
             <p className="sign-up-label dark:text-gray-400">
               Don't have an account?
-              <Link to={"/register"} className="sign-up-link dark:text-blue-400 dark:hover:text-blue-300">
+              <Link
+                to={"/register"}
+                className="sign-up-link dark:text-blue-400 dark:hover:text-blue-300"
+              >
                 Sign up
               </Link>
             </p>
