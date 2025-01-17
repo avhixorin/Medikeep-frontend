@@ -20,21 +20,18 @@ const useSession = () => {
     } else if (response.status === 401) {
       // Access token expired
       // Try to refresh the token
-      const refRes = await fetch(import.meta.env.VITE_REFRESH_TOKEN_URL, {
-        method: "POST",
+      const refRes = await fetch(import.meta.env.VITE_REFRESH_TOKEN_VALIDATION_URL, {
+        method: "GET",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          refreshToken: localStorage.getItem("refreshToken"),
-        }),
+        }
       });
       if (refRes.ok) {
         // Access token refreshed
         // fetch the user data
         const data = await refRes.json();
-        localStorage.setItem("accessToken", data.accessToken);
+        dispatch(setAuthUser(data.data));
         return true;
       } else {
         // Refresh token expired

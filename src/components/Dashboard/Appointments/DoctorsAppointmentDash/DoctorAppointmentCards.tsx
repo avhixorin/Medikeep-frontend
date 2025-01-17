@@ -42,7 +42,7 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
   const handleCancel = async () => {
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: `Do you really want to cancel the appointment with ${appointment.patient.firstName} ${appointment.patient.lastName}?`,
+      text: `Do you really want to cancel the appointment with ${appointment?.patient?.firstName} ${appointment?.patient?.lastName}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, cancel",
@@ -51,11 +51,11 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
     });
     if (!result.isConfirmed) return;
     socket?.emit(SOCKET_EVENTS.CANCELLED_APPOINTMENT, {
-      appointmentId: appointment._id,
+      appointmentId: appointment?._id,
     });
-    dispatch(removeAppointment(appointment._id));
+    dispatch(removeAppointment(appointment?._id));
     toast.success(
-      `You have successfully cancelled the appointment with ${appointment.patient.firstName} ${appointment.patient.lastName}`
+      `You have successfully cancelled the appointment with ${appointment?.patient?.firstName} ${appointment?.patient?.lastName}`
     );
   };
   return (
@@ -69,7 +69,7 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
       <div className="flex-shrink-0">
         <img
           src={appointment.patient?.profilePicture}
-          alt={`${appointment?.patient.firstName}'s Profile Picture`}
+          alt={`${appointment?.patient?.firstName}'s Profile Picture`}
           className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600"
         />
       </div>
@@ -79,7 +79,7 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
       </p>
 
       <p className="text-md text-center flex-1 max-w-[4rem] truncate">
-        {calcAge(appointment?.patient.dateOfBirth)} years
+        {calcAge(appointment?.patient?.dateOfBirth)} years
       </p>
 
       <p className="bg-indigo-500 dark:bg-indigo-700 rounded-md py-1 px-3 text-sm text-white flex-shrink-0">
@@ -174,20 +174,20 @@ export function DocotorAppointmentCardMobile({
         <div className="flex items-center space-x-2">
           <Avatar className="w-8 h-8 border-2 border-primary">
             <AvatarImage
-              src={appointment?.patient.profilePicture}
-              alt={appointment?.patient.firstName}
+              src={appointment?.patient?.profilePicture}
+              alt={appointment?.patient?.firstName}
             />
             <AvatarFallback>
-              {appointment?.patient.firstName[0]}
-              {appointment?.patient.lastName[0]}
+              {appointment?.patient?.firstName[0]}
+              {appointment?.patient?.lastName[0]}
             </AvatarFallback>
           </Avatar>
           <div>
             <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-              {appointment?.patient.firstName} {appointment?.patient.lastName}
+              {appointment?.patient?.firstName} {appointment?.patient?.lastName}
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Age: {calcAge(appointment?.patient.dateOfBirth)} years
+              Age: {calcAge(appointment?.patient?.dateOfBirth)} years
             </p>
           </div>
         </div>
