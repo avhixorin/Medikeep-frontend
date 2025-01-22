@@ -96,6 +96,7 @@ export type User = {
       sharingLink: string;
     },
   };
+  sharingLink?: string;
   lastSeen?: Date;
   createdAt?: string;
   updatedAt?: string;

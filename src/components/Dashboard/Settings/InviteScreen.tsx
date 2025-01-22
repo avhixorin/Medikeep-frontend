@@ -8,7 +8,7 @@ const InviteScreen: React.FC<{ onClose: (arg0: boolean) => void }> = ({
 }) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const inviteLink =
-    user?.settingPreferences?.sharing?.sharingLink ||
+    user?.sharingLink ||
     "https://medikeep.avhixorin.me/login";
   const inviteMessage = `${user?.firstName} ${user?.lastName} is inviting you to join the MediKeep family! \nCheck this out: ${inviteLink}`;
 

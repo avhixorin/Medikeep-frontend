@@ -38,7 +38,7 @@ const NotificationDrawer: React.FC<NotificationDrawerProps> = ({
           </button>
         </div>
 
-        <div className="max-h-80 overflow-y-auto p-4 space-y-4">
+        <div className="max-h-80 overflow-y-auto p-4 space-y-4 scrollbar-webkit">
           {sortedNotifications.length > 0 ? (
             sortedNotifications.map((notification, index) => (
               <div
