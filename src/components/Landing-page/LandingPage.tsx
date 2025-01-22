@@ -8,6 +8,7 @@ import Pricing from './Pricing/Pricing';
 import ContactUs from './ContactUs/ContactUs';
 import Footer from './Footer/Footer';
 import useSession from '@/hooks/useSession';
+import About from './About/About';
 
 const LandingPage: React.FC = () => {
   const [isValid, setIsValid] = useState(false);
@@ -30,6 +31,7 @@ const LandingPage: React.FC = () => {
     <div className='bg-white'>
       <NavBar />
       <Hero />
+      <About />
       <Features />
       <Benefits />
       <Pricing />
