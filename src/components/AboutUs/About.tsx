@@ -1,96 +1,238 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+"use client"
 
-const About: React.FC = () => {
-  
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import {
+  Sun,
+  Moon,
+  Heart,
+  Shield,
+  Zap,
+  Users,
+  Facebook,
+  Twitter,
+  LinkedinIcon as LinkedIn,
+  Instagram,
+  CheckCircle,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+
+export default function AboutUs() {
+  const [darkMode, setDarkMode] = useState(false)
+
+  useEffect(() => {
+    const isDarkMode = localStorage.getItem("darkMode") === "true"
+    setDarkMode(isDarkMode)
+    document.documentElement.classList.toggle("dark", isDarkMode)
+  }, [])
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode
+    setDarkMode(newDarkMode)
+    localStorage.setItem("darkMode", newDarkMode.toString())
+    document.documentElement.classList.toggle("dark", newDarkMode)
+  }
+
   return (
-    <section className="bg-gradient-to-r from-blue-200 via-blue-100 to-white dark:from-blue-900 dark:via-blue-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 py-12">
-      <div className="container mx-auto px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-center mb-10 text-blue-700 dark:text-blue-400">About Us</h1>
+    <div className={`min-h-screen ${darkMode ? "dark" : ""}`}>
+      <div className="bg-gradient-to-b from-gray-50 via-blue-50 to-teal-50 dark:from-gray-900 dark:via-blue-900 dark:to-teal-900 min-h-screen text-gray-800 dark:text-gray-100 transition-colors duration-300">
+        <div className="container mx-auto px-4 py-8">
+          <header className="text-center mb-16">
+            <motion.h1
+              className="text-5xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-600 dark:from-blue-400 dark:to-teal-400"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              About MediKeep
+            </motion.h1>
+            <motion.p
+              className="text-xl md:text-2xl text-gray-600 dark:text-gray-300"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Revolutionizing healthcare management for a connected future
+            </motion.p>
+          </header>
 
-        <div className="text-center mb-12">
-          <p className="text-xl mb-6 text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-            Welcome to MediKeep, where we revolutionize healthcare management through technology, connecting patients with healthcare professionals for better health outcomes.
-          </p>
-          <div className="flex justify-center gap-6">
-            <Link to="/login">
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-                Login
-              </button>
-            </Link>
-            <Link to="/register">
-              <button className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-400">
-                Sign Up
-              </button>
-            </Link>
-          </div>
-        </div>
+          <main>
+            <section className="mb-12">
+              <motion.p
+                className="text-lg mb-8 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                MediKeep is at the forefront of healthcare innovation, leveraging cutting-edge technology to streamline
+                patient care and empower healthcare professionals.
+              </motion.p>
 
-        <div className="grid gap-12 md:grid-cols-2 mb-12">
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-400">For Patients</h3>
-            <p className="text-lg mb-4">
-              <strong>Empowering Your Health Journey</strong>
-            </p>
-            <ul className="list-disc list-inside mb-6 space-y-2">
-              <li>Track Your Health: Monitor your medical appointments, prescription history, and health records all in one place.</li>
-              <li>Connect with Top Doctors: Access a network of qualified healthcare professionals who can provide consultations and advice tailored to your needs.</li>
-              <li>Personalized Care: Receive customized diet and wellness recommendations based on your health data and goals.</li>
-              <li>Easy Appointments: Schedule and manage appointments with your doctors effortlessly through our intuitive interface.</li>
-              <li>Secure Communication: Communicate securely with your healthcare providers, ensuring that your health information remains confidential and protected.</li>
-            </ul>
-            <p className="text-lg">
-              Our goal is to make healthcare more accessible and personalized, helping you lead a healthier, more informed life.
-            </p>
-          </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                >
+                  <Card className="p-6 bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-900 dark:to-blue-900 shadow-lg rounded-lg border border-teal-100 dark:border-teal-800">
+                    <h2 className="text-2xl font-semibold mb-4 text-teal-700 dark:text-teal-300">For Patients</h2>
+                    <ul className="space-y-3">
+                      {[
+                        "Easy appointment scheduling",
+                        "Secure access to medical records",
+                        "Telemedicine consultations",
+                        "Medication reminders and tracking",
+                      ].map((item, index) => (
+                        <li key={index} className="flex items-start">
+                          <CheckCircle className="w-5 h-5 text-green-500 mr-2 mt-1 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
+                </motion.div>
 
-          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-400">For Doctors</h3>
-            <p className="text-lg mb-4">
-              <strong>Enhancing Your Practice</strong>
-            </p>
-            <ul className="list-disc list-inside mb-6 space-y-2">
-              <li>Patient Management: Keep track of your patients’ appointments, medical histories, and communication in one centralized system.</li>
-              <li>Consultation Scheduling: Manage your consultation hours and availability with ease, allowing patients to book appointments at their convenience.</li>
-              <li>Data-Driven Insights: Access comprehensive data on your patients' health trends and progress, helping you make informed decisions and provide personalized care.</li>
-              <li>Secure Platform: Benefit from a secure, compliant platform that protects your patients' information and ensures privacy.</li>
-              <li>Streamlined Communication: Use our integrated chat feature to communicate with your patients securely, addressing their queries and concerns efficiently.</li>
-            </ul>
-            <p className="text-lg">
-              We are committed to supporting doctors with the tools they need to enhance their practice and deliver the best possible care to their patients.
-            </p>
-          </div>
-        </div>
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                >
+                  <Card className="p-6 bg-gradient-to-br from-blue-50 to-teal-50 dark:from-blue-900 dark:to-teal-900 shadow-lg rounded-lg border border-blue-100 dark:border-blue-800">
+                    <h2 className="text-2xl font-semibold mb-4 text-blue-700 dark:text-blue-300">For Doctors</h2>
+                    <ul className="space-y-3">
+                      {[
+                        "Efficient patient management system",
+                        "AI-assisted diagnosis tools",
+                        "Seamless collaboration with specialists",
+                        "Advanced analytics for patient care",
+                      ].map((item, index) => (
+                        <li key={index} className="flex items-start">
+                          <CheckCircle className="w-5 h-5 text-green-500 mr-2 mt-1 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
+                </motion.div>
+              </div>
+            </section>
 
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold mb-6 text-blue-700 dark:text-blue-400">Our Vision</h2>
-          <p className="text-lg mb-6 text-gray-700 dark:text-gray-300">
-            Our vision is to create a healthcare ecosystem where patients and doctors can interact seamlessly, leading to improved health outcomes and greater satisfaction for all involved. We strive to be at the forefront of digital health innovation, continuously evolving our platform to meet the changing needs of the healthcare landscape.
-          </p>
+            <section className="mb-12 text-center">
+              <motion.h2
+                className="text-3xl font-bold mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Our Vision
+              </motion.h2>
+              <motion.p
+                className="text-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                To create a seamlessly connected healthcare ecosystem that enhances patient outcomes and simplifies the
+                work of healthcare professionals.
+              </motion.p>
+            </section>
 
-          <h2 className="text-3xl font-bold mb-6 text-blue-700 dark:text-blue-400">Our Values</h2>
-          <ul className="list-disc list-inside space-y-4 text-lg text-gray-700 dark:text-gray-300">
-            <li><strong>Patient-Centricity:</strong> We prioritize the needs and well-being of our patients, ensuring our solutions enhance their healthcare experience.</li>
-            <li><strong>Innovation:</strong> We embrace new technologies and approaches to advance the field of digital health.</li>
-            <li><strong>Integrity:</strong> We maintain the highest standards of privacy and security, ensuring trust and transparency in all our interactions.</li>
-            <li><strong>Collaboration:</strong> We foster collaboration between patients and healthcare professionals to achieve the best outcomes.</li>
-          </ul>
-        </div>
+            <section className="mb-12">
+              <motion.h2
+                className="text-3xl font-bold mb-8 text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Core Values
+              </motion.h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { icon: Heart, title: "Compassion", description: "Putting patient care first in everything we do" },
+                  {
+                    icon: Shield,
+                    title: "Security",
+                    description: "Ensuring the highest level of data protection and privacy",
+                  },
+                  {
+                    icon: Zap,
+                    title: "Innovation",
+                    description: "Continuously pushing the boundaries of healthcare technology",
+                  },
+                  {
+                    icon: Users,
+                    title: "Collaboration",
+                    description: "Fostering partnerships across the healthcare community",
+                  },
+                ].map((value, index) => (
+                  <motion.div
+                    key={value.title}
+                    className="flex flex-col items-center text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-700"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 * index }}
+                  >
+                    <value.icon className="w-12 h-12 mb-4 text-blue-600 dark:text-blue-400" />
+                    <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">{value.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{value.description}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
 
-        <div className="mt-16 text-center">
-          <h2 className="text-3xl font-bold mb-6 text-blue-700 dark:text-blue-400">Get in Touch</h2>
-          <p className="text-lg mb-4 text-gray-700 dark:text-gray-300">
-            We welcome your feedback and are here to assist you with any questions or concerns. Feel free to reach out to us through our&nbsp;  
-            <Link to={"/"} className="text-blue-600 hover:underline"
-            >contact page</Link>, or connect with us on our social media channels.
-          </p>
-          <p className="text-lg text-gray-700 dark:text-gray-300">
-            Thank you for choosing MediKeep. Together, we are shaping the future of healthcare.
-          </p>
+            <section className="text-center">
+              <motion.h2
+                className="text-3xl font-bold mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Get in Touch
+              </motion.h2>
+              <motion.p
+                className="mb-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                We'd love to hear from you! Reach out to learn more about how MediKeep can transform your healthcare
+                experience.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <Button className="mb-6">Contact Us</Button>
+                <div className="flex justify-center space-x-4">
+                  {[
+                    { icon: Facebook, href: "#" },
+                    { icon: Twitter, href: "#" },
+                    { icon: LinkedIn, href: "#" },
+                    { icon: Instagram, href: "#" },
+                  ].map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.href}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors duration-300"
+                    >
+                      <social.icon className="w-6 h-6" />
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            </section>
+          </main>
+
+          <footer className="mt-12 text-center">
+            <Button variant="outline" size="icon" onClick={toggleDarkMode} className="rounded-full">
+              {darkMode ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+            </Button>
+          </footer>
         </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  )
+}
 
-export default About;

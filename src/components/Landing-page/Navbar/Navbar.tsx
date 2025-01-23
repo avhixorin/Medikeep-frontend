@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const NavBar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -101,12 +102,12 @@ const NavBar: React.FC = () => {
         >
           Login
         </button>
-        <button
+        <Button
           className="bg-blue-600 text-white py-1 px-2 md:py-2 md:px-4 rounded hover:bg-blue-700 transition-colors duration-300"
           onClick={() => navigate("/register")}
         >
-          Sign Up
-        </button>
+          Try for free
+        </Button>
       </div>
     </nav>
   );
