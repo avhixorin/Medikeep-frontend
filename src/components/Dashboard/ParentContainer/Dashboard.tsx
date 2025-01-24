@@ -26,7 +26,6 @@ const Dashboard: React.FC = () => {
     }
   }, [fetchAllUsers, allUsers]);
 
-
   if (!user) {
     return <Navigate to="/unauthorized" replace />;
   }

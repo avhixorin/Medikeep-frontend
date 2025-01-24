@@ -8,6 +8,7 @@ import {
   LogOut,
   HeartPulse,
   User,
+  PhoneCall,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -134,6 +135,7 @@ export default function LeftSidebar() {
             to="/dashboard"
             icon={<LayoutGrid size={24} />}
             label={t(`sidebar.dashboard`)}
+            end
           />
           <SidebarLink
             to="/dashboard/appointments"
@@ -144,6 +146,11 @@ export default function LeftSidebar() {
             to="/dashboard/chats"
             icon={<MessageSquare size={24} />}
             label={t("sidebar.chats")}
+          />
+          <SidebarLink
+            to="/dashboard/calls"
+            icon={<PhoneCall size={24} />}
+            label={"Calls"}
           />
           <SidebarLink
             to="/dashboard/medical-records"

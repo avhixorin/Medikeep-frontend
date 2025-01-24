@@ -14,7 +14,7 @@ import { setChatHistory } from "@/redux/features/messageSlice";
 import { useTranslation } from "react-i18next";
 
 export default function Welcome() {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
   if (user && user.messages) {
     dispatch(setChatHistory(user.messages));

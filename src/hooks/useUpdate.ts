@@ -2,8 +2,11 @@ import { User } from "@/types/types";
 import toast from "react-hot-toast";
 
 const useUpdate = (url: string) => {
+  
   const updateField = async (user: User) => {
+    console.log("updating user req")
     try {
+      console.log("updating user")
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -14,11 +17,12 @@ const useUpdate = (url: string) => {
       });
 
       if (!response.ok) {
+        console.log("response not ok")
         const errorData = await response.json();
         toast.error(errorData.message || "Failed to update");
         throw new Error(errorData.message || "Failed to update");
       }
-
+      console.log("response ok")
       const data = await response.json();
       toast.success("Update successful");
       return data;

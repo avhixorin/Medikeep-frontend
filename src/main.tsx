@@ -12,6 +12,8 @@ import {
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import DashboardAppointmentsPageWrapper from "./components/Dashboard/Appointments/DashboardAppointmentsPageWrapper";
+import CallScreen from "./components/Dashboard/CallScreen/CallScreen";
+import Calls from "./components/Dashboard/Calls/Calls";
 const SignInPage = lazy(() => import("./components/Sign-In/SignInForm"));
 const SignUpPage = lazy(() => import("./components/Sign-Up/SignUpForm"));
 const ForgotPasswordPage = lazy(() => import("./components/Forgot/Forget"));
@@ -22,7 +24,9 @@ const UnauthorizedPage = lazy(
 const TermsConditionsPage = lazy(() => import("./components/TnC/TnC"));
 const AboutUsPage = lazy(() => import("./components/AboutUs/About"));
 const ErrorBoundary = lazy(() => import("./components/ErrorBoundary/Error"));
-const SharingProfilePage = lazy(() => import("./components/SharingProfile/SharingProfile"));
+const SharingProfilePage = lazy(
+  () => import("./components/SharingProfile/SharingProfile")
+);
 const DashboardContainer = lazy(
   () => import("./components/Dashboard/ParentContainer/Dashboard")
 );
@@ -161,12 +165,19 @@ const router = createBrowserRouter(
             </Suspense>
           }
         />
-        ;
         <Route
           path="chats"
           element={
             <Suspense fallback={<LoadingScreen />}>
               <DashboadChatPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="calls"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Calls />
             </Suspense>
           }
         />
@@ -259,7 +270,23 @@ const router = createBrowserRouter(
             }
           />
         </Route>
+        <Route
+          path="call"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <CallScreen />
+            </Suspense>
+          }
+        />
       </Route>
+      {/* <Route
+        path="call/:callId"
+        element={
+          <Suspense fallback={<LoadingScreen />}>
+            <CallScreen />
+          </Suspense>
+        }
+      /> */}
     </Route>
   )
 );

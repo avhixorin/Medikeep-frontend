@@ -14,7 +14,6 @@ import { addMyMessage } from "@/redux/features/messageSlice";
 import { v4 as uuid } from "uuid";
 import { setSelectedUser } from "@/redux/features/selectedUserSlice";
 import NotificationDrawer from "../Notifications/NotificationDrawer";
-import { User } from "@/types/types";
 import Swal from "sweetalert2";
 import VideoCallScreen from "./VideoCallScreen/VideoCallScreen";
 import toast from "react-hot-toast";
@@ -23,7 +22,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { format } from "date-fns";
+import useActiveFriends from "@/hooks/useActiveFriends";
 const Chat: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -31,7 +30,6 @@ const Chat: React.FC = () => {
   const [isVideoCalling, setIsVideoCalling] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [activeFriends, setActiveFriends] = useState<User[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const { socket } = useSockets();
   const { user } = useSelector((state: RootState) => state.auth);
@@ -70,27 +68,6 @@ const Chat: React.FC = () => {
       handleSendMessage();
     }
   };
-  useEffect(() => {
-    if (socket) {
-      socket.emit(SOCKET_EVENTS.GET_ONLINE_FRIENDS, user?._id);
-    }
-    socket?.on(
-      SOCKET_EVENTS.GET_ONLINE_FRIENDS,
-      (data: { statusCode: number; message: string; data: User[] }) => {
-        setActiveFriends(data.data);
-      }
-    );
-
-    return () => {
-      socket?.off(SOCKET_EVENTS.GET_ONLINE_FRIENDS);
-    };
-  }, [socket, user]);
-
-  const getUserStatus = (userId: string) => {
-    return activeFriends.find((user) => user._id === userId)
-      ? "Active now"
-      : `Last seen: ${format(user?.lastSeen ?? new Date(), "p")}`;
-  };
 
   const handleVideoCall = async () => {
     const result = await Swal.fire({
@@ -105,7 +82,7 @@ const Chat: React.FC = () => {
       setIsVideoCalling(true);
     }
   };
-
+  const { getUserStatus } = useActiveFriends();
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-6 gap-4">
       {isManagingConnections && (

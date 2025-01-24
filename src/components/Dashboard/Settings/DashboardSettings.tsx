@@ -27,6 +27,7 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const updateUrl = import.meta.env.VITE_UPDATE_URL;
+  console.log("updateUrl", updateUrl);
   const { updateField } = useUpdate(updateUrl);
 
   const handleKeyDown = (e: KeyboardEvent) => {
