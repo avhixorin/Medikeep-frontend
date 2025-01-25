@@ -15,8 +15,10 @@ import { useTranslation } from "react-i18next";
 
 export default function Welcome() {
   const user = useSelector((state: RootState) => state.auth.user);
+  const chatHistory = useSelector((state: RootState) => state.messages.chatHistories)
+  const keyCount = Object.keys(chatHistory);
   const dispatch = useDispatch();
-  if (user && user.messages) {
+  if (user && user.messages && keyCount?.length === 0) {
     dispatch(setChatHistory(user.messages));
   }
   const { t } = useTranslation();
