@@ -134,6 +134,7 @@ export default function LeftSidebar() {
             to="/dashboard"
             icon={<LayoutGrid size={24} />}
             label={t(`sidebar.dashboard`)}
+            end
           />
           <SidebarLink
             to="/dashboard/appointments"
