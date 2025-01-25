@@ -14,6 +14,7 @@ import "rsuite/dist/rsuite-no-reset.min.css";
 import DashboardAppointmentsPageWrapper from "./components/Dashboard/Appointments/DashboardAppointmentsPageWrapper";
 import CallScreen from "./components/Dashboard/CallScreen/CallScreen";
 import Calls from "./components/Dashboard/Calls/Calls";
+import DashboardLoadingScreen from "./components/LoadingScreen/DashBoardLoading";
 const SignInPage = lazy(() => import("./components/Sign-In/SignInForm"));
 const SignUpPage = lazy(() => import("./components/Sign-Up/SignUpForm"));
 const ForgotPasswordPage = lazy(() => import("./components/Forgot/Forget"));
@@ -144,7 +145,7 @@ const router = createBrowserRouter(
       <Route
         path="dashboard"
         element={
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={<DashboardLoadingScreen />}>
             <DashboardContainer />
           </Suspense>
         }
@@ -152,7 +153,7 @@ const router = createBrowserRouter(
         <Route
           index
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboardWelcomePage />
             </Suspense>
           }
@@ -160,7 +161,7 @@ const router = createBrowserRouter(
         <Route
           path="appointments"
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboardAppointmentsPageWrapper />
             </Suspense>
           }
@@ -168,7 +169,7 @@ const router = createBrowserRouter(
         <Route
           path="chats"
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboadChatPage />
             </Suspense>
           }
@@ -176,7 +177,7 @@ const router = createBrowserRouter(
         <Route
           path="calls"
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <Calls />
             </Suspense>
           }
@@ -184,7 +185,7 @@ const router = createBrowserRouter(
         <Route
           path="profile"
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboardProfilePage />
             </Suspense>
           }
@@ -192,7 +193,7 @@ const router = createBrowserRouter(
         <Route
           path="medical-records"
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboardMedicalRecordsPage />
             </Suspense>
           }
@@ -200,7 +201,7 @@ const router = createBrowserRouter(
         <Route
           path="patients"
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboardPatientsPage />
             </Suspense>
           }
@@ -208,7 +209,7 @@ const router = createBrowserRouter(
         <Route
           path="vitals"
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboardHealthVitalsPage />
             </Suspense>
           }
@@ -216,7 +217,7 @@ const router = createBrowserRouter(
         <Route
           path="settings"
           element={
-            <Suspense>
+            <Suspense fallback={<DashboardLoadingScreen />}>
               <DashboardSettingsPage />
             </Suspense>
           }
@@ -224,7 +225,7 @@ const router = createBrowserRouter(
           <Route
             index
             element={
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={<DashboardLoadingScreen />}>
                 <DashboardGeneralSettingsPage />
               </Suspense>
             }
@@ -232,7 +233,7 @@ const router = createBrowserRouter(
           <Route
             path="general"
             element={
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={<DashboardLoadingScreen />}>
                 <DashboardGeneralSettingsPage />
               </Suspense>
             }
@@ -240,7 +241,7 @@ const router = createBrowserRouter(
           <Route
             path="security"
             element={
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={<DashboardLoadingScreen />}>
                 <DashboardSecuritySettingsPage />
               </Suspense>
             }
@@ -248,7 +249,7 @@ const router = createBrowserRouter(
           <Route
             path="billing"
             element={
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={<DashboardLoadingScreen />}>
                 <DashboardBillingSettingsPage />
               </Suspense>
             }
@@ -256,7 +257,7 @@ const router = createBrowserRouter(
           <Route
             path="notifications"
             element={
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={<DashboardLoadingScreen />}>
                 <DashboardNotificationsSettingsPage />
               </Suspense>
             }
@@ -264,7 +265,7 @@ const router = createBrowserRouter(
           <Route
             path="sharing"
             element={
-              <Suspense fallback={<LoadingScreen />}>
+              <Suspense fallback={<DashboardLoadingScreen />}>
                 <DashboardSharingSettingsPage />
               </Suspense>
             }
