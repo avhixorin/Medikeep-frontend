@@ -1,17 +1,42 @@
 import useActiveFriends from "@/hooks/useActiveFriends";
 import { RootState } from "@/redux/store/store";
 import { Phone, PhoneOff, Video, VideoOff } from "lucide-react";
-import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import {v4 as uuid} from "uuid";
 
 const Calls:React.FC = () => {
     const { getUserStatus } = useActiveFriends();
     const user = useSelector((state: RootState) => state.auth.user);
-    const handleVideoCall = () => {
-      toast.success("Video call feature is not available yet.");
+    const handleVideoCall = async () => {
+      const response = await Swal.fire({
+        title: "Are you sure?",
+        text: "You will be redirected to the call screen.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, call now",
+        cancelButtonText: "No, cancel",
+        reverseButtons: true,
+      });
+      if(!response.isConfirmed) return;
+      const callLink = `/call/${uuid()}`;
+      navigate(callLink)
     }
-    const handlePhoneCall = () => {
-      toast.success("Phone call feature is not available yet.");
+    const navigate = useNavigate();
+    const handlePhoneCall = async () => {
+      const response = await Swal.fire({
+        title: "Are you sure?",
+        text: "You will be redirected to the call screen.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, call now",
+        cancelButtonText: "No, cancel",
+        reverseButtons: true,
+      });
+      if(!response.isConfirmed) return;
+      const callLink = `/call/${uuid()}`;
+      navigate(callLink)
     }
     return (
       <div className="w-full h-full flex flex-col justify-start items-center bg-transparent dark:bg-[#141414] px-4 py-2 gap-4">

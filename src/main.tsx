@@ -271,23 +271,15 @@ const router = createBrowserRouter(
             }
           />
         </Route>
-        <Route
-          path="call"
-          element={
-            <Suspense fallback={<LoadingScreen />}>
-              <CallScreen />
-            </Suspense>
-          }
-        />
       </Route>
-      {/* <Route
+      <Route
         path="call/:callId"
         element={
           <Suspense fallback={<LoadingScreen />}>
             <CallScreen />
           </Suspense>
         }
-      /> */}
+      />
     </Route>
   )
 );
