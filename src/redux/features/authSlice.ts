@@ -140,15 +140,6 @@ const authSlice = createSlice({
         state.user.settingPreferences.notifications[key] = value;
       }
     },
-    setSharingLink: (state, action: PayloadAction<string>) => {
-      if (
-        state.user &&
-        state.user.settingPreferences &&
-        state.user.settingPreferences.sharing
-      ) {
-        state.user.settingPreferences.sharing.sharingLink = action.payload;
-      }
-    },
   },
 });
 
@@ -168,7 +159,6 @@ export const {
   updateGeneralSettings,
   updateSecuritySettings,
   updateNotificationSettings,
-  setSharingLink,
 } = authSlice.actions;
 
 export default authSlice.reducer;
