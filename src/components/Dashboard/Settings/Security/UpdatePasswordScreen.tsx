@@ -21,7 +21,7 @@ const UpdatePasswordScreen: React.FC<{ onClose: (arg0: boolean) => void }> = ({ 
     }
     if (user?._id) {
       try {
-        await updatePassword(user._id, oldPassword, newPassword);
+        await updatePassword(oldPassword, newPassword);
         onClose(false);
       } catch (error) {
         toast.error('Failed to update password');

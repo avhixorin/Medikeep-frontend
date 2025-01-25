@@ -91,10 +91,7 @@ export type User = {
       promotionalEmails: boolean;
       notificationSound: boolean;
       weeklyDigest: boolean;
-    },
-    sharing: {
-      sharingLink: string;
-    },
+    }
   };
   sharingLink?: string;
   lastSeen?: Date;

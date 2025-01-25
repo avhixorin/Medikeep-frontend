@@ -38,7 +38,10 @@ export default function SettingsPage() {
   };
 
   const handleUserUpdate = async () => {
-    await updateField(user!);
+    if(user)
+      await updateField(user);
+    else
+      console.log("User not found");
   }
 
   useEffect(() => {
