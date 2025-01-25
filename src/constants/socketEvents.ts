@@ -57,6 +57,12 @@ export enum SOCKET_EVENTS {
   VIDEO_CALL_REQUEST = "video_call_request",
   VIDEO_CALL_RESPONSE = "video_call_response",
 
+  MAKE_CALL = "make_call",
+  CALL_REQUEST = "call_request",
+  ACCEPT_CALL = "accept_call",
+  REJECT_CALL = "reject_call",
+
+
   AUTHENTICATED = "authenticated",
   AUTHENTICATION_FAILED = "authentication_failed",
   AUTHENTICATION_SUCCEEDED = "authentication_succeeded",

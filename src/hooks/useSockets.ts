@@ -5,9 +5,12 @@ import { addNotification } from "@/redux/features/notificationsSlice";
 import { acceptConnectionResponse, AcceptedConnection, Appointment, notification, PrivateMessage, rejectConnectionResponse, RejectedConnection } from "@/types/types";
 import { useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 import useNotifyMusic from "./useNotify";
+import Swal from "sweetalert2";
+import { RootState } from "@/redux/store/store";
+import { useNavigate } from "react-router-dom";
 let sharedSocket: Socket | null = null;
 
 const initializeSocket = (): Socket => {
@@ -30,6 +33,8 @@ const initializeSocket = (): Socket => {
 
 const useSockets = () => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
   const { generalNotify} = useNotifyMusic();
   const handleNewConnectionNotification = useCallback((data: notification) => {
     toast.success(data.message);
@@ -141,8 +146,42 @@ const useSockets = () => {
     dispatch(removeAppointment(data.data._id));
     }
   }, [dispatch]);
-
+  const handleCallRequest = useCallback(async (data: { callId: string; caller: string }) => {
+    const response = await Swal.fire({
+      title: "Incoming call",
+      text: "Do you want to accept this call?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Accept",
+      cancelButtonText: "Reject",
+      reverseButtons: true,
+    });
+    if(response.isConfirmed) {
+      sharedSocket?.emit(SOCKET_EVENTS.JOIN_ROOM, {
+        roomId: data.callId,
+        username: user?._id,
+      });
+      const callLink = `/call/${data.callId}`;
+      navigate(callLink);
+    } else {
+      sharedSocket?.emit(SOCKET_EVENTS.REJECT_CALL, {
+        callId: data.callId,
+        rejecter: user?._id,
+      });
+    }
+  }, [navigate, user?._id]);
   const setupSocketListeners = useCallback((socket: Socket) => {
+
+    if (!socket.hasListeners(SOCKET_EVENTS.ROOM_JOINED)) {
+      socket.on(SOCKET_EVENTS.ROOM_JOINED, (data) => {
+        toast.success(`${data.username} has joined the call`)
+      });
+    }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.CALL_REQUEST)) {
+      socket.on(SOCKET_EVENTS.CALL_REQUEST, handleCallRequest);
+    }
+
     if (!socket.hasListeners(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION)) {
       socket.on(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION, handleNewConnectionNotification);
     }
@@ -227,7 +266,7 @@ const useSockets = () => {
         console.log("Disconnected from the socket server.");
       });
     }
-  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentCompletion, handleAppointmentRequestRejection, handleAppointmentAcception, generalNotify]);
+  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentCompletion, handleAppointmentRequestRejection, handleAppointmentAcception, generalNotify, handleCallRequest]);
 
   useEffect(() => {
     const socket = initializeSocket();
