@@ -1,56 +1,70 @@
-import { User } from "@/types/types";
+import axios from "axios";
 import toast from "react-hot-toast";
+import { User } from "@/types/types";
 
 const useUpdate = (url: string) => {
-  
   const updateField = async (user: User) => {
-    console.log("updating user req")
+    const updatedUser = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      about: user.about,
+      gender: user.gender,
+      dateOfBirth: user.dateOfBirth,
+      profilePicture: user.profilePicture,
+      settingPreferences: user.settingPreferences,
+      sharingLink: user.sharingLink,
+    }
     try {
-      console.log("updating user")
-      const response = await fetch(url, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ user }),
-      });
 
-      if (!response.ok) {
-        console.log("response not ok")
-        const errorData = await response.json();
-        toast.error(errorData.message || "Failed to update");
-        throw new Error(errorData.message || "Failed to update");
-      }
-      console.log("response ok")
-      const data = await response.json();
+      const { data } = await axios.patch(
+        url,
+        updatedUser,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
       toast.success("Update successful");
       return data;
     } catch (error) {
       console.error("Update error:", error);
-      toast.error("An unexpected error occurred");
-      throw error;
+
+      const errorMessage = "Failed to update";
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
-  const updatePassword = async (id: string, oldPassword: string, newPassword: string) => {
+  const updatePassword = async (
+    oldPassword: string,
+    newPassword: string
+  ) => {
     try {
-        const response = await fetch(url, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({ id, oldPassword, newPassword }),
-        });
-        if(!response.ok) {
-            const errorData = await response.json();
-            toast.error(errorData.message || "Failed to update password");
-            throw new Error(errorData.message || "Failed to update password");
+      const { data } = await axios.patch(
+        url,
+        {oldPassword, newPassword },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
         }
-        toast.success("Password updated successfully");
+      );
+
+      toast.success("Password updated successfully");
+      return data;
     } catch (error) {
-        console.log("Update password error:", error);
+      console.error("Update password error:", error);
+
+      const errorMessage = "Failed to update password";
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
