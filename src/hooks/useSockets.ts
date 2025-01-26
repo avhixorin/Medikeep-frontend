@@ -146,10 +146,10 @@ const useSockets = () => {
     dispatch(removeAppointment(data.data._id));
     }
   }, [dispatch]);
-  const handleCallRequest = useCallback(async (data: { callId: string; caller: string }) => {
+  const handleCallRequest = useCallback(async (data: { callId: string; from: string, fromId: string }) => {
     const response = await Swal.fire({
       title: "Incoming call",
-      text: "Do you want to accept this call?",
+      text: `Do you want to accept this call from ${data.from}?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Accept",
@@ -159,7 +159,7 @@ const useSockets = () => {
     if(response.isConfirmed) {
       sharedSocket?.emit(SOCKET_EVENTS.JOIN_ROOM, {
         roomId: data.callId,
-        username: user?._id,
+        username: user?.username,
       });
       const callLink = `/call/${data.callId}`;
       navigate(callLink);
@@ -167,9 +167,20 @@ const useSockets = () => {
       sharedSocket?.emit(SOCKET_EVENTS.REJECT_CALL, {
         callId: data.callId,
         rejecter: user?._id,
+        to: data.fromId,
       });
     }
-  }, [navigate, user?._id]);
+  }, [navigate, user?.username, user?._id]);
+
+  const handleCallResponse = useCallback((data: { from: string; response: string }) => {
+    if(data.response === "rejected") {
+      toast.error(`Call rejected by ${data.from}`);
+      navigate("/dashboard/calls");
+    } else {
+      return;
+    }
+  }, [navigate]);
+
   const setupSocketListeners = useCallback((socket: Socket) => {
 
     if (!socket.hasListeners(SOCKET_EVENTS.ROOM_JOINED)) {
@@ -181,6 +192,16 @@ const useSockets = () => {
     if (!socket.hasListeners(SOCKET_EVENTS.CALL_REQUEST)) {
       socket.on(SOCKET_EVENTS.CALL_REQUEST, handleCallRequest);
     }
+
+    if (!socket.hasListeners(SOCKET_EVENTS.CALL_RESPONSE)) {
+      socket.on(SOCKET_EVENTS.CALL_RESPONSE, handleCallResponse);
+    }
+
+    // if (!socket.hasListeners(SOCKET_EVENTS.USER_JOINED)) {
+    //   socket.on(SOCKET_EVENTS.USER_JOINED, (data) => {
+    //     toast.success(data.message);
+    //   });
+    // }
 
     if (!socket.hasListeners(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION)) {
       socket.on(SOCKET_EVENTS.NEW_CONNECTION_NOTIFICATION, handleNewConnectionNotification);
@@ -266,7 +287,7 @@ const useSockets = () => {
         console.log("Disconnected from the socket server.");
       });
     }
-  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentCompletion, handleAppointmentRequestRejection, handleAppointmentAcception, generalNotify, handleCallRequest]);
+  }, [dispatch, handleNewConnectionNotification, handleAcceptConnectionResponse, handleRejectConnectionResponse, handleAcceptedConnection, handleRejectedConnection, handleNewPrivateMessage, handleAppointmentRequestResponse, handleNewAppointmentRequest, handleAppointmentRescheduling, handleAppointmentCancellation, handleAppointmentCompletion, handleAppointmentRequestRejection, handleAppointmentAcception, generalNotify, handleCallRequest, handleCallResponse]);
 
   useEffect(() => {
     const socket = initializeSocket();

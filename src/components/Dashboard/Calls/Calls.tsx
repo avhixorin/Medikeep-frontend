@@ -1,8 +1,10 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import useActiveFriends from "@/hooks/useActiveFriends";
+import useRTC from "@/hooks/useRTC";
 import useSockets from "@/hooks/useSockets";
 import { RootState } from "@/redux/store/store";
 import { Phone, PhoneOff, Video, VideoOff } from "lucide-react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +15,7 @@ const Calls: React.FC = () => {
   const { getUserStatus } = useActiveFriends();
   const user = useSelector((state: RootState) => state.auth.user);
   const { socket } = useSockets();
+  const { createOffer } = useRTC();
   const handleVideoCall = async (friendId: string) => {
     if(getUserStatus(friendId) !== "Active now") {
       toast.error("User is not active now.");
@@ -30,7 +33,7 @@ const Calls: React.FC = () => {
     if (!response.isConfirmed) return;
     const id = uuid();
     const callLink = `/call/${id}`;
-    socket?.emit(SOCKET_EVENTS.MAKE_CALL, {
+    socket?.emit(SOCKET_EVENTS.MAKE_CALL_REQUEST, {
       callId: id,
       callee: friendId,
     });
@@ -55,6 +58,7 @@ const Calls: React.FC = () => {
     const callLink = `/call/${uuid()}`;
     navigate(callLink);
   };
+  
   return (
     <div className="w-full h-full flex flex-col justify-start items-center bg-transparent dark:bg-[#141414] px-4 py-2 gap-4">
       <div className="w-full flex flex-col gap-6">

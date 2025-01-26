@@ -9,22 +9,23 @@ const useRTC = () => {
     audio: true,
     video: { width: 1280, height: 720 },
   });
-  const { socket } = useSockets();
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-
   const servers = useMemo(
     () => ({
       iceServers: [
         {
           urls: [
-            "stun:stun1.l.google.com:19302",
-            "stun:stun2.l.google.com:19302",
+            "stun:stun.l.google.com:19302" ,
+            "stun:global.stun.twilio.com:3478" ,
           ],
         },
       ],
     }),
     []
   );
+  const peer = useMemo(() => new RTCPeerConnection(servers), [servers]);
+  const { socket } = useSockets();
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+
 
   const grabLocalMedia = useCallback(async () => {
     try {
@@ -83,7 +84,8 @@ const useRTC = () => {
     [localStream, grabLocalMedia, socket, servers]
   );
 
-  const createOffer = async (to: string) => {
+  const createOffer = async () => {
+    console.log("Creating offer")
     if (!localStream) {
       console.log(
         "Local stream not initialized. Attempting to grab local media..."
@@ -97,19 +99,14 @@ const useRTC = () => {
       );
     }
 
-    const peerConnection = await createPeerConnection(to);
-    if (!peerConnection) {
-      return;
-    }
+    // const peerConnection = await createPeerConnection(to);
+    // if (!peerConnection) {
+    //   return;
+    // }
 
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-    console.log("Sending offer to:", to);
-    socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
-      type: "offer",
-      offer,
-      to,
-    });
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
+    return offer;
   };
 
   const createAnswer = useCallback(

@@ -15,6 +15,9 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useParams } from "react-router-dom";
+import useSockets from "@/hooks/useSockets";
+import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import toast from "react-hot-toast";
 
 // type HandleScreenProps = {
 //   setIsAppointmentOnline: (value: boolean) => void;
@@ -138,11 +141,25 @@ const CallScreen: React.FC = () => {
     window.addEventListener("touchmove", handleDragMove);
     window.addEventListener("touchend", handleDragEnd);
   };
-
+  const { socket } = useSockets();
   useEffect(() => {
     startMyVideo();
+    socket?.on(SOCKET_EVENTS.USER_JOINED, async (data) => {
+      toast.success(data.message);
+      const offer = await createOffer();
+      socket.emit(SOCKET_EVENTS.VIDEO_CALL, {
+        to: data.data.from,
+        offer,
+      })
+    });
+    socket?.on(SOCKET_EVENTS.VIDEO_CALL_OFFER, (data) => {
+      alert(`Incomming call from ${data.from}`)
+    })
+    return () => {
+      socket?.off(SOCKET_EVENTS.USER_JOINED);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [socket]);
 
   return (
     // <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
@@ -256,7 +273,10 @@ const CallScreen: React.FC = () => {
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <img src={user?.profilePicture} className="w-32 h-32 rounded-full"></img>
+            <img
+              src={user?.profilePicture}
+              className="w-32 h-32 rounded-full"
+            ></img>
           </div>
         )}
 
