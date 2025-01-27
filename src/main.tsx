@@ -12,7 +12,7 @@ import {
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import DashboardAppointmentsPageWrapper from "./components/Dashboard/Appointments/DashboardAppointmentsPageWrapper";
-import CallScreen from "./components/Dashboard/CallScreen/CallScreen";
+import CallScreen from "./components/CallScreen/CallScreen";
 import Calls from "./components/Dashboard/Calls/Calls";
 import DashboardLoadingScreen from "./components/LoadingScreen/DashBoardLoading";
 const SignInPage = lazy(() => import("./components/Sign-In/SignInForm"));

@@ -5,211 +5,166 @@ import { SOCKET_EVENTS } from "@/constants/socketEvents";
 const useRTC = () => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [toId, setToId] = useState<string | null>(null);
   const [constraints, setConstraints] = useState<MediaStreamConstraints>({
     audio: true,
     video: { width: 1280, height: 720 },
   });
+
   const servers = useMemo(
     () => ({
       iceServers: [
         {
-          urls: [
-            "stun:stun.l.google.com:19302" ,
-            "stun:global.stun.twilio.com:3478" ,
-          ],
+          urls: ["stun:stun.l.google.com:19302", "stun:global.stun.twilio.com:3478"],
         },
       ],
     }),
     []
   );
-  const peer = useMemo(() => new RTCPeerConnection(servers), [servers]);
-  const { socket } = useSockets();
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(
+    new RTCPeerConnection(servers)
+  );
+
+  const { socket } = useSockets();
 
   const grabLocalMedia = useCallback(async () => {
     try {
-      console.log(
-        "Attempting to access media devices with constraints:",
-        constraints
-      );
+      console.log("Accessing media devices with constraints:", constraints);
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      console.log("Media stream acquired:", stream);
       setLocalStream(stream);
     } catch (error) {
       console.error("Error accessing media devices:", error);
-      alert(
-        "Could not access your camera and microphone. Please check permissions."
-      );
+      alert("Could not access your camera and microphone. Please check permissions.");
     }
   }, [constraints]);
 
-  const createPeerConnection = useCallback(
-    async (to: string) => {
-      console.log("Creating peer connection with:", to);
-      const peerConnection = new RTCPeerConnection(servers);
-      peerConnection.ontrack = (event) => {
-        setRemoteStream((prevStream) => {
-          console.log("Received remote stream.");
-          const updatedStream = prevStream || new MediaStream();
-          event.streams[0].getTracks().forEach((track) => {
-            updatedStream.addTrack(track);
-          });
-          return updatedStream;
-        });
-      };
+  const createOffer = useCallback(async () => {
+    try {
+      const peer = peerConnectionRef.current;
+      if (!peer) return;
 
-      if (!localStream) {
-        await grabLocalMedia();
-      }
-
-      localStream?.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, localStream);
-      });
-
-      peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          console.log("Sending ICE candidate to:", to);
-          socket?.emit(SOCKET_EVENTS.RTC_EVENT, {
-            type: "candidate",
-            candidate: event.candidate,
-            to,
-          });
-        }
-      };
-
-      peerConnectionRef.current = peerConnection;
-      return peerConnectionRef.current;
-    },
-    [localStream, grabLocalMedia, socket, servers]
-  );
-
-  const createOffer = async () => {
-    console.log("Creating offer")
-    if (!localStream) {
-      console.log(
-        "Local stream not initialized. Attempting to grab local media..."
-      );
-      await grabLocalMedia();
+      console.log("Creating offer...");
+      const offer = await peer.createOffer();
+      await peer.setLocalDescription(offer);
+      return offer;
+    } catch (error) {
+      console.error("Error creating offer:", error);
     }
+  }, []);
 
-    if (!localStream) {
-      throw new Error(
-        "Local stream still not available after attempting to initialize."
-      );
+  const createAnswer = useCallback(async (offer: RTCSessionDescriptionInit) => {
+    try {
+      const peer = peerConnectionRef.current;
+      if (!peer) return;
+
+      console.log("Setting remote description (offer)...");
+      await peer.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await peer.createAnswer();
+      await peer.setLocalDescription(answer);
+      return answer;
+    } catch (error) {
+      console.error("Error creating answer:", error);
     }
-
-    // const peerConnection = await createPeerConnection(to);
-    // if (!peerConnection) {
-    //   return;
-    // }
-
-    const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer);
-    return offer;
-  };
-
-  const createAnswer = useCallback(
-    async (offer: RTCSessionDescriptionInit, from: string) => {
-      try {
-        if (!localStream) await grabLocalMedia();
-        const peerConnection = await createPeerConnection(from);
-        if (!peerConnection) {
-          return;
-        }
-        try {
-          await peerConnection.setRemoteDescription(offer);
-        } catch (error) {
-          console.error("Error setting remote description:", error);
-        }
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-        console.log("Sending answer to:", from);
-        if (socket) {
-          socket.emit(SOCKET_EVENTS.RTC_EVENT, {
-            type: "answer",
-            answer,
-            to: from,
-          });
-        }
-      } catch (error) {
-        console.error("Error while creating or sending the answer:", error);
-      }
-    },
-    [localStream, grabLocalMedia, createPeerConnection, socket]
-  );
+  }, []);
 
   const addAnswer = useCallback(async (answer: RTCSessionDescriptionInit) => {
     try {
-      if (!peerConnectionRef.current?.currentRemoteDescription) {
-        await peerConnectionRef.current?.setRemoteDescription(answer);
-      }
+      const peer = peerConnectionRef.current;
+      if (!peer) return;
+
+      console.log("Adding answer...");
+      await peer.setRemoteDescription(new RTCSessionDescription(answer));
     } catch (error) {
       console.error("Error adding answer:", error);
     }
   }, []);
 
+  const sendStream = useCallback((stream: MediaStream) => {
+    const peer = peerConnectionRef.current;
+    if (!peer) return;
+
+    console.log("Sending stream...");
+    stream.getTracks().forEach((track) => peer.addTrack(track, stream));
+  }, []);
+
+  const handleRemoteStream = useCallback((event: RTCTrackEvent) => {
+    console.log("Receiving remote stream:", event);
+    if (event.streams[0]) setRemoteStream(event.streams[0]);
+  }, []);
+
+  const handleNegotiationNeeded = useCallback(async () => {
+    try {
+      console.log("Negotiation needed...");
+      const offer = await createOffer();
+      if (offer) {
+        socket?.emit(SOCKET_EVENTS.NEGOTIATION_NEEDED, { to: toId, offer });
+      }
+    } catch (error) {
+      console.error("Error handling negotiation:", error);
+    }
+  }, [createOffer, socket, toId]);
+
   const closePeerConnection = useCallback(() => {
-    if (peerConnectionRef.current) {
-      peerConnectionRef.current.close();
+    const peer = peerConnectionRef.current;
+    if (peer) {
+      peer.close();
       peerConnectionRef.current = null;
+      console.log("Peer connection closed.");
+    }
+    setLocalStream(null);
+    setRemoteStream(null);
+  }, []);
+
+  const handleIceCandidate = useCallback((event: RTCPeerConnectionIceEvent) => {
+    if (event.candidate) {
+      console.log("Sending ICE candidate...");
+      socket?.emit(SOCKET_EVENTS.ICE_CANDIDATE, { to: toId, candidate: event.candidate });
+    }
+  }, [socket, toId]);
+
+  const addIceCandidate = useCallback(async (candidate: RTCIceCandidateInit) => {
+    try {
+      const peer = peerConnectionRef.current;
+      if (peer) {
+        console.log("Adding ICE candidate...");
+        console.log("Candidate", candidate)
+        await peer.addIceCandidate(new RTCIceCandidate(candidate));
+      }
+    } catch (error) {
+      console.error("Error adding ICE candidate:", error);
     }
   }, []);
 
   useEffect(() => {
-    const handleRTCEvent = async (data: {
-      type: string;
-      offer?: RTCSessionDescriptionInit;
-      answer?: RTCSessionDescriptionInit;
-      candidate?: RTCIceCandidate;
-      from?: string;
-    }) => {
-      switch (data.type) {
-        case "offer":
-          await createAnswer(data.offer!, data.from!);
-          break;
+    const peer = peerConnectionRef.current;
+    if (!peer) return;
 
-        case "answer":
-          await addAnswer(data.answer!);
-          break;
-
-        case "candidate":
-          if (peerConnectionRef.current) {
-            try {
-              await peerConnectionRef.current.addIceCandidate(data.candidate);
-            } catch (error) {
-              console.error("Error adding ICE candidate:", error);
-            }
-          }
-          break;
-
-        default:
-          console.log(`Unhandled RTC event type: ${data.type}`);
-      }
-    };
-
-    socket?.on(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
+    peer.addEventListener("track", handleRemoteStream);
+    peer.addEventListener("negotiationneeded", handleNegotiationNeeded);
+    peer.addEventListener("icecandidate", handleIceCandidate);
 
     return () => {
-      socket?.off(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
-      closePeerConnection();
+      peer.removeEventListener("track", handleRemoteStream);
+      peer.removeEventListener("negotiationneeded", handleNegotiationNeeded);
+      peer.removeEventListener("icecandidate", handleIceCandidate);
+      // closePeerConnection();
     };
-  }, [socket, createAnswer, addAnswer, closePeerConnection]);
+  }, [handleRemoteStream, handleNegotiationNeeded, handleIceCandidate]);
 
   return {
     localStream,
     remoteStream,
+    setToId,
     grabLocalMedia,
     createOffer,
     createAnswer,
-    setLocalStream,
-    setRemoteStream,
-    constraints,
-    setConstraints,
-    peerConnectionRef,
     addAnswer,
-    createPeerConnection,
+    addIceCandidate,
+    sendStream,
     closePeerConnection,
+    setConstraints,
+    constraints,
   };
 };
 

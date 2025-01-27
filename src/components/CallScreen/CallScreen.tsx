@@ -1,28 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import useRTC from "@/hooks/useRTC";
-import { Appointment } from "@/types/types";
 import {
   Mic,
   MicOff,
   PhoneCall,
   PhoneMissed,
   UserPlus,
-  UserPlus2,
   Video,
   VideoOff,
-  X,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { useParams } from "react-router-dom";
 import useSockets from "@/hooks/useSockets";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import toast from "react-hot-toast";
-
-// type HandleScreenProps = {
-//   setIsAppointmentOnline: (value: boolean) => void;
-//   appointment: Appointment;
-// };
 
 type Position = {
   x: number;
@@ -34,8 +25,8 @@ const CallScreen: React.FC = () => {
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMyVideoActive, setIsMyVideoActive] = useState(false);
-  const { callId } = useParams();
-  const { localStream, remoteStream, grabLocalMedia, createOffer } = useRTC();
+  // const { callId } = useParams();
+  const { localStream, remoteStream, grabLocalMedia, createOffer, createAnswer, addAnswer, sendStream, setToId, addIceCandidate } = useRTC();
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const user = useSelector((state: RootState) => state.auth.user);
@@ -72,24 +63,12 @@ const CallScreen: React.FC = () => {
     setIsMyVideoActive(true);
   };
 
-  const startCall = async () => {
-    if (user?.role === "patient") {
-      setIsCallActive(true);
-      return;
-    }
-    // if (localStream) {
-    //   await createOffer(appointment.patient._id!);
-    //   setIsCallActive(true);
-    // }
-  };
-
   const endCall = () => {
     if (localStream) {
       localStream.getTracks().forEach((track) => track.stop());
     }
     setIsCallActive(false);
     setIsMyVideoActive(false);
-    // setIsAppointmentOnline(false);
   };
   const [localStreamPosition, setLocalStreamPosition] = useState<Position>({
     x: 16,
@@ -147,120 +126,45 @@ const CallScreen: React.FC = () => {
     socket?.on(SOCKET_EVENTS.USER_JOINED, async (data) => {
       toast.success(data.message);
       const offer = await createOffer();
+      setToId(data.data.from);
       socket.emit(SOCKET_EVENTS.VIDEO_CALL, {
         to: data.data.from,
         offer,
+        type: "offer",
       })
     });
-    socket?.on(SOCKET_EVENTS.VIDEO_CALL_OFFER, (data) => {
-      alert(`Incomming call from ${data.from}`)
+    socket?.on(SOCKET_EVENTS.VIDEO_CALL_OFFER, async (data) => {
+      setToId(data.from);
+      const answer = await createAnswer(data.offer);
+      console.log("Answer created:", answer);
+      socket.emit(SOCKET_EVENTS.VIDEO_CALL, { to: data.from, answer, type: "answer" });
     })
+    socket?.on(SOCKET_EVENTS.VIDEO_CALL_ANSWER, async (data) => {
+      console.log("Answer received:", data);
+      await addAnswer(data.answer);
+    })
+    socket?.on(SOCKET_EVENTS.ICE_CANDIDATE, async (data) => {
+      await addIceCandidate(data.candidate);
+    });
+    socket?.on(SOCKET_EVENTS.NEGOTIATION_NEEDED, async (data) => {
+      const answer = await createAnswer(data.offer);
+      socket.emit(SOCKET_EVENTS.NEGOTIATION_DONE, { to: data.from, answer});
+    });
+    socket?.on(SOCKET_EVENTS.NEGOTIATION_FINISHED, async (data) => {
+      await addAnswer(data.answer)
+    });
     return () => {
       socket?.off(SOCKET_EVENTS.USER_JOINED);
+      socket?.off(SOCKET_EVENTS.VIDEO_CALL_OFFER);
+      socket?.off(SOCKET_EVENTS.VIDEO_CALL_ANSWER);
+      socket?.off(SOCKET_EVENTS.ICE_CANDIDATE);
+      socket?.off(SOCKET_EVENTS.NEGOTIATION_NEEDED);
+      socket?.off(SOCKET_EVENTS.NEGOTIATION_FINISHED)
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   return (
-    // <div className="fixed inset-0 w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-2">
-
-    //   <div className="w-full h-full bg-black relative overflow-hidden">
-    //     {isCallActive ? (
-    //       <video
-    //         ref={remoteVideoRef}
-    //         autoPlay
-    //         muted
-    //         className="w-full h-full object-cover"
-    //       />
-    //     ) : (
-    //       <div className="absolute inset-0 flex items-center justify-center">
-    //         <div className="w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 animate-pulse" />
-    //       </div>
-    //     )}
-
-    //     <div
-    //       ref={localStreamRef}
-    //       className="absolute w-48 h-48 bottom-4 right-4 bg-gradient-to-br from-pink-500 to-red-500 rounded-lg overflow-hidden cursor-pointer"
-    //       style={{
-    //         left: `${localStreamPosition.x}px`,
-    //         top: `${localStreamPosition.y}px`,
-    //       }}
-    //       onMouseDown={handleDragStart}
-    //       onTouchStart={handleDragStart}
-    //     >
-    //       {isMyVideoActive ? (
-    //         <video
-    //           ref={localVideoRef}
-    //           autoPlay
-    //           className="w-full h-full object-cover"
-    //         />
-    //       ) : (
-    //         <div className="absolute inset-0 flex items-center justify-center">
-    //           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-red-500 animate-pulse" />
-    //         </div>
-    //       )}
-    //     </div>
-
-    //     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4">
-    //       <button
-    //         onClick={toggleMic}
-    //         className={`${
-    //           isMicOn
-    //             ? "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
-    //             : "bg-red-500 hover:bg-red-600"
-    //         } text-gray-800 dark:text-gray-200 p-3 rounded-full`}
-    //       >
-    //         {isMicOn ? (
-    //           <Mic className="w-6 h-6" />
-    //         ) : (
-    //           <MicOff className="w-6 h-6" />
-    //         )}
-    //       </button>
-
-    //       <button
-    //         onClick={toggleVideo}
-    //         className={`${
-    //           isVideoOn
-    //             ? "bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700"
-    //             : "bg-red-500 hover:bg-red-600"
-    //         } text-gray-800 dark:text-gray-200 p-3 rounded-full`}
-    //       >
-    //         {isVideoOn ? (
-    //           <Video className="w-6 h-6" />
-    //         ) : (
-    //           <VideoOff className="w-6 h-6" />
-    //         )}
-    //       </button>
-
-    //       {isCallActive ? (
-    //         <button
-    //           onClick={endCall}
-    //           className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full flex items-center"
-    //         >
-    //           <PhoneMissed className="w-6 h-6" />
-    //           <span className="ml-2">End Call</span>
-    //         </button>
-    //       ) : (
-    //         <button
-    //           onClick={startCall}
-    //           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full flex items-center"
-    //         >
-    //           <PhoneCall className="w-6 h-6" />
-    //           <span className="ml-2">Start Call</span>
-    //         </button>
-    //       )}
-
-    //       {!isMyVideoActive && (
-    //         <button
-    //           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full"
-    //           onClick={startMyVideo}
-    //         >
-    //           Start my video
-    //         </button>
-    //       )}
-    //     </div>
-    //   </div>
-    // </div>
     <div className="relative w-full h-full bg-black/50 dark:bg-black/80 backdrop-blur-md z-50 flex items-center justify-center">
       <div className="w-full h-full bg-black relative overflow-hidden">
         <AddCall />
@@ -344,7 +248,10 @@ const CallScreen: React.FC = () => {
             </button>
           ) : (
             <button
-              onClick={startCall}
+              onClick={() => {
+                sendStream(localStream!)
+                setIsCallActive(true);
+              }}
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full flex items-center"
             >
               <PhoneCall className="w-6 h-6" />
