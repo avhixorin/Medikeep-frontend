@@ -1,9 +1,9 @@
 import React from 'react';
 const features = [
-  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Stethoscope_ipdsmu.png" alt="Stethoscope" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Consult with Experts', description: 'Book appointments and chat with certified medical professionals.' },
-  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/v1724770946/MedicalFile_jv3hks.png" alt="Medical File" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Manage Your Records', description: 'Keep track of your health records securely and easily.' },
-  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/v1724770945/Alarm_qvcr82.png" alt="Alarm" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Track Appointments', description: 'Never miss an appointment with our easy-to-use scheduling system.' },
-  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Lock_kbjno6.png" alt="Lock" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Secure Data', description: 'Your data is encrypted and securely stored.' }
+  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724770946/Stethoscope_ipdsmu.png" alt="Stethoscope" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Consult with Experts', description: 'Book appointments and chat with certified medical professionals.' },
+  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724770946/MedicalFile_jv3hks.png" alt="Medical File" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Manage Your Records', description: 'Keep track of your health records securely and easily.' },
+  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724770945/Alarm_qvcr82.png" alt="Alarm" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Track Appointments', description: 'Never miss an appointment with our easy-to-use scheduling system.' },
+  { icon: <img src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724770946/Lock_kbjno6.png" alt="Lock" className="h-[5.5rem] w-[5.5rem] mx-auto" />, title: 'Secure Data', description: 'Your data is encrypted and securely stored.' }
 ];
 
 const Features: React.FC = () => {

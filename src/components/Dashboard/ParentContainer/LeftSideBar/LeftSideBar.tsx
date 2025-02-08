@@ -120,7 +120,7 @@ export default function LeftSidebar() {
           onClick={() => navigate("/dashboard")}
         >
           <img
-            src="https://res.cloudinary.com/avhixorin/image/upload/v1726237530/titleIcon_h3ehnu.png"
+            src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1726237530/titleIcon_h3ehnu.png"
             alt="MediKeep Logo"
             className="w-6 object-cover"
           />
