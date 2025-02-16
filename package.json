@@ -57,7 +57,7 @@
     "react-international-phone": "^4.4.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.0.1",
-    "react-switch": "^7.0.0",
+    "react-switch": "^7.1.0",
     "react-tooltip": "^5.28.0",
     "recharts": "^2.14.1",
     "redux-persist": "^6.0.0",
