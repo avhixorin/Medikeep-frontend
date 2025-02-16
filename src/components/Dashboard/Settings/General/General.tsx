@@ -18,6 +18,7 @@ import {
   updateGeneralSettings,
   updateUserFields,
 } from "@/redux/features/authSlice";
+import validator from "validator";
 
 const General = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -94,7 +95,7 @@ const General = () => {
                 <Label>{t("settings.general.photo")}</Label>
                 <div className="mt-2">
                   <img
-                    src={user?.profilePicture}
+                    src={validator.isURL(user?.profilePicture || "") ? user?.profilePicture : ""}
                     alt="Profile"
                     className="h-16 w-16 rounded-full"
                     width={64}
