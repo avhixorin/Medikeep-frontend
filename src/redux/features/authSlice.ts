@@ -63,6 +63,7 @@ const authSlice = createSlice({
     },
     setUserAppointments: (state, action: PayloadAction<Appointment[]>) => {
       if (state.user) {
+        if (!state.user.appointments) state.user.appointments = [];
         state.user.appointments = action.payload;
       }
     },
