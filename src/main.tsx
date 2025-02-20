@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Suspense, lazy } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
@@ -267,5 +268,6 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <>
     <RouterProvider router={router} />
+    <SpeedInsights />
   </>
 );
