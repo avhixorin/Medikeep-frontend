@@ -16,7 +16,7 @@ const Upload: React.FC<UploadProps> = ({ cancelUpload, setUploadClicked }) => {
       >
         <XIcon className="text-neutral-200" />
       </button>
-      <div className="max-w-md w-full rounded-lg border-dotted border-neutral-200 dark:border-neutral-700 p-4">
+      <div className="max-w-md w-full rounded-lg border-2 border-dashed border-neutral-200 dark:border-neutral-700 p-4">
         <FileUpload
           cancelUpload={cancelUpload}
           setUploadClicked={setUploadClicked}
