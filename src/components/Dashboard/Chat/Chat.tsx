@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatCard from "./ChatCard";
-import { Bell, BellDotIcon, MenuIcon, Video, VideoOff } from "lucide-react";
+import { Bell, BellDotIcon, MenuIcon, Send, Video, VideoOff } from "lucide-react";
 import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,12 +18,9 @@ import { User } from "@/types/types";
 import Swal from "sweetalert2";
 import VideoCallScreen from "./VideoCallScreen/VideoCallScreen";
 import toast from "react-hot-toast";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { format } from "date-fns";
+import usePartialUserData from "@/hooks/usePartialUserData";
 const Chat: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -105,6 +102,12 @@ const Chat: React.FC = () => {
       setIsVideoCalling(true);
     }
   };
+  const { fetchPartialUserData } = usePartialUserData();
+  useEffect(() => {
+    if (!user?.connections) {
+      fetchPartialUserData("connections");
+    }
+  }, [fetchPartialUserData, user?.connections]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-6 gap-4">
@@ -211,124 +214,123 @@ const Chat: React.FC = () => {
       </div>
 
       {user?.connections && user?.connections.length > 0 ? (
-  <div className="md:hidden w-full h-full">
-    <Sheet>
-      <SheetTrigger asChild>
-        <button className="w-full text-left">
-          <div className="h-full w-full rounded-t-lg bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
-            {user.connections.map((connUser) => (
-              <ChatCard
-                key={connUser._id}
-                user={connUser}
-                isActive={getUserStatus(connUser._id!) === "Active now"}
-              />
-            ))}
-          </div>
-        </button>
-      </SheetTrigger>
-
-      <SheetContent side="right" className="w-full h-full px-0">
-        <main className="flex flex-col h-full pt-6 w-full dark:bg-[#1e0e1a]">
-          {selectedUser ? (
-            <>
-              <header className="w-full py-3 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200 border-l dark:border-l-slate-700">
-                <div className="flex items-center gap-6">
-                  <img
-                    src={
-                      selectedUser.profilePicture ||
-                      "https://randomuser.me/api/portraits"
-                    }
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <h3 className="font-medium text-lg">
-                    {selectedUser.firstName} {selectedUser.lastName}
-                  </h3>
+        <div className="md:hidden w-full h-full">
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="w-full text-left">
+                <div className="h-full w-full rounded-t-lg bg-white dark:bg-[#1A1A1D] flex flex-col overflow-y-auto scrollbar-webkit">
+                  {user.connections.map((connUser) => (
+                    <ChatCard
+                      key={connUser._id}
+                      user={connUser}
+                      isActive={getUserStatus(connUser._id!) === "Active now"}
+                    />
+                  ))}
                 </div>
-                <div className="flex items-center gap-4">
-                  {getUserStatus(selectedUser._id!) === "Active now" ? (
-                    <button
-                      onClick={handleVideoCall}
-                      className="text-gray-200 p-3 rounded-full"
-                    >
-                      <Video className="w-6 h-6" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        toast.error("User is offline");
-                      }}
-                      className="text-gray-200 p-3 rounded-full"
-                    >
-                      <VideoOff className="w-6 h-6" />
-                    </button>
-                  )}
+              </button>
+            </SheetTrigger>
 
-                  <h3
-                    className={`${
-                      getUserStatus(selectedUser._id!) === "Active now"
-                        ? "text-gray-100"
-                        : "text-gray-300"
-                    }`}
-                  >
-                    {getUserStatus(selectedUser._id!)}
-                  </h3>
-                </div>
-              </header>
+            <SheetContent side="right" className="w-full h-full px-0">
+              <main className="flex flex-col h-full pt-6 w-full dark:bg-[#1e0e1a]">
+                {selectedUser ? (
+                  <>
+                    <header className="w-full py-3 px-4 flex items-center justify-between bg-[#00A884] dark:bg-[#212121] text-slate-200 border-l dark:border-l-slate-700">
+                      <div className="flex items-center gap-6">
+                        <img
+                          src={
+                            selectedUser.profilePicture ||
+                            "https://randomuser.me/api/portraits"
+                          }
+                          alt="Profile"
+                          className="w-10 h-10 rounded-full"
+                        />
+                        <h3 className="font-medium text-lg">
+                          {selectedUser.firstName} {selectedUser.lastName}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        {getUserStatus(selectedUser._id!) === "Active now" ? (
+                          <button
+                            onClick={handleVideoCall}
+                            className="text-gray-200 p-3 rounded-full"
+                          >
+                            <Video className="w-6 h-6" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              toast.error("User is offline");
+                            }}
+                            className="text-gray-200 p-3 rounded-full"
+                          >
+                            <VideoOff className="w-6 h-6" />
+                          </button>
+                        )}
 
-              <div
-                ref={chatContainerRef}
-                className="flex-grow p-4 overflow-y-auto scrollbar-webkit dark:bg-[#1e0e1a]"
-              >
-                {messages.map((msg) => (
-                  <div
-                    key={msg.messageId}
-                    className={`flex ${
-                      msg.sender._id === user?._id
-                        ? "justify-end"
-                        : "justify-start"
-                    } mb-2`}
-                  >
-                    <Bubble currentUserId={user?._id || ""} msg={msg} />
+                        <h3
+                          className={`${
+                            getUserStatus(selectedUser._id!) === "Active now"
+                              ? "text-gray-100"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          {getUserStatus(selectedUser._id!)}
+                        </h3>
+                      </div>
+                    </header>
+
+                    <div
+                      ref={chatContainerRef}
+                      className="flex-grow p-4 overflow-y-auto scrollbar-webkit dark:bg-[#1e0e1a]"
+                    >
+                      {messages.map((msg) => (
+                        <div
+                          key={msg.messageId}
+                          className={`flex ${
+                            msg.sender._id === user?._id
+                              ? "justify-end"
+                              : "justify-start"
+                          } mb-2`}
+                        >
+                          <Bubble currentUserId={user?._id || ""} msg={msg} />
+                        </div>
+                      ))}
+                    </div>
+
+                    <footer className="w-full py-2 px-4 flex justify-between gap-2 border-t-2 dark:border-gray-800 bg-transparent dark:bg-[#0A0A0A]">
+                      <Input
+                        placeholder="Type your message..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="flex-grow bg-transparent text-gray-700 dark:text-gray-200 placeholder-gray-200 border-none outline-none"
+                      />
+                      <button
+                        onClick={handleSendMessage}
+                        className="dark:bg-[#212121] dark:text-gray-200 px-4 rounded-xl flex justify-center items-center"
+                      >
+                        <Send className="w-5 h-5" />
+                      </button>
+                    </footer>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <h1 className="text-base md:text-xl font-semibold text-gray-800 dark:text-gray-200">
+                      Select a user to start chatting
+                    </h1>
                   </div>
-                ))}
-              </div>
-
-              <footer className="w-full py-2 px-4 flex gap-2 border-t-2 dark:border-gray-800 bg-transparent dark:bg-[#0A0A0A]">
-                <Input
-                  placeholder="Type your message..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="flex-grow bg-transparent text-gray-700 dark:text-gray-200 placeholder-gray-200 border-none outline-none"
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  className="dark:bg-[#212121] dark:text-gray-200"
-                >
-                  Send
-                </Button>
-              </footer>
-            </>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <h1 className="text-base md:text-xl font-semibold text-gray-800 dark:text-gray-200">
-                Select a user to start chatting
-              </h1>
-            </div>
-          )}
-        </main>
-      </SheetContent>
-    </Sheet>
-  </div>
-) : (
-  <div className="flex items-center justify-center h-full w-full">
-    <h1 className="text-sm md:text-xl font-semibold text-gray-500 dark:text-gray-200 text-center">
-      No connections found. Add some connections to start chatting.
-    </h1>
-  </div>
-)}
-
+                )}
+              </main>
+            </SheetContent>
+          </Sheet>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center h-full w-full">
+          <h1 className="text-sm md:text-xl font-semibold text-gray-500 dark:text-gray-200 text-center">
+            No connections found. Add some connections to start chatting.
+          </h1>
+        </div>
+      )}
 
       {user?.connections && user?.connections?.length > 0 ? (
         <div className="h-full w-full md:bg-[#fbf1e3] hidden rounded-md md:flex shadow-xl overflow-hidden">
@@ -418,12 +420,12 @@ const Chat: React.FC = () => {
                       onKeyDown={handleKeyDown}
                       className="flex-grow bg-transparent text-gray-700 dark:text-gray-200 placeholder-gray-200 border-none outline-none"
                     />
-                    <Button
+                    <button
                       onClick={handleSendMessage}
-                      className="dark:bg-[#212121] dark:text-gray-200"
+                      className="dark:bg-[#212121] dark:text-gray-200 px-4 rounded-xl flex justify-center items-center"
                     >
-                      Send
-                    </Button>
+                      <Send className="w-5 h-5" />
+                    </button>
                   </footer>
                 </>
               ) : (
