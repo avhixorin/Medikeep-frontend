@@ -24,7 +24,7 @@ export default function About() {
             </div>
             <div className="flex items-center justify-center">
               <img
-                src="https://res.cloudinary.com/avhixorin/image/upload/v1737574912/Essential_-_Doctor_clinic_doctor_consultation_doctor_patient_discussion_bbjw4g.png"
+                src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1737574912/Essential_-_Doctor_clinic_doctor_consultation_doctor_patient_discussion_bbjw4g.png"
                 alt="Doctor and patient consultation"
                 className="object-cover rounded-lg shadow-lg h-3/4"
               />

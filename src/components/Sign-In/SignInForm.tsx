@@ -207,7 +207,7 @@ const SignInForm: React.FC = () => {
         <img
           className="h-[70%] w-[70%] object-contain my-20 mx-auto"
           draggable={false}
-          src="https://res.cloudinary.com/avhixorin/image/upload/v1724779943/Account3DAnimatedIcon-ezgif.com-crop_1_xivavn.gif"
+          src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724779943/Account3DAnimatedIcon-ezgif.com-crop_1_xivavn.gif"
           alt="gif"
         />
       </div>

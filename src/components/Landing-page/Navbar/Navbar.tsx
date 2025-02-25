@@ -37,7 +37,7 @@ const NavBar: React.FC = () => {
     >
       <div className="text-2xl font-bold text-gray-800" onClick={() => scrollToSection("navbar")}>
         <img
-          src="https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Logo_kletrg.png"
+          src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724770946/Logo_kletrg.png"
           alt="logo"
           className="h-5 md:h-10 m-1 hover:cursor-pointer"
           

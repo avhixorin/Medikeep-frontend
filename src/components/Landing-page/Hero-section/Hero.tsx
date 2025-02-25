@@ -46,7 +46,7 @@ const Hero: React.FC = () => {
       <div className="relative hidden w-1/2 px-4 md:block">
         <div className="relative w-full h-full overflow-hidden">
           <motion.img
-            src="https://res.cloudinary.com/avhixorin/image/upload/v1724770945/doctor_hy22hh.png"
+            src="https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724770945/doctor_hy22hh.png"
             alt="doctor"
             className="h-[28rem] relative z-10 mx-auto"
             animate={{ scale: 1, opacity: 1 }}

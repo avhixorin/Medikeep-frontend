@@ -1,6 +1,6 @@
 # 🏥 MediKeep - Healthcare Management System
 
-![MediKeep Logo](https://res.cloudinary.com/avhixorin/image/upload/v1724770946/Logo_kletrg.png)
+![MediKeep Logo](https://res.cloudinary.com/avhixorin/image/upload/f_auto/v1724770946/Logo_kletrg.png)
 
 ## Table of Contents
 - [🏥 MediKeep - Healthcare Management System](#-medikeep---healthcare-management-system)

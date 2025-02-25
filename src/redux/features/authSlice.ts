@@ -151,6 +151,17 @@ const authSlice = createSlice({
         state.user.settingPreferences.notifications[key] = value;
       }
     },
+    setUserAppointments: (state, action: PayloadAction<Appointment[]>) => {
+      console.log("Setting user appointments");
+      if (state.user) {
+        state.user.appointments = action.payload;
+      }
+    },
+    // setUserAppointmentRequests: (state, action: PayloadAction<AppointmentRequests[]>) => {
+    //   if (state.user) {
+    //     state.user.appointmentRequests = action.payload;
+    //   }
+    // },
   },
 });
 
@@ -172,6 +183,7 @@ export const {
   updateGeneralSettings,
   updateSecuritySettings,
   updateNotificationSettings,
+  setUserAppointments,
 } = authSlice.actions;
 
 export default authSlice.reducer;
