@@ -52,7 +52,8 @@ const Step2: React.FC<Step2Props> = ({
               variant="outline"
               className="w-full pl-3 text-left font-normal"
             >
-              {formValues.dateOfBirth ? (
+              {formValues.dateOfBirth &&
+              !isNaN(new Date(formValues.dateOfBirth).getTime()) ? (
                 format(new Date(formValues.dateOfBirth), "dd-MM-yyyy")
               ) : (
                 <span>Pick a date</span>
