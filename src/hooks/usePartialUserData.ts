@@ -6,7 +6,6 @@ const usePartialUserData = () => {
     const url = import.meta.env.VITE_USER_PARTIAL_DATA_URL;
     const dispatch = useDispatch();
     const fetchPartialUserData = async (field: string) => {
-        console.log("The field is: ", field);
         const res = await fetch(url, {
             method: 'POST',
             headers: {
@@ -27,8 +26,6 @@ const usePartialUserData = () => {
             }else{
                 dispatch(updateUserFields({ [field]: data.data[field] }));
             }
-            console.log("The data from the field request is: ", data.data.appointments
-            );
         }else{
             console.log("There was an error fetching the data");
         }
