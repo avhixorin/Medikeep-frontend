@@ -84,9 +84,9 @@ export default function SettingsPage() {
               autoFocus={focused}
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1 text-xs text-muted-foreground">
-              <kbd className="px-1.5 py-0.5 bg-gray-200 rounded">Ctrl</kbd>
+              <kbd className="px-1.5 py-0.5 bg-gray-300 rounded">Ctrl</kbd>
               <span>+</span>
-              <kbd className="px-1.5 py-0.5 bg-gray-200 rounded">K</kbd>
+              <kbd className="px-1.5 py-0.5 bg-gray-300 rounded">K</kbd>
             </div>
           </div>
 
