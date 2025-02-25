@@ -54,10 +54,6 @@ const SignInForm: React.FC = () => {
         if (data.data) {
           dispatch(setAuthUser(data.data));
         }
-        console.log("Access Token: ", data.data.accessToken);
-        console.log("Refresh Token: ", data.data.refreshToken);
-        localStorage.setItem("accessToken", data.data.accessToken);
-        localStorage.setItem("refreshToken", data.data.refreshToken);
         navigate("/dashboard");
       }
     } catch (error: unknown) {
