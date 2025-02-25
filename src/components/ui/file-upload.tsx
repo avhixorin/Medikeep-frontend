@@ -212,7 +212,7 @@ export const FileUpload = ({
               ></motion.div>
             )}
             {selectedFile && (
-              <div className="mt-4 flex justify-between px-4 gap-4 text-center z-[1000]">
+              <div className="mt-4 flex justify-between gap-4 text-center">
                 <Button
                   onClick={cancelUpload}
                   disabled={isUploading}
