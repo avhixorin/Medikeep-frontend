@@ -104,10 +104,10 @@ const Chat: React.FC = () => {
   };
   const { fetchPartialUserData } = usePartialUserData();
   useEffect(() => {
-    if (!user?.connections) {
+    if(!user?.connections){
       fetchPartialUserData("connections");
     }
-  }, [fetchPartialUserData, user?.connections]);
+  }, [fetchPartialUserData, user?.connections])
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-6 gap-4">

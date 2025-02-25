@@ -1,8 +1,8 @@
 import LoadingScreen from "@/components/LoadingScreen/LoadingScreen";
+import usePartialUserData from "@/hooks/usePartialUserData";
 import { RootState } from "@/redux/store/store";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
 const DashboardDoctorAppointmentsPage = lazy(
   () => import("./DoctorsAppointmentDash/DoctorAppointments")
 );
@@ -12,10 +12,12 @@ const DashboardPatientAppointmentsPage = lazy(
 const DashboardAppointmentsPageWrapper = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const role = user?.role;
-
-  if (user === null) {
-    return <Navigate to="/login" replace />;
-  }
+  const { fetchPartialUserData } = usePartialUserData();
+  useEffect(() => {
+    if(!user?.appointments){
+      fetchPartialUserData("appointments");
+    }
+  }, [fetchPartialUserData, user?.appointments])
 
   if (!role) {
     return <LoadingScreen />;
