@@ -114,7 +114,7 @@ const General = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label>{t("settings.general.gender")}</Label>
-                <div>{user?.gender.toUpperCase()}</div>
+                <div>{user?.gender?.toUpperCase()}</div>
               </div>
             </div>
 
