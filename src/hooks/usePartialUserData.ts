@@ -1,10 +1,12 @@
-import { setUserAppointmentRequests, setUserAppointments } from "@/redux/features/authSlice";
+import { setUserAppointmentRequests, setUserAppointments, setUserConnectionRequests, setUserConnections, updateUserFields } from "@/redux/features/authSlice";
+import { setChatHistory } from "@/redux/features/messageSlice";
 import { useDispatch } from "react-redux";
 
 const usePartialUserData = () => {
     const url = import.meta.env.VITE_USER_PARTIAL_DATA_URL;
     const dispatch = useDispatch();
     const fetchPartialUserData = async (field: string) => {
+        console.log("The field is: ", field);
         const res = await fetch(url, {
             method: 'POST',
             headers: {
@@ -16,10 +18,17 @@ const usePartialUserData = () => {
         if(res.ok){
             const data = await res.json();
             if(field === "appointments"){
-                dispatch(setUserAppointments(data.appointments));
-                dispatch(setUserAppointmentRequests(data.appointmentRequests));
+                dispatch(setUserAppointments(data.data.appointments));
+                dispatch(setUserAppointmentRequests(data.data.appointmentRequests));
+            }else if(field === "connections"){
+                dispatch(setUserConnections(data.data.connections));
+                dispatch(setUserConnectionRequests(data.data.connectionRequests));
+                dispatch(setChatHistory(data.data.chatHistory));
+            }else{
+                dispatch(updateUserFields({ [field]: data.data[field] }));
             }
-            console.log("The data from the field request is: ", data);
+            console.log("The data from the field request is: ", data.data.appointments
+            );
         }else{
             console.log("There was an error fetching the data");
         }

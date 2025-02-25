@@ -24,6 +24,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { format } from "date-fns";
+import usePartialUserData from "@/hooks/usePartialUserData";
 const Chat: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -105,6 +106,12 @@ const Chat: React.FC = () => {
       setIsVideoCalling(true);
     }
   };
+  const { fetchPartialUserData } = usePartialUserData();
+  useEffect(() => {
+    if(!user?.connections){
+      fetchPartialUserData("connections");
+    }
+  }, [fetchPartialUserData, user?.connections])
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-6 gap-4">
