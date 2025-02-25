@@ -29,7 +29,6 @@ export type User = {
   yearsOfExperience?: number;
   clinicAffiliation?: string[];
   patients?: string[];
-  acceptedTerms?: boolean;
   consultations?: {
     patientId: string;
     date: Date;

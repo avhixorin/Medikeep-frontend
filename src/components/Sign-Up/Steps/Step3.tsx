@@ -20,9 +20,11 @@ type Step3Props = {
     value: string | boolean | number | Date,
     shouldValidate?: boolean
   ) => Promise<void | FormikErrors<User>>;
+  acceptedTerms: boolean;
+  setAcceptedTerms: (value: boolean) => void;
 };
 
-const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
+const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues, acceptedTerms, setAcceptedTerms }) => {
   return (
     <div className="space-y-6 w-full">
       <div className="grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 gap-6">
@@ -109,13 +111,10 @@ const Step3: React.FC<Step3Props> = ({ formValues, setFieldValues }) => {
         </div>
       </div>
       <div className="flex w-full items-center space-x-2">
-      <Checkbox
-              name="acceptedTerms"
-              checked={formValues.acceptedTerms}
-              onCheckedChange={(checked) => {
-                setFieldValues("acceptedTerms", checked);
-              }}
-            />
+        <Checkbox
+          checked={acceptedTerms}
+          onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+        />
 
         <label
           htmlFor="terms"

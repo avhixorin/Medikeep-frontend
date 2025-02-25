@@ -30,6 +30,8 @@ type Step2Props = {
   ) => Promise<void | FormikErrors<User>>;
   currentStep: number;
   totalSteps: number;
+  acceptedTerms: boolean;
+  setAcceptedTerms: (value: boolean) => void;
 };
 
 const Step2: React.FC<Step2Props> = ({
@@ -38,6 +40,8 @@ const Step2: React.FC<Step2Props> = ({
   isDoctor,
   currentStep,
   totalSteps,
+  acceptedTerms,
+  setAcceptedTerms,
 }) => {
   return (
     <div className="space-y-4 w-full">
@@ -178,13 +182,9 @@ const Step2: React.FC<Step2Props> = ({
           </div>
           <div className="flex w-full items-center space-x-2">
             <Checkbox
-              name="acceptedTerms"
-              checked={formValues.acceptedTerms}
-              onCheckedChange={(checked) => {
-                setFieldValues("acceptedTerms", checked);
-              }}
+              checked={acceptedTerms}
+              onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
             />
-
             <label
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
