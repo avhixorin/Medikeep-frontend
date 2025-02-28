@@ -210,7 +210,7 @@ const DoctorAppointments: React.FC = () => {
         </div>
       </div>
 
-      <div className="mt-6 bg-white dark:bg-[#0A0A0A] rounded-md p-2 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
+      <div className="mt-6 h-full bg-white dark:bg-[#0A0A0A] rounded-md p-2 overflow-y-auto shadow-xl scrollbar-webkit border border-gray-200 dark:border-gray-800">
         {filteredAppointments.length > 0 ? (
           <div className={isMobile ? "space-y-4" : "grid grid-cols-1 gap-2"}>
             {filteredAppointments.map((appointment) =>

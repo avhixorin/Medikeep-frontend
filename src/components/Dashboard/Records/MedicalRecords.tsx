@@ -6,10 +6,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
 
-const MedicalRecords: React.FC = () => {
+const MedicalRecords = () => {
   const medicalHistory = useSelector((state: RootState) => state.auth.user?.medicalHistory);
   return (
-    <Card className="w-full h-full p-6 shadow-md bg-white">
+    <Card className="w-full h-full p-6 shadow-md bg-transparent">
       <CardHeader>
         <CardTitle className="text-lg font-semibold">Patient Medical Records</CardTitle>
       </CardHeader>

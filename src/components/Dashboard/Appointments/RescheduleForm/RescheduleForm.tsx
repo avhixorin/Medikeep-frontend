@@ -43,8 +43,8 @@ export const RescheduleForm: React.FC<RescheduleFormProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow-lg w-full max-w-lg p-6">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 ">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow-lg w-full max-w-lg p-6 border border-neutral-700">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
           Reschedule Appointment
         </h2>
