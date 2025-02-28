@@ -3,8 +3,7 @@ import { Card } from "@/components/ui/card";
 export default function About() {
   return (
     <>
-      <section className="relative px-6 py-16 md:py-28">
-        {/* Green circle decoration */}
+      <section className="relative px-6 py-16 md:py-28 min-h-screen">
         <div className="absolute left-0 bottom-0 w-32 h-32 bg-green-400 rounded-full opacity-20 -translate-x-1/2 translate-y-1/2" />
 
         <div className="container mx-auto">

@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { clearAuthUser } from "@/redux/features/authSlice";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -14,7 +12,6 @@ interface DeletionProp {
 const ConfirmDeletionScreen = ({ onCancel }: DeletionProp) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleAccountDeletion = async () => {
     const result = await Swal.fire({

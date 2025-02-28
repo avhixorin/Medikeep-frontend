@@ -41,7 +41,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, isPopular = false }) =>
   </div>
 )
 
-const Pricing: React.FC = () => {
+const Pricing = () => {
   const plans: Plan[] = [
     {
       name: "Basic",
@@ -75,7 +75,7 @@ const Pricing: React.FC = () => {
   ]
 
   return (
-    <section className="w-full py-12 bg-gradient-to-b from-gray-50 to-white">
+    <section className="w-full py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen flex justify-center items-center" id="pricing">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
         <h2 className="text-[2.6rem] font-helmet font-bold text-center text-gray-800 mb-10">Pricing Plans</h2>

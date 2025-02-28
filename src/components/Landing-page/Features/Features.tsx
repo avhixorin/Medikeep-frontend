@@ -8,7 +8,7 @@ const features = [
 
 const Features: React.FC = () => {
   return (
-    <section className="w-full py-16 bg-gradient-to-l from-white to-slate-200 z-20" id="features">
+    <section className="w-full min-h-screen flex justify-center items-center py-16 bg-gradient-to-l from-white to-slate-200 z-20" id="features">
       <div className="relative z-30 max-w-5xl mx-auto">
         <h2 className="text-[2.6rem] font-helmet font-bold text-center text-gray-800 mb-10">Features That Make a Difference</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">

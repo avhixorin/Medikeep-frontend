@@ -5,9 +5,9 @@
 
 h1 {
   font-family: "IBM Plex Sans Roman", Times;
-  font-weight: 300;
-  font-size: 4rem; /* Tailwind's 6xl size */
-  line-height: 4.5rem; /* Adjust as needed for spacing */
+  font-weight: 900;
+  font-size: 5rem; 
+  line-height: 4.5rem; 
   font-variation-settings: 'wght' 100, 'wdth' 85;
 }
 
@@ -24,14 +24,14 @@ h1 .char {
 @keyframes breathe {
   0% {
     font-variation-settings: 'wght' 100, 'wdth' 85;
-    font-size: 4rem; /* Tailwind's 6xl size */
+    font-size: 5rem; 
   }
   60% {
     font-variation-settings: 'wght' 700, 'wdth' 100;
-    font-size: 4.5rem; /* Slightly larger size for animation effect */
+    font-size: 5.5rem; 
   }
   100% {
     font-variation-settings: 'wght' 100, 'wdth' 85;
-    font-size: 4rem; /* Tailwind's 6xl size */
+    font-size: 5rem; 
   }
 }
