@@ -2,72 +2,32 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import React from "react";
-import Swal from "sweetalert2";
-import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { useNavigate } from "react-router-dom";
 import {
-  clearAuthUser,
   updateSecuritySettings,
 } from "@/redux/features/authSlice";
 import { useTranslation } from "react-i18next";
 import UpdatePasswordScreen from "./UpdatePasswordScreen";
+import ConfirmDeletionScreen from "./ConfirmDeletionScreen";
 
 const Security: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const [confirmedDel, setConfirmedDel] = React.useState(false);
   const [isChangingPassword, setIsChangingPassword] = React.useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const handleAccountDeletion = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "This action is irreversible and will delete your account permanently.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Delete Account",
-      confirmButtonColor: "red",
-      cancelButtonText: "Cancel",
-    });
-    if (result.isConfirmed) {
-      const deleteUrl = import.meta.env.VITE_DELETE_ACCOUNT_URL;
-      try {
-        const res = await fetch(deleteUrl, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ id: user?._id }),
-        });
-        if (!res.ok) {
-          throw new Error("An error occurred while deleting your account");
-        }
-        const data = await res.json();
-        if (data.statusCode === 200) {
-          navigate("/login");
-          dispatch(clearAuthUser());
-          toast.success("Your account has been deleted successfully");
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-          throw error;
-        } else {
-          toast.error("An unexpected error occurred");
-          throw new Error("Unexpected error occurred");
-        }
-      }
-    } else {
-      toast("Your account is safe");
-    }
-  };
+  
   const { t } = useTranslation();
   return (
     <div className="container max-w-screen-lg py-6 bg-transparent">
       {
         isChangingPassword && (
           <UpdatePasswordScreen onClose={setIsChangingPassword} />
+        )
+      }
+      {
+        confirmedDel && (
+          <ConfirmDeletionScreen onCancel={setConfirmedDel} />
         )
       }
       <div className="space-y-6">
@@ -132,7 +92,7 @@ const Security: React.FC = () => {
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={handleAccountDeletion}
+                onClick={() => setConfirmedDel(true)}
               >
                 {t("settings.security.title5")}
               </Button>
