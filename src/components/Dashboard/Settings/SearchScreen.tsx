@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -28,17 +30,36 @@ const SearchItems = [
   {
     title: "settings.navItems.billing",
     href: "/dashboard/settings/billing",
-    items: ["settings.billing.title2", "settings.billing.changePlan", "settings.billing.paymentMethod", "settings.billing.billingHistory", "settings.billing.updatePayment"],
+    items: [
+      "settings.billing.title2",
+      "settings.billing.changePlan",
+      "settings.billing.paymentMethod",
+      "settings.billing.billingHistory",
+      "settings.billing.updatePayment",
+    ],
   },
   {
     title: "settings.navItems.notifications",
     href: "/dashboard/settings/notifications",
-    items: ["settings.notifications.title2", "settings.notifications.title3", "settings.notifications.title4", "settings.notifications.title5", "settings.notifications.title6", "settings.notifications.title7", "settings.notifications.title8"],
+    items: [
+      "settings.notifications.title2",
+      "settings.notifications.title3",
+      "settings.notifications.title4",
+      "settings.notifications.title5",
+      "settings.notifications.title6",
+      "settings.notifications.title7",
+      "settings.notifications.title8",
+    ],
   },
   {
     title: "settings.navItems.sharing",
     href: "/dashboard/settings/sharing",
-    items: ["settings.sharing.title2", "settings.sharing.title3", "settings.sharing.title4", "settings.sharing.sendInvite" ],
+    items: [
+      "settings.sharing.title2",
+      "settings.sharing.title3",
+      "settings.sharing.title4",
+      "settings.sharing.sendInvite",
+    ],
   },
 ];
 
@@ -57,10 +78,17 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ searchText, setSearch }) =>
         t(subItem).toLowerCase().includes(searchText.toLowerCase())
       )
   );
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 dark:text-gray-200 text-gray-700 rounded-lg p-6 shadow-xl w-full max-w-lg max-h-96 overflow-y-auto scrollbar-webkit">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-lg bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-black dark:text-gray-200 text-gray-700 rounded-lg p-6 shadow-xl w-full max-w-lg max-h-96 overflow-y-auto scrollbar-webkit">
+        <Input
+          value={searchText}
+          contentEditable={false}
+          className="focus:ring-0 focus:outline-none bg-gray-100 dark:bg-gray-800 cursor-not-allowed mb-6"
+          disabled
+        />
         <h2 className="text-xl font-bold text-center mb-6">{t("settings.header.searchResults")}</h2>
         {filteredItems.length > 0 ? (
           <ul className="space-y-6">
@@ -90,12 +118,13 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ searchText, setSearch }) =>
             {t("settings.header.noResults")}
           </p>
         )}
-        <button
-          className="mt-6 w-full bg-blue-600 dark:bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600"
+        <Button
+          variant={"secondary"}
+          className="w-full mt-6"
           onClick={() => setSearch("")}
         >
           {t("settings.header.close")}
-        </button>
+        </Button>
       </div>
     </div>
   );
