@@ -25,7 +25,7 @@ const InviteScreen: React.FC<{ onClose: (arg0: boolean) => void }> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-lg bg-opacity-50 flex items-center justify-center">
       <div className="bg-white dark:bg-[#141414] dark:text-gray-200 text-gray-600 rounded-lg p-6 shadow-lg w-80">
         <h2 className="text-lg font-semibold text-center mb-4">
           Invite Your Friends
