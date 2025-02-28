@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import AppointmentForm from "../PatientAppointmentForm";
-import { useNavigate } from "react-router-dom";
 
 const SearchDoctorsForAppointments = ({
   setIsSchedulingAppointment,
@@ -18,7 +17,6 @@ const SearchDoctorsForAppointments = ({
   const [requestedDoctors, setRequestedDoctors] = useState<User>();
   const [isRequesting, setIsRequesting] = useState(false);
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
-  const navigate = useNavigate();
   const doctors = allUsers.filter(
     (user: User) =>
       user.role === "doctor" &&
