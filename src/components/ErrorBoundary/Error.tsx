@@ -10,7 +10,7 @@ const Error: React.FC = () => {
   return (
     <div className="py-10 w-full min-h-[100dvh] flex justify-center items-center">
       <div className="text-center">
-        <p className="text-4xl font-semibold text-red-500 dark:text-red-700">404</p>
+        <p className="text-8xl font-bold text-red-500 dark:text-red-700">404</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-black dark:text-gray-200 sm:text-5xl">
           Page not found
         </h1>
@@ -22,7 +22,7 @@ const Error: React.FC = () => {
           <button
             type="button"
             onClick={handleClick}
-            className="inline-flex items-center px-3 py-2 text-sm font-semibold text-black dark:text-gray-200 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className="inline-flex items-center px-3 py-2 text-sm font-semibold text-black dark:text-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
           >
             <ArrowLeft size={16} className="mr-2" />
             Go back
