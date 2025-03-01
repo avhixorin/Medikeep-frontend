@@ -54,7 +54,7 @@ const PatientAppointments: React.FC = () => {
 
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold text-zinc-700 dark:text-gray-200">
+          <h1 className="text-2xl font-semibold text-black dark:text-gray-200">
             Appointments
           </h1>
         </div>

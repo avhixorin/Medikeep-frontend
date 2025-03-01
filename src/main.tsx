@@ -12,6 +12,7 @@ import {
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import DashboardAppointmentsPageWrapper from "./components/Dashboard/Appointments/DashboardAppointmentsPageWrapper";
+import Test from "./Test";
 const SignInPage = lazy(() => import("./components/Sign-In/SignInForm"));
 const SignUpPage = lazy(() => import("./components/Sign-Up/SignUpForm"));
 const ForgotPasswordPage = lazy(() => import("./components/Forgot/Forget"));
@@ -260,6 +261,7 @@ const router = createBrowserRouter(
           />
         </Route>
       </Route>
+      <Route path="/test" element={<Test />} />
     </Route>
   )
 );

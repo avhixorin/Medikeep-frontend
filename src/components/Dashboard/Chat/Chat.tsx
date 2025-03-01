@@ -128,7 +128,7 @@ const Chat: React.FC = () => {
       <div className="w-full flex flex-col gap-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="max-md:w-full flex justify-between md:justify-normal items-start md:items-center gap-3 relative">
-            <h1 className="text-lg md:text-2xl font-semibold text-zinc-700 dark:text-gray-200">
+            <h1 className="text-lg md:text-2xl font-semibold text-black dark:text-gray-200">
               Connections
             </h1>
             <MenuIcon
@@ -438,13 +438,7 @@ const Chat: React.FC = () => {
             </main>
           </>
         </div>
-      ) : (
-        <div className="flex items-center justify-center h-full w-full">
-          <h1 className="text-sm md:text-xl font-semibold text-gray-500 dark:text-gray-200 text-center">
-            No connections found. Add some connections to start chatting
-          </h1>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 };

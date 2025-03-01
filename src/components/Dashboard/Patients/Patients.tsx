@@ -48,7 +48,7 @@ const Patients: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="w-full min-h-screen bg-transparent flex flex-col items-center px-6 py-4 dark:bg-[#141414]">
+    <div className="w-full h-full bg-transparent flex flex-col items-center px-6 py-4 dark:bg-[#141414]">
       {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {isViewingDetails && selectedPatient && (
         <PatientDetailsCard
@@ -100,13 +100,13 @@ const Patients: React.FC = () => {
           </Button>
         )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-        {patients.length > 0 ? (
-          patients.map((patient, index) => (
-            <Card
-              key={index}
-              className="flex flex-col bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow dark:bg-[#0a0a0a] dark:border dark:border-gray-800"
-            >
+      {patients.length > 0 ? (
+        patients.map((patient, index) => (
+          <div
+            key={index}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full"
+          >
+            <Card className="flex flex-col bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow dark:bg-[#0a0a0a] dark:border dark:border-gray-800">
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <Avatar className="w-16 h-16 border-2 border-blue-500">
@@ -149,13 +149,13 @@ const Patients: React.FC = () => {
                 </Button>
               </CardFooter>
             </Card>
-          ))
-        ) : (
-          <p className="w-full h-full text-center text-gray-500 dark:text-gray-400 grid place-content-center text-xl font-semibold">
-            No patients found.
-          </p>
-        )}
-      </div>
+          </div>
+        ))
+      ) : (
+        <div className="w-full h-full flex justify-center items-center text-gray-500 dark:text-gray-400 text-xl font-semibold">
+          No patients found.
+        </div>
+      )}
     </div>
   );
 };
