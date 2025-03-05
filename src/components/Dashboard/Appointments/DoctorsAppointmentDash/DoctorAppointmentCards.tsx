@@ -205,6 +205,11 @@ export function DocotorAppointmentCardMobile({
               <span className="font-semibold text-xs">Time:</span>
               <span className="ml-2 text-xs">{appointment?.time}</span>
             </div>
+            <div className="flex items-center text-gray-700 dark:text-gray-300">
+              <ClockIcon className="w-3 h-3 mr-1 text-primary" />
+              <span className="font-semibold text-xs">Reason:</span>
+              <span className="ml-2 text-xs">{appointment?.reason}</span>
+            </div>
           </div>
           <div>
             <Button
