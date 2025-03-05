@@ -53,6 +53,8 @@ export enum SOCKET_EVENTS {
   DECLINE_APPOINTMENT_REQUEST = "decline_appointment_request",
   COMPLETED_APPOINTMENT = "completed_appointment",
 
+  ADMIN_HOME_STATS="admin_home_stats",
+
   RTC_EVENT = "rtc_event",
   VIDEO_CALL_REQUEST = "video_call_request",
   VIDEO_CALL_RESPONSE = "video_call_response",
