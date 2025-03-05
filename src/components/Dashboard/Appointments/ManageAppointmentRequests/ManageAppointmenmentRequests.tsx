@@ -2,7 +2,7 @@ import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import useSockets from "@/hooks/useSockets";
 import { RootState } from "@/redux/store/store";
 import { Appointment } from "@/types/types";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
@@ -13,17 +13,33 @@ type ManageAppointmentRequestsProps = {
 const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
   setIsManagingAppointmentRequests,
 }) => {
+  const [isAccepting, setIsAccepting] = useState<boolean>(false);
+  const [isDeclining, setIsDeclining] = useState<boolean>(false);
   const { socket } = useSockets();
 
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const handleAcceptAppointment = (appointment: Appointment) => {
-    socket?.emit(SOCKET_EVENTS.ACCEPT_APPOINTMENT, {
-      appointmentId: appointment._id,
+  const handleAcceptAppointment = async (appointment: Appointment) => {
+  
+    await new Promise<void>((resolve, reject) => {
+      socket?.emit(
+        SOCKET_EVENTS.ACCEPT_APPOINTMENT,
+        { appointmentId: appointment._id },
+        (response: { success: boolean; error?: string }) => {
+          if (response.success) {
+            resolve();
+          } else {
+            reject(new Error(response.error || "Failed to accept appointment"));
+          }
+        }
+      );
     });
+    setIsAccepting(false);
   };
+  
 
   const handleDeclineAppointment = async (appointmentId: string) => {
+    setIsDeclining(true);
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -32,12 +48,14 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, decline it!",
-    })
-    if(result.isConfirmed) {
-    socket?.emit(SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST, {
-      appointmentId,
     });
-    }else{
+    if (result.isConfirmed) {
+      socket?.emit(SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST, {
+        appointmentId,
+      });
+      setIsDeclining(false);
+    } else {
+      setIsDeclining(false);
       return;
     }
   };
@@ -84,19 +102,23 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
                 <div className="flex space-x-3 justify-end">
                   {user.role === "doctor" && (
                     <button
-                      className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
-                      onClick={() => handleAcceptAppointment(request)}
+                      disabled={isAccepting || isDeclining}
+                      className="px-4 py-2 disabled:opacity-50 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                      onClick={() => {
+                        setIsAccepting(true);
+                        handleAcceptAppointment(request)
+                      }}
                     >
-                      Accept
+                      {isAccepting ? "Accepting..." : "Accept"}
                     </button>
                   )}
                   <button
-                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors
+                    className="px-4 py-2 disabled:opacity-50 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors
                     cursor-pointer"
                     onClick={() => handleDeclineAppointment(request._id!)}
-                    disabled={user.role === "patient"}
+                    disabled={user.role === "patient" || isDeclining || isAccepting}
                   >
-                    {user.role === "doctor" ? "Decline Request" : "Requested"}
+                    {user.role === "doctor" ? (isDeclining ? "Declining..." : "Decline Request") : "Requested"}
                   </button>
                 </div>
               </li>
