@@ -40,6 +40,7 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
 
   const handleDeclineAppointment = async (appointmentId: string) => {
     setIsDeclining(true);
+  
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -49,16 +50,33 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, decline it!",
     });
-    if (result.isConfirmed) {
-      socket?.emit(SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST, {
-        appointmentId,
-      });
-      setIsDeclining(false);
-    } else {
+  
+    if (!result.isConfirmed) {
       setIsDeclining(false);
       return;
     }
-  };
+  
+    try {
+      await new Promise<void>((resolve, reject) => {
+        socket?.emit(
+          SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST,
+          { appointmentId },
+          (response: { success: boolean; error?: string }) => {
+            if (response.success) {
+              resolve();
+            } else {
+              reject(new Error(response.error || "Failed to decline appointment"));
+            }
+          }
+        );
+      });
+    } catch (error) {
+      console.error(error);
+      await Swal.fire("Error", (error as Error).message, "error");
+    } finally {
+      setIsDeclining(false);
+    }
+  };  
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md z-50 flex items-center justify-center">
