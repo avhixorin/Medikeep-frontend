@@ -7,10 +7,16 @@ import { RootState } from "@/redux/store/store";
 
 export default function SuperDash() {
   const admin = useSelector((state: RootState) => state.admin.admin);
+  const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
   useEffect(() => {
-    if (!admin) navigate("/verify");
-  }, [admin, navigate]);
+    if (!admin) {
+      navigate("/verify");
+    }
+    else if(user?._id !== import.meta.env.VITE_ADMIN_ID){
+      navigate("/unauthorized")
+    }
+  }, [admin, navigate, user?._id]);
   return (
     <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">
       <LeftSide />

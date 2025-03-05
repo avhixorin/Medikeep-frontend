@@ -1,15 +1,16 @@
+import { RootState } from "@/redux/store/store";
 import {
-  BarChart3,
-  BookOpen,
-  Calendar,
+  CalendarPlus2,
   ChevronRight,
-  Grid,
   Home,
-  LogOut,
-  Star,
+  Hospital,
+  PersonStanding,
+  UsersRound,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const LeftSide = () => {
+  const user = useSelector((state: RootState) => state.auth.user)
   return (
     <div className="col-span-2 border-r border-gray-100 p-4 flex flex-col gap-8 h-screen overflow-y-auto flex-shrink-0">
       <div className="mb-8 flex items-center justify-center gap-2">
@@ -34,39 +35,32 @@ const LeftSide = () => {
           href="#"
           className="flex items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
         >
-          <Grid size={18} />
-          <span>All courses</span>
+          <UsersRound size={18} />
+          <span>All Users</span>
         </a>
         <a
           href="#"
           className="flex items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
         >
-          <Star size={18} />
-          <span>Popular courses</span>
+          <PersonStanding size={18} />
+          <span>Patients</span>
         </a>
         <a
           href="#"
           className="flex items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
         >
-          <Calendar size={18} />
-          <span>Schedule</span>
+          <Hospital size={18} />
+          <span>Doctors</span>
         </a>
         <a
           href="#"
           className="flex items-center justify-between rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
         >
           <div className="flex items-center gap-3">
-            <BookOpen size={18} />
-            <span>My courses</span>
+            <CalendarPlus2 size={18} />
+            <span>Appointments</span>
           </div>
           <ChevronRight size={16} />
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
-        >
-          <BarChart3 size={18} />
-          <span>Statistics</span>
         </a>
       </nav>
 
@@ -74,7 +68,7 @@ const LeftSide = () => {
         <div className="mt-8 flex items-center gap-3 rounded-lg p-3">
           <div className="relative h-10 w-10 overflow-hidden rounded-full">
             <img
-              src="/placeholder.svg?height=40&width=40"
+              src={user?.profilePicture}
               alt="User"
               width={40}
               height={40}
@@ -82,15 +76,15 @@ const LeftSide = () => {
             />
           </div>
           <div>
-            <p className="text-sm font-medium">Volter Anderson</p>
-            <p className="text-xs text-gray-500">Premium plan</p>
+            <p className="text-sm font-medium">{user?.username}</p>
+            <p className="text-xs text-gray-500">Admin</p>
           </div>
         </div>
 
-        <button className="mt-4 flex w-full items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50">
+        {/* <button className="mt-4 flex w-full items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50">
           <LogOut size={18} />
           <span>Log out</span>
-        </button>
+        </button> */}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { resetAllUsers } from "@/redux/features/allUsersSlice";
 import { clearAllMessages } from "@/redux/features/messageSlice";
 import { clearNotifications } from "@/redux/features/notificationsSlice";
 import { clearSelectedUser } from "@/redux/features/selectedUserSlice";
+import { setAdmin } from "@/redux/features/adminSlice";
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,6 +54,9 @@ const SignInForm: React.FC = () => {
         toast.success("Logged in successfully");
         if (data.data) {
           dispatch(setAuthUser(data.data));
+          if(data.data._id === import.meta.env.VITE_ADMIN_ID){
+            dispatch(setAdmin());
+          }
         }
         navigate("/dashboard");
       }
