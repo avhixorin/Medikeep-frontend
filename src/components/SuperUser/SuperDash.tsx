@@ -17,6 +17,7 @@ export default function SuperDash() {
       navigate("/unauthorized")
     }
   }, [admin, navigate, user?._id]);
+  
   return (
     <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">
       <LeftSide />
