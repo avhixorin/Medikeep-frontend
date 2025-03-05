@@ -266,7 +266,7 @@ const router = createBrowserRouter(
           />
         </Route>
       </Route>
-      <Route path="/super" element={<SuperDash />}>
+      <Route path="/admin" element={<SuperDash />}>
         <Route index element={<MainContent />} />
       </Route>
       <Route path="/verify" element={<VerifySuper />} />

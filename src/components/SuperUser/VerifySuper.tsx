@@ -24,16 +24,7 @@ export default function VerifySuper() {
         },
       });
 
-      let data;
-      try {
-        data = await res.json();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        toast.error("Invalid server response");
-        return;
-      }
-
-      console.log("The response is", data);
+      const data = await res.json();
 
       if (res.status !== 200) {
         toast.error(data.message || "Unauthorized");
@@ -42,9 +33,9 @@ export default function VerifySuper() {
 
       toast.success("Verified Successfully");
       dispatch(setAdmin());
-      navigate("/super");
+      navigate("/admin");
     } catch (error) {
-      console.error("The error is", error);
+      console.error("The error is: ", error);
       toast.error(
         error instanceof Error ? error.message : "An unknown error occurred"
       );
