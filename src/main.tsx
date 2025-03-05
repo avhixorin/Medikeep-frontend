@@ -12,6 +12,9 @@ import {
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import DashboardAppointmentsPageWrapper from "./components/Dashboard/Appointments/DashboardAppointmentsPageWrapper";
+import SuperDash from "./components/SuperUser/SuperDash";
+import MainContent from "./components/SuperUser/MainContent";
+import VerifySuper from "./components/SuperUser/VerifySuper";
 import Test from "./Test";
 const SignInPage = lazy(() => import("./components/Sign-In/SignInForm"));
 const SignUpPage = lazy(() => import("./components/Sign-Up/SignUpForm"));
@@ -23,7 +26,9 @@ const UnauthorizedPage = lazy(
 const TermsConditionsPage = lazy(() => import("./components/TnC/TnC"));
 const AboutUsPage = lazy(() => import("./components/AboutUs/About"));
 const ErrorBoundary = lazy(() => import("./components/ErrorBoundary/Error"));
-const SharingProfilePage = lazy(() => import("./components/SharingProfile/SharingProfile"));
+const SharingProfilePage = lazy(
+  () => import("./components/SharingProfile/SharingProfile")
+);
 const DashboardContainer = lazy(
   () => import("./components/Dashboard/ParentContainer/Dashboard")
 );
@@ -261,6 +266,10 @@ const router = createBrowserRouter(
           />
         </Route>
       </Route>
+      <Route path="/super" element={<SuperDash />}>
+        <Route index element={<MainContent />} />
+      </Route>
+      <Route path="/verify" element={<VerifySuper />} />
       <Route path="/test" element={<Test />} />
     </Route>
   )
