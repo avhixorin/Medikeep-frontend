@@ -198,7 +198,7 @@ const OnlineUsers = ({
 }) => (
   <div className="mt-8">
     <div className="mb-4 flex items-center justify-between">
-      <h2 className="text-xl font-bold">Currently online users {}</h2>
+      <h2 className="text-xl font-bold">Currently online users {" "} {"("+ currentlyOnlineUsers.length + ")"}</h2>
       <a
         href="#"
         className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
