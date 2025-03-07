@@ -37,8 +37,8 @@ const LeftSide = () => {
             } flex items-center gap-3 rounded-lg bg-gray-100 p-3 font-medium bg-transparent`
           }
         >
-          <Home size={18} />
-          <span>Home</span>
+          <Home size={22} />
+          <span className="hidden md:block font-medium">Home</span>
         </NavLink>
         <NavLink
           to="/admin/users"
@@ -50,8 +50,8 @@ const LeftSide = () => {
             } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
           }
         >
-          <UsersRound size={18} />
-          <span>All Users</span>
+          <UsersRound size={22} />
+          <span className="hidden md:block font-medium">All Users</span>
         </NavLink>
         <NavLink
           to="/admin/patients"
@@ -63,8 +63,8 @@ const LeftSide = () => {
             } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
           }
         >
-          <PersonStanding size={18} />
-          <span>Patients</span>
+          <PersonStanding size={22} />
+          <span className="hidden md:block font-medium">Patients</span>
         </NavLink>
         <NavLink
           to="/admin/doctors"
@@ -76,8 +76,8 @@ const LeftSide = () => {
             } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
           }
         >
-          <Hospital size={18} />
-          <span>Doctors</span>
+          <Hospital size={22} />
+          <span className="hidden md:block font-medium">Doctors</span>
         </NavLink>
         <NavLink
           to="/admin/allAppoints"
@@ -90,8 +90,8 @@ const LeftSide = () => {
           }
         >
           <div className="flex items-center gap-3">
-            <CalendarPlus2 size={18} />
-            <span>Appointments</span>
+            <CalendarPlus2 size={22} />
+            <span className="hidden md:block font-medium">Appointments</span>
           </div>
           <ChevronRight size={16} />
         </NavLink>
@@ -105,8 +105,8 @@ const LeftSide = () => {
             } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
           }
         >
-          <ArrowBigLeft size={18} />
-          <span>User Dash</span>
+          <ArrowBigLeft size={22} />
+          <span className="hidden md:block font-medium">User Dash</span>
         </NavLink>
       </nav>
 

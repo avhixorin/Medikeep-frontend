@@ -130,10 +130,10 @@ const RecentEvents = ({ homeData }: { homeData: HomeAdminData | null }) => (
     <div className="mb-4 flex items-center justify-between">
       <h2 className="text-xl font-bold">Recent events</h2>
       <div className="flex gap-2">
-        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm hover:bg-gray-50">
+        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-sm hover:bg-gray-50">
           <ChevronLeft size={18} />
         </button>
-        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm hover:bg-gray-50">
+        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-slate-800 shadow-sm hover:bg-gray-50">
           <ChevronRight size={18} />
         </button>
       </div>
