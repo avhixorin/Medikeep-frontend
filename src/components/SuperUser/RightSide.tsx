@@ -2,7 +2,7 @@ import { ChevronDown, ChevronRight, Search } from "lucide-react";
 
 const RightSide = () => {
   return (
-    <div className="col-span-3 border-l border-gray-100 p-4 overflow-y-auto scrollbar-thin scrollbar-webkit">
+    <div className="col-span-3 border-l bg-transparent p-4 overflow-y-auto scrollbar-thin scrollbar-webkit dark:bg-[#0A0A0A]">
       <div className="mb-4 flex items-center justify-between">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />

@@ -58,10 +58,10 @@ const MainContent = () => {
   console.log("This is sicket", socket);
 
   return (
-    <div className="bg-transparent relative w-full pt-6 px-4 md:px-6 lg:px-4 dark:bg-[#141414]">
+    <div className="bg-transparent relative w-full h-full pt-6 px-4 md:px-6 lg:px-4 dark:bg-[#141414]">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Home</h1>
-        <p className="text-gray-500">Welcome back {user?.username} sama!</p>
+        <h1 className="text-2xl font-bold dark:text-slate-200">Home</h1>
+        <p className="text-slate-400">Welcome back {user?.username} sama!</p>
       </div>
 
       <div className="mb-8 flex justify-between">
@@ -114,12 +114,12 @@ const StatCard = ({
   label: string;
   value?: number;
 }) => (
-  <div className="flex items-center gap-3 rounded-lg bg-white py-2 px-2 shadow-sm">
-    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+  <div className="flex items-center gap-3 rounded-lg bg-white dark:bg-slate-800 py-2 px-2 shadow-sm">
+    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-slate-700">
       {icon}
     </div>
     <div>
-      <p className="text-sm text-gray-500">{label}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-300">{label}</p>
       <p className="text-lg font-bold">{value ?? 0}</p>
     </div>
   </div>
@@ -173,7 +173,7 @@ const EventCard = ({
   icon: JSX.Element;
   bgColor: string;
 }) => (
-  <div className="rounded-xl bg-gray-50 p-4">
+  <div className="rounded-xl bg-transparent p-4 dark:bg-[#0A0A0A]">
     <div className="mb-4 flex justify-between">
       <h3 className="font-medium">{title}</h3>
       <div
@@ -203,7 +203,7 @@ const OnlineUsers = ({
       <h2 className="text-xl font-bold">Currently online users {}</h2>
       <a
         href="#"
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+        className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
       >
         See all
         <ChevronRight size={16} />

@@ -19,9 +19,9 @@ export default function SuperDash() {
   }, [admin, navigate, user?._id]);
   
   return (
-    <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">
+    <div className="w-full h-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0A0A0A]">
       <LeftSide />
-      <main className="w-full max-w-5xl overflow-y-auto scrollbar-webkit border border-gray-300 dark:border-gray-700 rounded-md">
+      <main className="w-full h-full max-w-5xl overflow-y-auto scrollbar-webkit border dark:bg-[#141414]">
         <Outlet />
       </main>
       <RightSide />

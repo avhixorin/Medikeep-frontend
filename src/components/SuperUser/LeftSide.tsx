@@ -14,7 +14,7 @@ import { NavLink } from "react-router-dom";
 const LeftSide = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   return (
-    <div className="col-span-2 border-r border-gray-100 p-4 flex flex-col gap-8 h-screen overflow-y-auto flex-shrink-0">
+    <div className="col-span-2 border-r p-4 flex flex-col gap-8 h-screen overflow-y-auto flex-shrink-0 bg-transparent dark:bg-[#0A0A0A]">
       <div className="mb-8 flex items-center justify-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-md ">
           <img
@@ -29,35 +29,65 @@ const LeftSide = () => {
         <NavLink
           to="/admin"
           end
-          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg bg-gray-100 p-3 font-medium`}
+          className={({ isActive }) =>
+            `${
+              isActive
+                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
+            } flex items-center gap-3 rounded-lg bg-gray-100 p-3 font-medium bg-transparent`
+          }
         >
           <Home size={18} />
           <span>Home</span>
         </NavLink>
         <NavLink
           to="/admin/users"
-          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
+          className={({ isActive }) =>
+            `${
+              isActive
+                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
+            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
+          }
         >
           <UsersRound size={18} />
           <span>All Users</span>
         </NavLink>
         <NavLink
           to="/admin/patients"
-          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
+          className={({ isActive }) =>
+            `${
+              isActive
+                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
+            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
+          }
         >
           <PersonStanding size={18} />
           <span>Patients</span>
         </NavLink>
         <NavLink
           to="/admin/doctors"
-          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
+          className={({ isActive }) =>
+            `${
+              isActive
+                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
+            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
+          }
         >
           <Hospital size={18} />
           <span>Doctors</span>
         </NavLink>
         <NavLink
           to="/admin/allAppoints"
-          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
+          className={({ isActive }) =>
+            `${
+              isActive
+                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
+            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
+          }
         >
           <div className="flex items-center gap-3">
             <CalendarPlus2 size={18} />
@@ -67,7 +97,13 @@ const LeftSide = () => {
         </NavLink>
         <NavLink
           to="/dashboard"
-          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
+          className={({ isActive }) =>
+            `${
+              isActive
+                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
+            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
+          }
         >
           <ArrowBigLeft size={18} />
           <span>User Dash</span>
