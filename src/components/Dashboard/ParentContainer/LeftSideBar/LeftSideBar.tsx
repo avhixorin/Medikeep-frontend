@@ -8,7 +8,7 @@ import {
   LogOut,
   HeartPulse,
   User,
-  ShieldCheck
+  ShieldCheck,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 export default function LeftSidebar() {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
-  const admin = useSelector((state: RootState) => state.admin)
+  const admin = useSelector((state: RootState) => state.admin.admin);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -127,7 +127,7 @@ export default function LeftSidebar() {
             className="w-6 object-cover"
           />
           <p className="text-2xl font-bold tracking-wide text-gray-800 hidden md:block dark:text-white">
-          {t(`sidebar.title`)}
+            {t(`sidebar.title`)}
           </p>
         </div>
 
@@ -166,15 +166,13 @@ export default function LeftSidebar() {
               label={t("sidebar.vitals")}
             />
           )}
-          {
-            admin ? (
-              <SidebarLink
-                to="/admin"
-                icon={<ShieldCheck size={24} />}
-                label={"Super Admin"}
-              />
-            ) : null
-          }
+          {admin ? (
+            <SidebarLink
+              to="/admin"
+              icon={<ShieldCheck size={24} />}
+              label={"Super Admin"}
+            />
+          ) : null}
         </nav>
       </div>
 

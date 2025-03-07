@@ -14,7 +14,7 @@ import { resetAllUsers } from "@/redux/features/allUsersSlice";
 import { clearAllMessages } from "@/redux/features/messageSlice";
 import { clearNotifications } from "@/redux/features/notificationsSlice";
 import { clearSelectedUser } from "@/redux/features/selectedUserSlice";
-import { setAdmin } from "@/redux/features/adminSlice";
+import { resetAdmin, setAdmin } from "@/redux/features/adminSlice";
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,6 +74,7 @@ const SignInForm: React.FC = () => {
     dispatch(clearAllMessages());
     dispatch(clearNotifications());
     dispatch(clearSelectedUser());
+    dispatch(resetAdmin());
   }, [dispatch]);
 
   return (
