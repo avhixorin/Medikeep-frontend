@@ -13,9 +13,13 @@ import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import DashboardAppointmentsPageWrapper from "./components/Dashboard/Appointments/DashboardAppointmentsPageWrapper";
 import SuperDash from "./components/SuperUser/SuperDash";
-import MainContent from "./components/SuperUser/MainContent";
+import MainContent from "./components/SuperUser/MainContent/MainContent";
 import VerifySuper from "./components/SuperUser/VerifySuper";
 import Test from "./Test";
+import AllUsers from "./components/SuperUser/AllUsers/AllUsers";
+import Patients from "./components/SuperUser/Patients/Patients";
+import Doctors from "./components/SuperUser/Doctors/Doctors";
+import AllAppoints from "./components/SuperUser/AllAppointments/AllAppoints";
 const SignInPage = lazy(() => import("./components/Sign-In/SignInForm"));
 const SignUpPage = lazy(() => import("./components/Sign-Up/SignUpForm"));
 const ForgotPasswordPage = lazy(() => import("./components/Forgot/Forget"));
@@ -268,6 +272,10 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/admin" element={<SuperDash />}>
         <Route index element={<MainContent />} />
+        <Route path="users" element={<AllUsers />} />
+        <Route path="patients" element={<Patients />} />
+        <Route path="doctors" element={<Doctors />} />
+        <Route path="allAppoints" element={<AllAppoints />} />
       </Route>
       <Route path="/verify" element={<VerifySuper />} />
       <Route path="/test" element={<Test />} />

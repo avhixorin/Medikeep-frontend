@@ -1,5 +1,6 @@
 import { RootState } from "@/redux/store/store";
 import {
+  ArrowBigLeft,
   CalendarPlus2,
   ChevronRight,
   Home,
@@ -8,9 +9,10 @@ import {
   UsersRound,
 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 const LeftSide = () => {
-  const user = useSelector((state: RootState) => state.auth.user)
+  const user = useSelector((state: RootState) => state.auth.user);
   return (
     <div className="col-span-2 border-r border-gray-100 p-4 flex flex-col gap-8 h-screen overflow-y-auto flex-shrink-0">
       <div className="mb-8 flex items-center justify-center gap-2">
@@ -24,44 +26,52 @@ const LeftSide = () => {
       </div>
 
       <nav className="space-y-1">
-        <a
-          href="#"
-          className="flex items-center gap-3 rounded-lg bg-gray-100 p-3 font-medium"
+        <NavLink
+          to="/admin"
+          end
+          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg bg-gray-100 p-3 font-medium`}
         >
           <Home size={18} />
           <span>Home</span>
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
+        </NavLink>
+        <NavLink
+          to="/admin/users"
+          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
         >
           <UsersRound size={18} />
           <span>All Users</span>
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
+        </NavLink>
+        <NavLink
+          to="/admin/patients"
+          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
         >
           <PersonStanding size={18} />
           <span>Patients</span>
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
+        </NavLink>
+        <NavLink
+          to="/admin/doctors"
+          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
         >
           <Hospital size={18} />
           <span>Doctors</span>
-        </a>
-        <a
-          href="#"
-          className="flex items-center justify-between rounded-lg p-3 font-medium text-gray-600 hover:bg-gray-50"
+        </NavLink>
+        <NavLink
+          to="/admin/allAppoints"
+          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
         >
           <div className="flex items-center gap-3">
             <CalendarPlus2 size={18} />
             <span>Appointments</span>
           </div>
           <ChevronRight size={16} />
-        </a>
+        </NavLink>
+        <NavLink
+          to="/dashboard"
+          className={({isActive}) => `${isActive ? "text-black" : "text-gray-600"} flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`}
+        >
+          <ArrowBigLeft size={18} />
+          <span>User Dash</span>
+        </NavLink>
       </nav>
 
       <div className="mt-auto">
