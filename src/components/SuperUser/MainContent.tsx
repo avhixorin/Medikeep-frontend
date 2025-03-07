@@ -1,6 +1,7 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import useSockets from "@/hooks/useSockets";
 import { RootState } from "@/redux/store/store";
+import { User } from "@/types/types";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,7 +11,7 @@ import {
   PersonStanding,
   Plus,
   Signature,
-  User,
+  User as UserIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -23,9 +24,9 @@ type HomeAdminData = {
     appointments: number;
   };
   recent: {
-    login: string;
-    logout: string;
-    signUp: string;
+    login: Partial<User> | null;
+    logout: Partial<User> | null;
+    signUp: Partial<User> | null;
   };
   currentlyOnlineUsers: {
     profilePicture: string;
@@ -46,17 +47,18 @@ const MainContent = () => {
 
   useEffect(() => {
     if (!socket) return;
-
+    fetchAdminStats();
     socket.on(SOCKET_EVENTS.ADMIN_HOME_STATS, (data) => setHomeData(data));
 
-    fetchAdminStats();
     return () => {
       socket.off(SOCKET_EVENTS.ADMIN_HOME_STATS);
     };
-  }, [fetchAdminStats, socket]); 
+  }, [fetchAdminStats, socket]);
+
+  console.log("This is sicket", socket);
 
   return (
-    <div className="bg-transparent w-full pt-6 px-4 md:px-6 lg:px-4 dark:bg-[#141414]">
+    <div className="bg-transparent relative w-full pt-6 px-4 md:px-6 lg:px-4 dark:bg-[#141414]">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Home</h1>
         <p className="text-gray-500">Welcome back {user?.username} sama!</p>
@@ -65,7 +67,7 @@ const MainContent = () => {
       <div className="mb-8 flex justify-between">
         {/* Total Accounts */}
         <StatCard
-          icon={<User size={24} />}
+          icon={<UserIcon size={24} />}
           label="Total accounts"
           value={homeData?.total.accounts}
         />
@@ -112,7 +114,7 @@ const StatCard = ({
   label: string;
   value?: number;
 }) => (
-  <div className="flex items-center gap-3 rounded-lg bg-white px-2 shadow-sm">
+  <div className="flex items-center gap-3 rounded-lg bg-white py-2 px-2 shadow-sm">
     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
       {icon}
     </div>
@@ -167,7 +169,7 @@ const EventCard = ({
   bgColor,
 }: {
   title: string;
-  value?: string;
+  value?: Partial<User> | null;
   icon: JSX.Element;
   bgColor: string;
 }) => (
@@ -180,8 +182,13 @@ const EventCard = ({
         {icon}
       </div>
     </div>
-    <div className="flex items-end justify-between">
-      <h4 className="text-sm font-medium">{value || "N/A"}</h4>
+    <div className="flex items-center justify-between">
+      <h4 className="text-sm font-medium">{value?.username || "N/A"}</h4>
+      <img
+        src={value?.profilePicture}
+        className="w-7 h-7 rounded-full"
+        alt=""
+      />
     </div>
   </div>
 );

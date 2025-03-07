@@ -234,12 +234,13 @@ const useSockets = () => {
 
     if (!socket.connected) {
       socket.connect();
+      console.log("Connected to the socket server:", socket);
       setupSocketListeners(socket);
     }
 
     return () => {
       if (sharedSocket?.connected) {
-        //do not disconnect the socket
+        console.log("did nothing")
       } else {
         sharedSocket?.off();
       }
