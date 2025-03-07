@@ -38,24 +38,22 @@ const MainContent = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const { socket } = useSockets();
   const [homeData, setHomeData] = useState<HomeAdminData | null>(null);
-  console.log(homeData);
-  const fetchAdminStats = useCallback(() => {
+  console.log("Home", homeData);
+  const fetchHomeData = useCallback(() => {
     if (socket) {
-      socket.emit(SOCKET_EVENTS.ADMIN_HOME_STATS);
+      socket.emit(SOCKET_EVENTS.ADMIN_REQUEST, { type: "home" });
     }
   }, [socket]);
 
   useEffect(() => {
     if (!socket) return;
-    fetchAdminStats();
+    fetchHomeData();
     socket.on(SOCKET_EVENTS.ADMIN_HOME_STATS, (data) => setHomeData(data));
 
     return () => {
       socket.off(SOCKET_EVENTS.ADMIN_HOME_STATS);
     };
-  }, [fetchAdminStats, socket]);
-
-  console.log("This is sicket", socket);
+  }, [fetchHomeData, socket]);
 
   return (
     <div className="bg-transparent relative w-full h-full pt-6 px-4 md:px-6 lg:px-4 dark:bg-[#141414]">
