@@ -2,8 +2,9 @@ import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import useSockets from "@/hooks/useSockets";
 import { User } from "@/types/types";
 import { useCallback, useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { DEFAULT_AVATAR } from "@/constants/constVars";
+import { Button } from "@/components/ui/button";
 
 const Patients = () => {
   const [patients, setPatients] = useState<Partial<User>[] | null>(null);
@@ -26,42 +27,77 @@ const Patients = () => {
   }, [fetchPatients, socket]);
 
   return (
-    <div className="w-full h-full p-6 flex flex-col items-center">
-      <h1 className="text-2xl font-semibold mb-4">All Patients</h1>
+    <div className="w-full h-full p-6 flex flex-col">
+      <div className="w-full flex justify-between">
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+          All Users
+        </h1>
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+          {patients?.length} Users Found
+        </h1>
+      </div>
 
-      {/* Show loading skeletons while fetching patients */}
-      {!patients ? (
-        <Skeleton className="w-full h-96 rounded-lg" />
-      ) : patients.length === 0 ? (
-        <p className="text-gray-500">No patients found.</p>
+      {patients?.length === 0 ? (
+        <p className="text-gray-500 dark:text-gray-400 text-center">
+          No users found.
+        </p>
       ) : (
-        <div className="w-full max-w-4xl overflow-x-auto">
-          <Table className="w-full border rounded-lg shadow-lg bg-white dark:bg-slate-800">
-            <TableHeader>
-              <TableRow className="bg-gray-200 dark:bg-slate-700">
-                <TableHead className="p-3">Avatar</TableHead>
-                <TableHead className="p-3">Name</TableHead>
-                <TableHead className="p-3">Email</TableHead>
-                <TableHead className="p-3">Contact</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {patients.map((patient) => (
-                <TableRow key={patient._id} className="border-b hover:bg-gray-100">
-                  <TableCell className="p-3">
-                    <img src={patient.profilePicture || "/default-avatar.png"} alt="Patient Avatar" className="w-10 h-10 rounded-full" />
-                  </TableCell>
-                  <TableCell className="p-3">{patient.username || "N/A"}</TableCell>
-                  <TableCell className="p-3">{patient.email || "N/A"}</TableCell>
-                  <TableCell className="p-3">{patient.phone || "N/A"}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {patients?.map((user) => (
+            <UserCard key={user._id} user={user} />
+          ))}
         </div>
       )}
     </div>
   );
 };
+const UserCard = ({ user }: { user: Partial<User> }) => {
+  return (
+    <Card className="w-full max-w-96 bg-white dark:bg-black rounded-2xl shadow-xl py-2 border border-gray-200 dark:border-gray-700 flex justify-center items-center">
+      <CardContent>
+        <div className="flex items-center gap-4">
+          <img
+            src={user.profilePicture || DEFAULT_AVATAR}
+            alt="User Avatar"
+            className="w-18 h-16 rounded-full"
+          />
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+              {user.firstName} {user.lastName}
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {user.username?.[0] === "@" ? "" : "@"}
+              {user.username}
+            </p>
+          </div>
+        </div>
 
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <div>
+            <p className="text-sm text-gray-600 dark:text-gray-300 overflow-hidden">
+              <span className="font-semibold">Email:</span> {user.email}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="font-semibold">Phone:</span> {user.phone}
+            </p>
+          </div>
+          <div className="w-full flex flex-col justify-evenly items-end">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="font-semibold">Gender:</span> {user.gender}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="font-semibold">Role:</span> {user.role}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all">
+            View Full Details
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 export default Patients;
