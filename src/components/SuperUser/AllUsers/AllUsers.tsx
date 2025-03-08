@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { User } from "@/types/types";
 import { useCallback, useEffect, useState } from "react";
 import { DEFAULT_AVATAR } from "@/constants/constVars";
+import UserDetails from "../UserDetails";
 
 const AllUsers = () => {
   const [allUsers, setAllUsers] = useState<Partial<User>[] | null>(null);
   const { socket } = useSockets();
-
+  const [isViewing, setIsViewing] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<Partial<User> | null>(null);
   const fetchAllUsers = useCallback(() => {
     if (socket) {
       socket.emit(SOCKET_EVENTS.ADMIN_REQUEST, { type: "allUsers" });
@@ -27,7 +29,12 @@ const AllUsers = () => {
   }, [fetchAllUsers, socket]);
 
   return (
-    <div className="w-full h-full p-6 flex flex-col">
+    <div className="w-full h-full p-6 flex flex-col relative">
+      {
+        isViewing && (
+          <UserDetails user={selectedUser!} onClose={setIsViewing} />
+        )
+      }
       <div className="w-full flex justify-between">
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
           All Users
@@ -44,7 +51,7 @@ const AllUsers = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {allUsers?.map((user) => (
-            <UserCard key={user._id} user={user} />
+            <UserCard key={user._id} user={user} setIsViewing={setIsViewing} setSelectedUser={setSelectedUser} />
           ))}
         </div>
       )}
@@ -52,7 +59,7 @@ const AllUsers = () => {
   );
 };
 
-const UserCard = ({ user }: { user: Partial<User> }) => {
+const UserCard = ({ user, setIsViewing, setSelectedUser }: { user: Partial<User>, setIsViewing: (arg0: boolean) => void, setSelectedUser: (user: Partial<User>) => void }) => {
   return (
     <Card className="w-full max-w-96 bg-white dark:bg-black rounded-2xl shadow-xl py-2 border border-gray-200 dark:border-gray-700 flex justify-center items-center">
       <CardContent>
@@ -93,7 +100,12 @@ const UserCard = ({ user }: { user: Partial<User> }) => {
         </div>
 
         <div className="mt-6 flex justify-center">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
+          onClick={() => {
+            setIsViewing(true);
+            setSelectedUser(user);
+          }}
+          >
             View Full Details
           </Button>
         </div>
