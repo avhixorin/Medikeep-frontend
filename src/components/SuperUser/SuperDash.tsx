@@ -12,19 +12,20 @@ export default function SuperDash() {
   useEffect(() => {
     if (!admin) {
       navigate("/verify");
-    }
-    else if(user?._id !== import.meta.env.VITE_ADMIN_ID){
-      navigate("/unauthorized")
+    } else if (user?._id !== import.meta.env.VITE_ADMIN_ID) {
+      navigate("/unauthorized");
     }
   }, [admin, navigate, user?._id]);
-  
+
   return (
     <div className="w-full h-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0A0A0A]">
       <LeftSide />
-      <main className="w-full h-full max-w-5xl overflow-y-auto scrollbar-webkit border dark:bg-[#141414]">
+      <main className="w-full h-full md:max-w-5xl overflow-y-auto scrollbar-webkit border dark:bg-[#141414]">
         <Outlet />
       </main>
-      <RightSide />
+      <div className="w-full max-w-xs border-l bg-transparent p-4 overflow-y-auto scrollbar-thin scrollbar-webkit dark:bg-[#0A0A0A] hidden md:block">
+        <RightSide />
+      </div>
     </div>
   );
 }

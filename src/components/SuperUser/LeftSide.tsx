@@ -2,7 +2,6 @@ import { RootState } from "@/redux/store/store";
 import {
   ArrowBigLeft,
   CalendarPlus2,
-  ChevronRight,
   Home,
   Hospital,
   PersonStanding,
@@ -10,7 +9,38 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-
+const SideNavs = [
+  {
+    toLink: "/admin",
+    icon: <Home size={22} />,
+    text: "Home",
+  },
+  {
+    toLink: "/admin/users",
+    icon: <UsersRound size={22} />,
+    text: "All Users",
+  },
+  {
+    toLink: "/admin/patients",
+    icon: <PersonStanding size={22} />,
+    text: "Patients",
+  },
+  {
+    toLink: "/admin/doctors",
+    icon: <Hospital size={22} />,
+    text: "Doctors",
+  },
+  {
+    toLink: "/admin/allAppoints",
+    icon: <CalendarPlus2 size={22} />,
+    text: "Appointments",
+  },
+  {
+    toLink: "/dashboard",
+    icon: <ArrowBigLeft size={22} />,
+    text: "User Dash",
+  },
+];
 const LeftSide = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   return (
@@ -22,92 +52,19 @@ const LeftSide = () => {
             alt=""
           />
         </div>
-        <h1 className="text-3xl font-bold">MediKeep</h1>
+
+        <h1 className="text-3xl font-bold md:block hidden">MediKeep</h1>
       </div>
 
       <nav className="space-y-1">
-        <NavLink
-          to="/admin"
-          end
-          className={({ isActive }) =>
-            `${
-              isActive
-                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
-            } flex items-center gap-3 rounded-lg bg-gray-100 p-3 font-medium bg-transparent`
-          }
-        >
-          <Home size={22} />
-          <span className="hidden md:block font-medium">Home</span>
-        </NavLink>
-        <NavLink
-          to="/admin/users"
-          className={({ isActive }) =>
-            `${
-              isActive
-                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
-            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
-          }
-        >
-          <UsersRound size={22} />
-          <span className="hidden md:block font-medium">All Users</span>
-        </NavLink>
-        <NavLink
-          to="/admin/patients"
-          className={({ isActive }) =>
-            `${
-              isActive
-                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
-            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
-          }
-        >
-          <PersonStanding size={22} />
-          <span className="hidden md:block font-medium">Patients</span>
-        </NavLink>
-        <NavLink
-          to="/admin/doctors"
-          className={({ isActive }) =>
-            `${
-              isActive
-                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
-            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
-          }
-        >
-          <Hospital size={22} />
-          <span className="hidden md:block font-medium">Doctors</span>
-        </NavLink>
-        <NavLink
-          to="/admin/allAppoints"
-          className={({ isActive }) =>
-            `${
-              isActive
-                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
-            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
-          }
-        >
-          <div className="flex items-center gap-3">
-            <CalendarPlus2 size={22} />
-            <span className="hidden md:block font-medium">Appointments</span>
-          </div>
-          <ChevronRight size={16} />
-        </NavLink>
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) =>
-            `${
-              isActive
-                ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
-            } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
-          }
-        >
-          <ArrowBigLeft size={22} />
-          <span className="hidden md:block font-medium">User Dash</span>
-        </NavLink>
+        {SideNavs.map((navLink, i) => (
+          <SideLink
+            key={i}
+            toLink={navLink.toLink}
+            icon={navLink.icon}
+            text={navLink.text}
+          />
+        ))}
       </nav>
 
       <div className="mt-auto">
@@ -121,7 +78,7 @@ const LeftSide = () => {
               className="object-cover"
             />
           </div>
-          <div>
+          <div className="md:block hidden">
             <p className="text-sm font-medium">{user?.username}</p>
             <p className="text-xs text-gray-500">Admin</p>
           </div>
@@ -135,5 +92,29 @@ const LeftSide = () => {
     </div>
   );
 };
-
+const SideLink = ({
+  toLink,
+  icon,
+  text,
+}: {
+  toLink: string;
+  icon: React.ReactNode;
+  text: string;
+}) => {
+  return (
+    <NavLink
+      to={toLink}
+      className={({ isActive }) =>
+        `${
+          isActive
+            ? "text-gray-800 bg-gray-200 dark:bg-transparent dark:text-gray-100"
+            : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-transparent dark:hover:text-gray-300"
+        } flex items-center gap-3 rounded-lg p-3 font-medium  hover:bg-gray-50`
+      }
+    >
+      {icon}
+      <span className="hidden md:block font-medium">{text}</span>
+    </NavLink>
+  );
+};
 export default LeftSide;
