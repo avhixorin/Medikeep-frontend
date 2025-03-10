@@ -33,7 +33,7 @@ const AllAppointments = () => {
     if (!socket) return;
     fetchAllAppointments();
     socket.on(SOCKET_EVENTS.ADMIN_APPOINTMENTS, (data) =>
-      setAppointments(data)
+      setAppointments([...data].reverse())
     );
 
     return () => {
