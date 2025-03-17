@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatCard from "./ChatCard";
-import { Bell, BellDotIcon, MenuIcon, Send, Video, VideoOff } from "lucide-react";
+import {
+  Bell,
+  BellDotIcon,
+  MenuIcon,
+  Send,
+  Video,
+  VideoOff,
+} from "lucide-react";
 import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,6 +28,7 @@ import toast from "react-hot-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { format } from "date-fns";
 import usePartialUserData from "@/hooks/usePartialUserData";
+import styled from "styled-components";
 const Chat: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -104,10 +112,10 @@ const Chat: React.FC = () => {
   };
   const { fetchPartialUserData } = usePartialUserData();
   useEffect(() => {
-    if(!user?.connections){
+    if (!user?.connections) {
       fetchPartialUserData("connections");
     }
-  }, [fetchPartialUserData, user?.connections])
+  }, [fetchPartialUserData, user?.connections]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-transparent dark:bg-[#141414] p-6 gap-4">
@@ -131,17 +139,32 @@ const Chat: React.FC = () => {
             <h1 className="text-lg md:text-2xl font-semibold text-black dark:text-gray-200">
               Connections
             </h1>
-            <MenuIcon
-              className="md:hidden cursor-pointer"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            />
+            <div className="md:hidden z-50 cursor-pointer">
+              <StyledWrapper>
+                <label className="hamburger">
+                  <input
+                    type="checkbox"
+                    checked={isMenuOpen}
+                    onChange={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label="Toggle Menu"
+                  />
+                  <svg viewBox="0 0 32 32">
+                    <path
+                      className="line line-top-bottom"
+                      d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+                    />
+                    <path className="line" d="M7 16 27 16" />
+                  </svg>
+                </label>
+              </StyledWrapper>
+            </div>
             <div
-              className={`absolute top-12 right-0 bg-white dark:bg-[#1A1A1D] shadow-xl rounded-md p-2 w-48 transition-transform text-sm flex flex-col justify-evenly items-center space-y-2 duration-300 ${
-                isMenuOpen ? "scale-100" : "scale-0"
-              }`}
+              className={`fixed top-0 right-0 w-1/2 h-full max-w-sm bg-black text-white shadow-lg flex flex-col justify-center rounded-bl-2xl transform ${
+                isMenuOpen ? "translate-x-0" : "translate-x-full"
+              } transition-transform duration-300 ease-in-out z-40`}
             >
               <button
-                className="w-full dark:text-white text-black"
+                className="w-full py-3 text-lg font-medium text-white transition"
                 onClick={() => {
                   setIsManagingConnections(true);
                   setIsMenuOpen(false);
@@ -150,7 +173,7 @@ const Chat: React.FC = () => {
                 Manage Requests
               </button>
               <button
-                className="w-full dark:text-white text-black"
+                className="w-full py-3 text-lg font-medium text-white transition"
                 onClick={() => {
                   setIsSearching(true);
                   setIsMenuOpen(false);
@@ -159,7 +182,7 @@ const Chat: React.FC = () => {
                 Add Connection
               </button>
               <button
-                className="w-full dark:text-white text-black"
+                className="w-full py-3 text-lg font-medium text-white transition"
                 onClick={() => {
                   setIsOpen(true);
                   setIsMenuOpen(false);
@@ -168,6 +191,14 @@ const Chat: React.FC = () => {
                 Notifications
               </button>
             </div>
+
+            {isMenuOpen && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-40 z-30"
+                onClick={() => setIsMenuOpen(false)}
+                aria-label="Close menu overlay"
+              />
+            )}
           </div>
           <div className="hidden md:flex items-center gap-4">
             <Button
@@ -442,5 +473,43 @@ const Chat: React.FC = () => {
     </div>
   );
 };
+
+const StyledWrapper = styled.div`
+  .hamburger {
+    cursor: pointer;
+  }
+
+  .hamburger input {
+    display: none;
+  }
+
+  .hamburger svg {
+    height: 2.5em;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .line {
+    fill: none;
+    stroke: white;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 3;
+    transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+      stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .line-top-bottom {
+    stroke-dasharray: 12 63;
+  }
+
+  .hamburger input:checked + svg {
+    transform: rotate(-45deg);
+  }
+
+  .hamburger input:checked + svg .line-top-bottom {
+    stroke-dasharray: 20 300;
+    stroke-dashoffset: -32.42;
+  }
+`;
 
 export default Chat;
