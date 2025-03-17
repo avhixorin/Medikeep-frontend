@@ -4,7 +4,6 @@ import {
   Bell,
   BellDotIcon,
   CalendarIcon,
-  MenuIcon,
   SearchIcon,
   X,
 } from "lucide-react";
