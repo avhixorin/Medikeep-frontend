@@ -3,7 +3,6 @@ import ChatCard from "./ChatCard";
 import {
   Bell,
   BellDotIcon,
-  MenuIcon,
   Send,
   Video,
   VideoOff,
