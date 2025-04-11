@@ -23,7 +23,7 @@ const useSubmitForm = () => {
       }
 
       toast.success("User registered successfully");
-      navigate("/login");
+      navigate("/verify-email");
 
       return response.json();
     } catch (error) {
