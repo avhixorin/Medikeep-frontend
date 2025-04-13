@@ -16,16 +16,14 @@ const useSubmitForm = () => {
         },
         body: JSON.stringify(formData),
       });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage || "Something went wrong");
+      
+      const data = await response.json();
+      if (data.status === "success") {
+        toast.success("User registered successfully");
+        navigate("/login");
+      }else{
+        toast.error(data.message || "An error occurred");
       }
-
-      toast.success("User registered successfully");
-      navigate("/verify-email");
-
-      return response.json();
     } catch (error) {
       console.error(error);
       toast.error(error instanceof Error ? error.message : "An error occurred");

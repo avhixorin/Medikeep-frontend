@@ -32,8 +32,7 @@ const DashboardAppointmentsPageWrapper = lazy(
 
 const SignInPage = lazy(() => import("../components/Sign-In/SignInForm"));
 const SignUpPage = lazy(() => import("../components/Sign-Up/SignUpForm"));
-const VerifyEmail = lazy(
-  () => import("../components/VerifyEmail/VerifyEmail"));
+// const VerifyEmailPage = lazy(() => import("@/components/Sign-Up/Steps/OtpForm"))
 const ForgotPasswordPage = lazy(() => import("../components/Forgot/Forget"));
 const LandingPage = lazy(
   () => import("../components/Landing-page/LandingPage")
@@ -147,14 +146,14 @@ const router = createBrowserRouter(
           </Suspense>
         }
       />
-      <Route
+      {/* <Route
         path="verify-email"
         element={
           <Suspense fallback={<LoadingScreen />}>
-            <VerifyEmail />
+            <VerifyEmailPage />
           </Suspense>
         }
-      />
+      /> */}
       <Route
         path="forgot"
         element={

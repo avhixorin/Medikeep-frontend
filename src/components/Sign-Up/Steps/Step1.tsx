@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch";
 
 type Step1Props = {
   isDoctor: string;
+  setSecretMail: (value: string) => void;
   setFieldValues: (
     field: string,
     value: string | boolean | number | Date,
@@ -16,6 +17,7 @@ type Step1Props = {
 
 const Step1: React.FC<Step1Props> = ({
   setFieldValues,
+  setSecretMail,
   isDoctor,
   handleRoleChange,
 }) => {
@@ -93,9 +95,10 @@ const Step1: React.FC<Step1Props> = ({
           name="email"
           as={Input}
           placeholder="johndoe@example.com"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFieldValues("email", e.target.value)
-          }
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setFieldValues("email", e.target.value);
+            setSecretMail(e.target.value);
+          }}
         />
         <ErrorMessage
           name="email"
