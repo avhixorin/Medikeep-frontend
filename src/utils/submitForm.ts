@@ -18,7 +18,8 @@ const useSubmitForm = () => {
       });
       
       const data = await response.json();
-      if (data.status === "success") {
+      console.log("Signup response:", data);
+      if (data.success) {
         toast.success("User registered successfully");
         navigate("/login");
       }else{

@@ -169,6 +169,10 @@ const SignUpA: React.FC = () => {
       toast.error("Please accept the terms and conditions");
       return;
     }
+    if(!isEmailVerified) {
+      toast.error("Please verify your email before submitting");
+      return;
+    }
     setSubmitting(true);
     dispatch(updateUserFields(values));
     await submitForm(values);
@@ -249,6 +253,7 @@ const SignUpA: React.FC = () => {
                     setSecretMail={setSecretMail}
                     setFieldValues={setFieldValue}
                     handleRoleChange={handleRoleChange}
+                    formValues={values}
                   />
                 )}
                 {currentStep === 2 && (
