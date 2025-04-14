@@ -3,22 +3,31 @@ import { Input } from "@/components/ui/input";
 import { User } from "@/types/types";
 import React from "react";
 import { Switch } from "@/components/ui/switch";
+import useCheckAvailability from "@/hooks/useCheckAvailability";
 
 type Step1Props = {
   isDoctor: string;
+  setSecretMail: (value: string) => void;
   setFieldValues: (
     field: string,
     value: string | boolean | number | Date,
     shouldValidate?: boolean
   ) => Promise<void | FormikErrors<User>>;
   handleRoleChange: (role: string) => void;
+  formValues: User;
 };
 
 const Step1: React.FC<Step1Props> = ({
   setFieldValues,
+  setSecretMail,
   isDoctor,
   handleRoleChange,
+  formValues,
 }) => {
+  const { usernameExists, emailExists } = useCheckAvailability(
+    formValues.username,
+    formValues.email
+  );
   return (
     <div className="w-full space-y-8">
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
@@ -93,10 +102,15 @@ const Step1: React.FC<Step1Props> = ({
           name="email"
           as={Input}
           placeholder="johndoe@example.com"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFieldValues("email", e.target.value)
-          }
+          className={emailExists ? "border-red-500" : ""}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setFieldValues("email", e.target.value);
+            setSecretMail(e.target.value);
+          }}
         />
+        {emailExists && (
+          <p className="text-red-500 text-sm">Email already in use 😔</p>
+        )}
         <ErrorMessage
           name="email"
           component="div"
@@ -112,10 +126,14 @@ const Step1: React.FC<Step1Props> = ({
           name="username"
           as={Input}
           placeholder="@johndoe"
+          className={usernameExists ? "border-red-500" : ""}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setFieldValues("username", e.target.value)
           }
         />
+        {usernameExists && (
+          <p className="text-red-500 text-sm">Username is taken 😬</p>
+        )}
         <ErrorMessage
           name="username"
           component="div"

@@ -14,6 +14,8 @@ import { User } from "@/types/types";
 import useSubmitForm from "@/utils/submitForm";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import OTPForm from "./Steps/OtpForm";
+import { setEmailStatus, storeFormData } from "@/utils/indexedDb";
 
 const initialFormValues: User = {
   role: "patient",
@@ -31,33 +33,13 @@ const initialFormValues: User = {
   yearsOfExperience: 0,
 };
 
-const validationSchema = Yup.object().shape({
-  role: Yup.string().required("Role is required"),
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  dateOfBirth: Yup.date()
-    .required("Date of Birth is required")
-    .max(new Date(), "Date cannot be in the future"),
-  gender: Yup.string().required("Gender is required"),
-  phone: Yup.string()
-    .matches(/^\d{10}$/, "Invalid phone number")
-    .required("Phone number is required"),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Confirm password is required"),
-});
-
 const Sidebar: React.FC<{
   currentSlide: number;
   setCurrentSlide: (index: number) => void;
 }> = ({ currentSlide, setCurrentSlide }) => (
-  <aside className="hidden md:flex flex-col justify-center items-center w-full md:w-1/2 bg-gradient-to-t from-pink-400 via-light-blue-300 to-purple-600 text-white">
+  <aside className="hidden md:flex flex-col justify-center items-center w-full md:w-1/2 bg-gradient-to-t from-pink-400 via-light-blue-300 to-purple-600 text-white rounded-l-lg">
     <div className="h-full w-full flex items-center justify-center">
-      <div className="w-full h-full mx-auto bg-[#4339F2] rounded-lg shadow-lg p-8 text-white">
+      <div className="w-full h-full mx-auto bg-[#4339F2] rounded-l-lg shadow-lg p-8 text-white">
         <header className="mb-8">
           <h2 className="text-2xl font-semibold tracking-wide">MediKeep</h2>
         </header>
@@ -140,33 +122,84 @@ const ProgressIndicator: React.FC<{
 
 const SignUpA: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDoctor, setIsDoctor] = useState("No");
   const dispatch = useDispatch();
+  const { submitForm } = useSubmitForm();
+  const [secretMail, setSecretMail] = useState("");
+  const totalSteps = isDoctor === "Yes" ? 3 : 2;
+
+  const validationSchema = Yup.object().shape({
+    role: Yup.string().required("Role is required"),
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Last name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    dateOfBirth: Yup.date()
+      .required("Date of Birth is required")
+      .max(new Date(), "Date cannot be in the future"),
+    gender: Yup.string().required("Gender is required"),
+    phone: Yup.string()
+      .matches(/^\d{10}$/, "Invalid phone number")
+      .required("Phone number is required"),
+    password: Yup.string()
+      .min(8, "Password must be at least 8 characters")
+      .required("Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password")], "Passwords must match")
+      .required("Confirm password is required"),
+    ...(isDoctor === "Yes" && {
+      medicalLicenseNumber: Yup.string().required("License is required"),
+      specialization: Yup.string().required("Specialization is required"),
+      yearsOfExperience: Yup.number()
+        .min(0, "Experience cannot be negative")
+        .required("Experience is required"),
+    }),
+  });
 
   const handleRoleChange = (selectedRole: string) => {
     setIsDoctor(selectedRole);
   };
-  const { submitForm } = useSubmitForm();
-  const handleFormSubmit = async (values: User, totalSteps: number) => {
+
+  const handleFormSubmit = async (values: User) => {
     if (!acceptedTerms) {
       toast.error("Please accept the terms and conditions");
       return;
     }
+    if(!isEmailVerified) {
+      toast.error("Please verify your email before submitting");
+      return;
+    }
     setSubmitting(true);
-    if (currentStep === totalSteps) {
-      dispatch(updateUserFields(values));
-      await submitForm(values);
-      setSubmitting(false);
-    } else {
-      await submitForm(values);
-      setSubmitting(false);
+    dispatch(updateUserFields(values));
+    await submitForm(values);
+    setSubmitting(false);
+  };
+  const setOtp = async (email: string) => {
+    try {
+      const response = await fetch(import.meta.env.VITE_SEND_OTP_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to send OTP. Please try again.");
+      }
+      toast.success("OTP sent successfully");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "An error occurred");
     }
   };
-
+  const initializeEmailStatus = async () => {
+    await setEmailStatus(false);
+  };
   useEffect(() => {
+    initializeEmailStatus();
     const interval = setInterval(() => {
       setCurrentSlide((prev) =>
         prev === testimonials.length - 1 ? 0 : prev + 1
@@ -176,7 +209,14 @@ const SignUpA: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen px-6 py-8 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center overflow-hidden">
+    <div className="flex min-h-screen px-6 py-8 bg-gradient-to-l from-blue-200 via-green-200 to-yellow-200 justify-center items-center overflow-hidden relative">
+      {isVerifyingOtp && (
+        <OTPForm
+          toggleOTPForm={() => setIsVerifyingOtp(false)}
+          mail={secretMail}
+          setIsEmailVerified={setIsEmailVerified}
+        />
+      )}
       <div className="w-full max-w-6xl min-h-[480px] bg-white rounded-xl shadow-lg flex flex-col md:flex-row">
         <Sidebar
           currentSlide={currentSlide}
@@ -185,7 +225,7 @@ const SignUpA: React.FC = () => {
         <main className="flex-1 p-8">
           <ProgressIndicator
             currentStep={currentStep}
-            totalSteps={isDoctor === "Yes" ? 3 : 2}
+            totalSteps={totalSteps}
           />
 
           <div className="text-center mb-6 w-full flex justify-end">
@@ -203,17 +243,17 @@ const SignUpA: React.FC = () => {
           <Formik
             initialValues={initialFormValues}
             validationSchema={validationSchema}
-            onSubmit={(values) =>
-              handleFormSubmit(values, isDoctor === "Yes" ? 3 : 2)
-            }
+            onSubmit={handleFormSubmit}
           >
             {({ values, setFieldValue }) => (
               <Form className="flex flex-col items-center h-full w-full space-y-6">
                 {currentStep === 1 && (
                   <Step1
                     isDoctor={isDoctor}
+                    setSecretMail={setSecretMail}
                     setFieldValues={setFieldValue}
                     handleRoleChange={handleRoleChange}
+                    formValues={values}
                   />
                 )}
                 {currentStep === 2 && (
@@ -222,7 +262,7 @@ const SignUpA: React.FC = () => {
                     isDoctor={isDoctor}
                     setFieldValues={setFieldValue}
                     currentStep={currentStep}
-                    totalSteps={isDoctor === "Yes" ? 3 : 2}
+                    totalSteps={totalSteps}
                     acceptedTerms={acceptedTerms}
                     setAcceptedTerms={setAcceptedTerms}
                   />
@@ -247,30 +287,38 @@ const SignUpA: React.FC = () => {
                   >
                     Back
                   </Button>
-                  <Button
-                    type={
-                      currentStep === (isDoctor === "Yes" ? 3 : 2)
-                        ? "submit"
-                        : "button"
-                    }
-                    disabled={submitting}
-                    onClick={(e) => {
-                      if (currentStep === (isDoctor === "Yes" ? 3 : 2)) {
-                        return;
+
+                  {currentStep < totalSteps ? (
+                    <Button
+                      type="button"
+                      disabled={submitting}
+                      onClick={() =>
+                        setCurrentStep((prev) => Math.max(prev + 1, 1))
                       }
-                      e.preventDefault();
-                      setCurrentStep((prev) =>
-                        Math.min(prev + 1, isDoctor === "Yes" ? 3 : 2)
-                      );
-                    }}
-                    className="disabled:opacity-50"
-                  >
-                    {currentStep === (isDoctor === "Yes" ? 3 : 2)
-                      ? submitting
-                        ? "Submitting..."
-                        : "Submit"
-                      : "Next"}
-                  </Button>
+                      className="disabled:opacity-50"
+                    >
+                      Next
+                    </Button>
+                  ) : isEmailVerified ? (
+                    <Button
+                      type="submit"
+                      disabled={submitting}
+                      className="disabled:opacity-50"
+                    >
+                      {submitting ? "Submitting..." : "Submit"}
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={async () => {
+                        setIsVerifyingOtp(true);
+                        await storeFormData(values);
+                        await setOtp(values.email);
+                      }}
+                    >
+                      Verify Email
+                    </Button>
+                  )}
                 </div>
               </Form>
             )}
