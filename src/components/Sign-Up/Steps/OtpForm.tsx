@@ -13,6 +13,7 @@ const OTPForm: React.FC<OTPFormProps> = ({
   setIsEmailVerified,
 }) => {
   const inputsRef = useRef<HTMLInputElement[]>([]);
+  const [isVerifying, setIsVrifying] = useState(false);
   const [timer, setTimer] = useState(60);
   const prefixLength = Math.min(2, mail.indexOf("@"));
   const secretMail =
@@ -55,6 +56,7 @@ const OTPForm: React.FC<OTPFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsVrifying(true);
     const otp = inputsRef.current.map((input) => input?.value).join("");
     try {
       const res = await fetch(import.meta.env.VITE_VERIFY_OTP_URL, {
@@ -71,6 +73,7 @@ const OTPForm: React.FC<OTPFormProps> = ({
       const data = await res.json();
       console.log("OTP verification response:", data);
       if (data.status === "success") {
+        toast.success("Email verified successfully!");
         setIsEmailVerified(true);
         toggleOTPForm();
       } else {
@@ -79,6 +82,7 @@ const OTPForm: React.FC<OTPFormProps> = ({
     } catch (error) {
       console.log(error);
     }
+    setIsVrifying(false);
   };
 
   useEffect(() => {
@@ -154,14 +158,14 @@ const OTPForm: React.FC<OTPFormProps> = ({
 
         <button
           type="submit"
-          disabled={!isOTPComplete}
+          disabled={!isOTPComplete || isVerifying}
           className={`mt-2 px-6 py-3 rounded-md text-white font-medium transition-colors ${
-            isOTPComplete
+            (isOTPComplete || isVerifying)
               ? "bg-indigo-600 hover:bg-indigo-700"
               : "bg-gray-400 cursor-not-allowed"
           }`}
         >
-          Verify Me
+          {isVerifying ? "Verifying.." : "Verify Me"}
         </button>
       </form>
     </div>
