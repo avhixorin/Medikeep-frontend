@@ -31,7 +31,6 @@
     "@react-three/fiber": "^8.17.10",
     "@reduxjs/toolkit": "^2.7.0",
     "@tabler/icons-react": "^3.30.0",
-    "@types/react-router-dom": "^5.3.3",
     "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
