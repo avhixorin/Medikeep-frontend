@@ -7,7 +7,7 @@ import SearchDoctorsForAppointments from "./SearchDoctorsForAppointments/SearchD
 import { Appointment } from "@/types/types";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import { Button } from "@/components/ui/button";
-import NotificationDrawer from "../../Notifications/NotificationDrawer";
+import NotificationDrawer from "../../Notifications";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import AppointmentCallScreen from "../AppointmentCallScreen/AppointmentCallScreen";
 

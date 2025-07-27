@@ -111,7 +111,7 @@ export default function Welcome() {
                 </CardContent>
                 <CardFooter>
                   <Button
-                    className="w-full py-2 bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    className="w-full py-2 bg-foreground text-background"
                     onClick={() => handleNavigation(card.title)}
                   >
                     {card.action}

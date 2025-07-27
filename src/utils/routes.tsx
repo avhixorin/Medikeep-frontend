@@ -61,6 +61,12 @@ const DashboardMedicalRecordsPage = lazy(
 const DashboardPatientsPage = lazy(
   () => import("../components/Dashboard/Patients/Patients")
 );
+const DashboardDoctorsPage = lazy(
+  () => import("../components/Dashboard/Doctors")
+);
+const DashboardNotificationsPage = lazy(
+  () => import("../components/Dashboard/Notifications")
+);
 const DashboardHealthVitalsPage = lazy(
   () => import("../components/Dashboard/HealthVitals/HealthVitals")
 );
@@ -228,10 +234,26 @@ const router = createBrowserRouter(
           }
         />
         <Route
+          path="doctors"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DashboardDoctorsPage />
+            </Suspense>
+          }
+        />
+        <Route
           path="vitals"
           element={
             <Suspense fallback={<LoadingScreen />}>
               <DashboardHealthVitalsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="notifications"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DashboardNotificationsPage />
             </Suspense>
           }
         />

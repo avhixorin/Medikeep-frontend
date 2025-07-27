@@ -9,6 +9,8 @@ import {
   HeartPulse,
   User,
   ShieldCheck,
+  ChartColumn,
+  Bell,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -161,11 +163,23 @@ export default function LeftSidebar() {
             />
           ) : (
             <SidebarLink
-              to="/dashboard/vitals"
+              to="/dashboard/doctors"
               icon={<User size={24} />}
+              label={t("sidebar.doctors")}
+            />
+          )}
+          {user?.role === "patient" && (
+            <SidebarLink
+              to="/dashboard/vitals"
+              icon={<ChartColumn size={24} />}
               label={t("sidebar.vitals")}
             />
           )}
+          <SidebarLink
+              to="/dashboard/notifications"
+              icon={<Bell size={24} />}
+              label={t("sidebar.notifications")}
+            />
           {admin ? (
             <SidebarLink
               to="/admin"

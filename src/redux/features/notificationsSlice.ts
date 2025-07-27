@@ -1,9 +1,12 @@
 import { notification } from "@/types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface NotificationsState {
+  notifications: notification[];
+}
 
-const initialState = {
-  notifications: [] as notification[],
+const initialState: NotificationsState = {
+  notifications: [],
 };
 
 const notificationsSlice = createSlice({
@@ -18,7 +21,24 @@ const notificationsSlice = createSlice({
     },
     markAsRead: (state, action: PayloadAction<number>) => {
       const index = action.payload;
-      state.notifications[index].read = true;
+      if (state.notifications[index]) {
+        state.notifications[index].read = true;
+      }
+    },
+    markMultipleAsRead: (state, action: PayloadAction<number[]>) => {
+      action.payload.forEach((index) => {
+        if (state.notifications[index]) {
+          state.notifications[index].read = true;
+        }
+      });
+    },
+    deleteNotification: (state, action: PayloadAction<number>) => {
+      state.notifications.splice(action.payload, 1);
+    },
+    deleteMultipleNotifications: (state, action: PayloadAction<number[]>) => {
+      state.notifications = state.notifications.filter(
+        (_, i) => !action.payload.includes(i)
+      );
     },
     clearNotifications: (state) => {
       state.notifications = [];
@@ -26,5 +46,14 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { setNotifications, addNotification, markAsRead, clearNotifications } = notificationsSlice.actions;
+export const {
+  setNotifications,
+  addNotification,
+  markAsRead,
+  markMultipleAsRead,
+  deleteNotification,
+  deleteMultipleNotifications,
+  clearNotifications,
+} = notificationsSlice.actions;
+
 export default notificationsSlice.reducer;

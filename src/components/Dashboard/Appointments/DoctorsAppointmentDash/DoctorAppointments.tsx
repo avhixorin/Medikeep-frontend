@@ -22,7 +22,7 @@ import {
   DocotorAppointmentCard,
   DocotorAppointmentCardMobile,
 } from "./DoctorAppointmentCards";
-import NotificationDrawer from "../../Notifications/NotificationDrawer";
+import NotificationDrawer from "../../Notifications";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import AppointmentCallScreen from "../AppointmentCallScreen/AppointmentCallScreen";

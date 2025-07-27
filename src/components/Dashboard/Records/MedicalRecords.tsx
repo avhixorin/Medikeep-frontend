@@ -12,9 +12,13 @@ import {
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import useUploadFiles from "../../../hooks/useUploadFiles";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
+import { User } from "@/types/types";
 
 const MedicalRecords = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedEntity, setSelectedEntity] = useState<User | null>(null);
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -103,11 +107,14 @@ const MedicalRecords = () => {
     (f) => f.type === "application/pdf"
   ).length;
 
+  const user = useSelector((state: RootState) => state.auth.user);
+
   return (
     <div className="w-full h-full p-6 shadow-md bg-transparent flex flex-col gap-6">
       <div>
         <h1 className="text-lg md:text-2xl font-semibold text-foreground">
-          Patient Medical Records
+          {" "}
+          Medical Records
         </h1>
       </div>
 
@@ -127,7 +134,7 @@ const MedicalRecords = () => {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="default" disabled={total >= 5}>
+            <Button variant="default" disabled={total >= 5 || uploading || !selectedEntity}>
               Upload New Files
             </Button>
           </DialogTrigger>
@@ -182,10 +189,38 @@ const MedicalRecords = () => {
       <div className="flex-1 w-full mt-6">
         {selectedFiles.length === 0 ? (
           <div className="flex justify-center items-center h-full text-muted-foreground text-center">
-            No files uploaded yet. Start by uploading prescriptions above
+            No available {user?.role === "Doctor" ? "doctors" : "patients"}.
+            You need to have at least one {user?.role === "Doctor" ? "doctor" : "patient"} to upload prescriptions.
           </div>
         ) : (
-          <ul className="flex flex-col gap-3">hii</ul>
+          <ul className="flex flex-col gap-3">
+            {user &&
+              user.role === "doctor" &&
+              user.patients &&
+              user.password.length > 0 &&
+              user.patients.map((patient) => (
+                <li
+                  key={patient._id}
+                  className="flex items-center justify-between bg-muted px-4 py-2 rounded-lg cursor-pointer"
+                  onClick={() => setSelectedEntity(patient)}
+                >
+                  <span className="text-sm text-foreground truncate max-w-xs">
+                    {patient.firstName} {patient.lastName}
+                  </span>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="hover:bg-destructive/10 transition-colors"
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                      e.stopPropagation();
+                      // removeFile(patient._id);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </li>
+              ))}
+          </ul>
         )}
       </div>
 

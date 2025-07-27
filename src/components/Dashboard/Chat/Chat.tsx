@@ -19,7 +19,7 @@ import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { addMyMessage } from "@/redux/features/messageSlice";
 import { v4 as uuid } from "uuid";
 import { setSelectedUser } from "@/redux/features/selectedUserSlice";
-import NotificationDrawer from "../Notifications/NotificationDrawer";
+import NotificationDrawer from "../Notifications";
 import { User } from "@/types/types";
 import Swal from "sweetalert2";
 import VideoCallScreen from "./VideoCallScreen/VideoCallScreen";
