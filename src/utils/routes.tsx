@@ -55,8 +55,11 @@ const DashboardWelcomePage = lazy(
 const DashboadChatPage = lazy(
   () => import("../components/Dashboard/Chat/Chat")
 );
-const DashboardMedicalRecordsPage = lazy(
-  () => import("../components/Dashboard/Records/MedicalRecords")
+const DashboardRecordsPage = lazy(
+  () => import("../components/Dashboard/Records")
+);
+const DashboardRecordDetailsPage = lazy(
+  () => import("../components/Dashboard/Records/RecordDetails")
 );
 const DashboardPatientsPage = lazy(
   () => import("../components/Dashboard/Patients/Patients")
@@ -218,10 +221,18 @@ const router = createBrowserRouter(
           }
         />
         <Route
-          path="medical-records"
+          path="records"
           element={
             <Suspense fallback={<LoadingScreen />}>
-              <DashboardMedicalRecordsPage />
+              <DashboardRecordsPage />
+            </Suspense>
+          }
+        >
+        <Route
+          path="records/:entityId"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DashboardRecordDetailsPage />
             </Suspense>
           }
         />

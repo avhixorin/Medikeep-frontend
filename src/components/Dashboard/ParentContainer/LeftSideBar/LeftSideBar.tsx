@@ -151,7 +151,7 @@ export default function LeftSidebar() {
             label={t("sidebar.chats")}
           />
           <SidebarLink
-            to="/dashboard/medical-records"
+            to="/dashboard/records"
             icon={<HeartPulse size={24} />}
             label={t("sidebar.records")}
           />
