@@ -227,7 +227,7 @@ const router = createBrowserRouter(
               <DashboardRecordsPage />
             </Suspense>
           }
-        >
+        />
         <Route
           path="records/:entityId"
           element={

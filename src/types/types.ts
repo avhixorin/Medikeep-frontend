@@ -182,10 +182,12 @@ export type MedicalHistory ={
 
 export type MedicalRecord = {
   _id: string;
-  title: string;
-  notes: string;
-  fileType: ["pdf" | "image"];
-  fileUrl: string;
+  title?: string;
+  notes?: string;
+  fileName: string;
+  fileType: string;
+  size: number
+  url: string;
   uploadedBy: User;
   patient: User;
   doctor: User;

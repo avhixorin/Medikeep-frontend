@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import useUploadFiles from "@/hooks/useUploadFiles";
+import useUploadFiles from "@/hooks/useRecord";
 import { User } from "@/types/types";
 import { useParams } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
@@ -17,12 +17,17 @@ import { useSelector } from "react-redux";
 const RecordDetails = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [entity, setEntity] = useState<User | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const { uploadFiles } = useUploadFiles();
+  const { uploadFiles, deleteFile } = useUploadFiles();
   const { entityId } = useParams();
   const user = useSelector((state: RootState) => state.auth.user);
+  const records = useSelector((state: RootState) =>
+    entityId && state.record.records[entityId]
+      ? state.record.records[entityId]
+      : []
+  );
   const getEntityData = useCallback(
     (id: string) => {
       if (!user) return null;
@@ -34,6 +39,7 @@ const RecordDetails = () => {
     },
     [user]
   );
+
   useEffect(() => {
     if (entityId) {
       const entityData = getEntityData(entityId);
@@ -43,12 +49,12 @@ const RecordDetails = () => {
     }
   }, [entityId, getEntityData]);
 
-  const total = selectedFiles.length;
-  const imageCount = selectedFiles.filter((f) =>
-    f.type.startsWith("image/")
+  const total = records?.length ?? 0;
+  const imageCount = records?.filter((f) =>
+    f.fileType.startsWith("image/")
   ).length;
-  const pdfCount = selectedFiles.filter(
-    (f) => f.type === "application/pdf"
+  const pdfCount = records?.filter(
+    (f) => f.fileType === "application/pdf"
   ).length;
   const cleanupPreviewUrl = useCallback(() => {
     if (previewUrl) {
@@ -101,14 +107,18 @@ const RecordDetails = () => {
   };
 
   const handleFileUpload = async () => {
-    setUploading(true);
-    const res = await uploadFiles(selectedFiles);
-    setUploading(false);
+    if (!entityId) return;
+    setLoading(true);
+    const res = await uploadFiles(selectedFiles, entityId);
+    setLoading(false);
     console.log(res);
   };
 
-  const removeFile = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteFile = async (id: string) => {
+    setLoading(true);
+    const res = await deleteFile(id);
+    setLoading(false);
+    console.log(res);
   };
 
   const handlePreview = (fileOrUrl: File | string) => {
@@ -123,7 +133,6 @@ const RecordDetails = () => {
         setShowModal(true);
       }
     } else {
-      // fileOrUrl is a File object
       const url = URL.createObjectURL(fileOrUrl);
       if (fileOrUrl.type === "application/pdf") {
         window.open(url, "_blank");
@@ -137,6 +146,10 @@ const RecordDetails = () => {
       }
     }
   };
+  const removeFile = (index: number) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   console.log("Entity Data:", entity);
   return (
     <div className="w-full h-full p-6 shadow-md bg-transparent flex flex-col gap-6">
@@ -146,9 +159,21 @@ const RecordDetails = () => {
           {entity?.firstName} {entity?.lastName}
         </h1>
         <div className="text-sm text-muted-foreground mt-2 flex gap-3">
-          <span>Age: {entity?.dateOfBirth}</span>
-          <span>Sex: {entity?.gender === "female" ? "Female" : "Male"}</span>
-          <span>Email: {entity?.email}</span>
+          {entity?.role === "doctor" ? (
+            <>
+              <span>Specialization: {entity?.specialization}</span>
+              <span>ID: {entity?._id}</span>
+            </>
+          ) : (
+            <>
+              <span>Age: {entity?.dateOfBirth}</span>
+              <span>
+                Sex: {entity?.gender === "female" ? "Female" : "Male"}
+              </span>
+              <span>Email: {entity?.email}</span>
+              <span>ID: {entity?._id}</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -169,7 +194,7 @@ const RecordDetails = () => {
           <DialogTrigger asChild>
             <Button
               variant="default"
-              disabled={total >= 5 || uploading || !entity}
+              disabled={total >= 5 || loading || !entity}
             >
               Upload New Files
             </Button>
@@ -213,10 +238,10 @@ const RecordDetails = () => {
             </ul>
             <Button
               variant="default"
-              disabled={total >= 5 || uploading || selectedFiles.length === 0}
+              disabled={total >= 5 || loading || selectedFiles.length === 0}
               onClick={handleFileUpload}
             >
-              {uploading ? "Uploading..." : "Upload"}
+              {loading ? "Uploading..." : "Upload"}
             </Button>
           </DialogContent>
         </Dialog>
@@ -231,17 +256,19 @@ const RecordDetails = () => {
           </div>
         ) : (
           <ul className="flex flex-col gap-3">
-            {entity &&
-              entity.medicalRecords &&
-              entity.medicalRecords.length > 0 &&
-              entity.medicalRecords.map((record, index) => (
+            {records &&
+              records.length > 0 &&
+              records.map((record) => (
                 <li
                   key={record._id}
                   className="flex items-center justify-between bg-muted px-4 py-2 rounded-lg cursor-pointer"
-                  onClick={() => handlePreview(record.fileUrl)}
+                  onClick={() => handlePreview(record.url)}
                 >
                   <span className="text-sm text-foreground truncate max-w-xs">
-                    {entity.firstName} {entity.lastName}
+                    {record.fileName}
+                  </span>
+                  <span className="text-sm text-foreground truncate max-w-xs">
+                    {record.fileType}
                   </span>
                   <Button
                     size="icon"
@@ -249,7 +276,7 @@ const RecordDetails = () => {
                     className="hover:bg-destructive/10 transition-colors"
                     onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
-                      removeFile(index);
+                      handleDeleteFile(record._id);
                     }}
                   >
                     <Trash2 className="w-4 h-4 text-destructive" />

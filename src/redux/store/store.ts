@@ -5,6 +5,7 @@ import notificationsSlice from "../features/notificationsSlice"
 import messageSlice from "../features/messageSlice";
 import selectedUserSlice from "../features/selectedUserSlice";
 import adminSlice from "../features/adminSlice";
+import recordSlice from "../features/recordSlice"
 import {
   persistReducer,
   FLUSH,
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
   notifications: notificationsSlice,
   messages: messageSlice,
   selectedUser: selectedUserSlice,
-  admin: adminSlice
+  admin: adminSlice,
+  record: recordSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

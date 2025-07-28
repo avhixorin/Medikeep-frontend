@@ -1,15 +1,35 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-
-import { Trash2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { User } from "@/types/types";
 import { useNavigate } from "react-router-dom";
+import useRecord from "@/hooks/useRecord";
+import usePartialUserData from "@/hooks/usePartialUserData";
 
 const MedicalRecords = () => {
   const [entities, setEntities] = useState<User[]>([]);
   const user = useSelector((state: RootState) => state.auth.user);
+  const records = useSelector((state: RootState) => state.record.records);
+  const { fetchPartialUserData } = usePartialUserData();
+  useEffect(() => {
+    if (user?.role === "doctor") {
+      if (!user?.patients) {
+        fetchPartialUserData("patients");
+      }
+    } else {
+      if (!user?.doctors) {
+        fetchPartialUserData("doctors");
+      }
+    }
+  }, [fetchPartialUserData, user?.doctors, user?.patients, user?.role]);
+  const { getUserRecords } = useRecord();
+  useEffect(() => {
+    if (Object.keys(records).length === 0) {
+      console.log("fetching records");
+      getUserRecords();
+    }
+  });
   useEffect(() => {
     if (user?.role === "doctor") {
       setEntities(user.patients ?? []);
@@ -30,38 +50,46 @@ const MedicalRecords = () => {
 
       <div className="flex-1 w-full mt-6">
         {entities.length === 0 ? (
-          <div className="flex justify-center items-center h-full text-muted-foreground text-center">
+          <div className="flex justify-center items-center h-full text-muted-foreground text-center px-4">
             No available {user?.role === "Doctor" ? "doctors" : "patients"}. You
             need to have at least one{" "}
-            {user?.role === "Doctor" ? "doctor" : "patient"} to upload
-            prescriptions.
+            <span className="font-medium text-foreground">
+              {user?.role === "Doctor" ? "doctor" : "patient"}
+            </span>{" "}
+            to upload prescriptions.
           </div>
         ) : (
-          <ul className="flex flex-col gap-3">
-            {
-              entities.length > 0 &&
-              entities.map((entity) => (
-                <li
-                  key={entity._id}
-                  className="flex items-center justify-between bg-muted px-4 py-2 rounded-lg cursor-pointer"
-                  onClick={() => navigate(`/dashboard/records/${entity._id}`)}
-                >
-                  <span className="text-sm text-foreground truncate max-w-xs">
+          <ul className="flex flex-wrap gap-3">
+            {entities.map((entity) => (
+              <li
+                key={entity._id}
+                className="bg-muted rounded-2xl p-4 shadow-md hover:shadow-lg flex flex-col justify-between"
+                onClick={() => navigate(`/dashboard/records/${entity._id}`)}
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={entity.profilePicture}
+                    alt={`${entity.firstName} ${entity.lastName}`}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div className="text-foreground font-semibold text-base truncate">
+                    {entity?.role === "doctor" ? "Dr. " : ""}
                     {entity.firstName} {entity.lastName}
-                  </span>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="hover:bg-destructive/10 transition-colors"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                      e.stopPropagation();
-                      // removeFile(patient._id);
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                </li>
-              ))}
+                  </div>
+                </div>
+
+                <Button
+                  size="sm"
+                  className="self-end mx-auto"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/dashboard/records/${entity._id}`);
+                  }}
+                >
+                  View Records
+                </Button>
+              </li>
+            ))}
           </ul>
         )}
       </div>
