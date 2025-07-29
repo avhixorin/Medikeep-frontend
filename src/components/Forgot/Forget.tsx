@@ -7,9 +7,9 @@ import { Button } from "../ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
-import useForgot from "@/hooks/useForgot";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const Forget = () => {
   const [credentialsTrue, setCredentialsTrue] = useState(false);
@@ -37,7 +37,7 @@ const Forget = () => {
     }),
   });
   const navigate = useNavigate();
-  const { verifyUser, resetPassword } = useForgot();
+  const { verifyUser, resetPassword } = useAuth();
   const handleFormSubmit = async (values: {
     email: string;
     dateOfBirth: Date | null;

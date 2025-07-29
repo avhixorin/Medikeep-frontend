@@ -9,18 +9,20 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import useUploadFiles from "@/hooks/useRecord";
 import { User } from "@/types/types";
 import { useParams } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
+import useAuth from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 const RecordDetails = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [entity, setEntity] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const { uploadFiles, deleteFile } = useUploadFiles();
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const { uploadUserRecords, deleteUserRecord } = useAuth();
   const { entityId } = useParams();
   const user = useSelector((state: RootState) => state.auth.user);
   const records = useSelector((state: RootState) =>
@@ -67,7 +69,7 @@ const RecordDetails = () => {
     if (!open) {
       cleanupPreviewUrl();
     }
-    setShowModal(open);
+    setShowPreviewModal(open);
   };
 
   useEffect(() => {
@@ -109,16 +111,34 @@ const RecordDetails = () => {
   const handleFileUpload = async () => {
     if (!entityId) return;
     setLoading(true);
-    const res = await uploadFiles(selectedFiles, entityId);
+    const res = await uploadUserRecords(selectedFiles, entityId);
+    if (res) {
+      setShowModal(false);
+    }
     setLoading(false);
     console.log(res);
   };
 
   const handleDeleteFile = async (id: string) => {
+    const toastId = toast.loading("Deleting file...");
     setLoading(true);
-    const res = await deleteFile(id);
-    setLoading(false);
-    console.log(res);
+
+    try {
+      const res = await deleteUserRecord(id);
+      setLoading(false);
+
+      if (res) {
+        toast.success("File deleted successfully", { id: toastId });
+      } else {
+        toast.error("Failed to delete file", { id: toastId });
+      }
+
+      console.log(res);
+    } catch (error) {
+      setLoading(false);
+      toast.error("Something went wrong", { id: toastId });
+      console.error(error);
+    }
   };
 
   const handlePreview = (fileOrUrl: File | string) => {
@@ -130,7 +150,7 @@ const RecordDetails = () => {
           URL.revokeObjectURL(previewUrl);
         }
         setPreviewUrl(fileOrUrl);
-        setShowModal(true);
+        setShowPreviewModal(true);
       }
     } else {
       const url = URL.createObjectURL(fileOrUrl);
@@ -162,7 +182,6 @@ const RecordDetails = () => {
           {entity?.role === "doctor" ? (
             <>
               <span>Specialization: {entity?.specialization}</span>
-              <span>ID: {entity?._id}</span>
             </>
           ) : (
             <>
@@ -171,7 +190,6 @@ const RecordDetails = () => {
                 Sex: {entity?.gender === "female" ? "Female" : "Male"}
               </span>
               <span>Email: {entity?.email}</span>
-              <span>ID: {entity?._id}</span>
             </>
           )}
         </div>
@@ -190,11 +208,11 @@ const RecordDetails = () => {
             PDF Files: <strong className="text-foreground">{pdfCount}</strong>
           </span>
         </div>
-        <Dialog>
+        <Dialog open={showModal} onOpenChange={setShowModal}>
           <DialogTrigger asChild>
             <Button
               variant="default"
-              disabled={total >= 5 || loading || !entity}
+              disabled={selectedFiles.length >= 5 || loading || !entity}
             >
               Upload New Files
             </Button>
@@ -209,7 +227,7 @@ const RecordDetails = () => {
               className="cursor-pointer"
               multiple
               onChange={handleFilesChange}
-              disabled={total >= 5}
+              disabled={selectedFiles.length >= 5}
             />
             <ul className="flex flex-col gap-3">
               {selectedFiles.length > 0 &&
@@ -238,7 +256,11 @@ const RecordDetails = () => {
             </ul>
             <Button
               variant="default"
-              disabled={total >= 5 || loading || selectedFiles.length === 0}
+              disabled={
+                selectedFiles.length >= 5 ||
+                loading ||
+                selectedFiles.length === 0
+              }
               onClick={handleFileUpload}
             >
               {loading ? "Uploading..." : "Upload"}
@@ -286,7 +308,7 @@ const RecordDetails = () => {
           </ul>
         )}
       </div>
-      <Dialog open={showModal} onOpenChange={handleModalClose}>
+      <Dialog open={showPreviewModal} onOpenChange={handleModalClose}>
         <DialogContent className="max-w-lg">
           {previewUrl && (
             <img

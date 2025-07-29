@@ -11,11 +11,11 @@ import Step2 from "./Steps/Step2";
 import Step3 from "./Steps/Step3";
 import { Button } from "../ui/button";
 import { User } from "@/types/types";
-import useSubmitForm from "@/utils/submitForm";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import OTPForm from "./Steps/OtpForm";
 import { setEmailStatus, storeFormData } from "@/utils/indexedDb";
+import useAuth from "@/hooks/useAuth";
 
 const initialFormValues: User = {
   role: "patient",
@@ -129,7 +129,7 @@ const SignUpA: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDoctor, setIsDoctor] = useState("No");
   const dispatch = useDispatch();
-  const { submitForm } = useSubmitForm();
+  const { registerUser } = useAuth();
   const [secretMail, setSecretMail] = useState("");
   const totalSteps = isDoctor === "Yes" ? 3 : 2;
 
@@ -169,13 +169,13 @@ const SignUpA: React.FC = () => {
       toast.error("Please accept the terms and conditions");
       return;
     }
-    if(!isEmailVerified) {
+    if (!isEmailVerified) {
       toast.error("Please verify your email before submitting");
       return;
     }
     setSubmitting(true);
+    await registerUser(values);
     dispatch(updateUserFields(values));
-    await submitForm(values);
     setSubmitting(false);
   };
   const setOtp = async (email: string) => {
