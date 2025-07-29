@@ -5,12 +5,10 @@ import { RootState } from "../../../redux/store/store";
 import { User } from "@/types/types";
 import { useNavigate } from "react-router-dom";
 import usePartialUserData from "@/hooks/usePartialUserData";
-import useAuth from "@/hooks/useAuth";
 
 const MedicalRecords = () => {
   const [entities, setEntities] = useState<User[]>([]);
   const user = useSelector((state: RootState) => state.auth.user);
-  const records = useSelector((state: RootState) => state.record.records);
   const { fetchPartialUserData } = usePartialUserData();
   useEffect(() => {
     if (user?.role === "doctor") {
@@ -23,13 +21,6 @@ const MedicalRecords = () => {
       }
     }
   }, [fetchPartialUserData, user?.doctors, user?.patients, user?.role]);
-  const { getUserRecords } = useAuth();
-  useEffect(() => {
-    if (Object.keys(records).length === 0) {
-      console.log("fetching records");
-      getUserRecords();
-    }
-  });
   useEffect(() => {
     if (user?.role === "doctor") {
       setEntities(user.patients ?? []);

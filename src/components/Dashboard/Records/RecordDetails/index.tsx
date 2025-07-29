@@ -22,14 +22,20 @@ const RecordDetails = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const { uploadUserRecords, deleteUserRecord } = useAuth();
+  const { uploadUserRecords, deleteUserRecord, getUserRecords } = useAuth();
   const { entityId } = useParams();
   const user = useSelector((state: RootState) => state.auth.user);
-  const records = useSelector((state: RootState) =>
-    entityId && state.record.records[entityId]
-      ? state.record.records[entityId]
-      : []
-  );
+  const records = useSelector((state: RootState) => state.record.records);
+  const doctorId = user?.role === "doctor" ? user?._id : entityId;
+  const patientId = user?.role === "doctor" ? entityId : user?._id;
+  useEffect(() => {
+    const fetchRecords = async () => {
+      if (doctorId && patientId) {
+        await getUserRecords(doctorId, patientId);
+      }
+    };
+    fetchRecords();
+  }, [doctorId, getUserRecords, patientId]);
   const getEntityData = useCallback(
     (id: string) => {
       if (!user) return null;
@@ -52,12 +58,15 @@ const RecordDetails = () => {
   }, [entityId, getEntityData]);
 
   const total = records?.length ?? 0;
+
   const imageCount = records?.filter((f) =>
     f.fileType.startsWith("image/")
   ).length;
+
   const pdfCount = records?.filter(
     (f) => f.fileType === "application/pdf"
   ).length;
+
   const cleanupPreviewUrl = useCallback(() => {
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
@@ -109,9 +118,14 @@ const RecordDetails = () => {
   };
 
   const handleFileUpload = async () => {
-    if (!entityId) return;
+    if (!entityId || !doctorId || !patientId) return;
     setLoading(true);
-    const res = await uploadUserRecords(selectedFiles, entityId);
+    const res = await uploadUserRecords(
+      selectedFiles,
+      entityId,
+      doctorId,
+      patientId
+    );
     if (res) {
       setShowModal(false);
     }
@@ -120,11 +134,12 @@ const RecordDetails = () => {
   };
 
   const handleDeleteFile = async (id: string) => {
+    if (!doctorId || !patientId) return;
     const toastId = toast.loading("Deleting file...");
     setLoading(true);
 
     try {
-      const res = await deleteUserRecord(id);
+      const res = await deleteUserRecord(id, doctorId, patientId);
       setLoading(false);
 
       if (res) {
@@ -166,6 +181,7 @@ const RecordDetails = () => {
       }
     }
   };
+
   const removeFile = (index: number) => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };

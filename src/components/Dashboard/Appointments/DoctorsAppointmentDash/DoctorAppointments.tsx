@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, compareAsc, parseISO } from "date-fns";
 import {
-  Bell,
-  BellDotIcon,
   CalendarIcon,
   SearchIcon,
   X,
@@ -22,7 +20,6 @@ import {
   DocotorAppointmentCard,
   DocotorAppointmentCardMobile,
 } from "./DoctorAppointmentCards";
-import NotificationDrawer from "../../Notifications";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import AppointmentCallScreen from "../AppointmentCallScreen/AppointmentCallScreen";
@@ -37,8 +34,6 @@ const DoctorAppointments: React.FC = () => {
   const [isManagingAppointmentRequests, setIsManagingAppointmentRequests] =
     useState(false);
   const [isRescheduling, setIsRescheduling] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const user = useSelector((state: RootState) => state.auth.user);
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments || []
   );
@@ -79,7 +74,6 @@ const DoctorAppointments: React.FC = () => {
           appointment={selectedAppointment}
         />
       )}
-      {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {isManagingAppointmentRequests && (
         <ManageAppointmentRequests
           setIsManagingAppointmentRequests={setIsManagingAppointmentRequests}
@@ -130,15 +124,6 @@ const DoctorAppointments: React.FC = () => {
               >
                 Manage Requests
               </button>
-              <button
-                className="w-full dark:text-white text-black"
-                onClick={() => {
-                  setIsOpen(true);
-                  setIsMenuOpen(false);
-                }}
-              >
-                Notifications
-              </button>
             </div>
           </div>
           <div className="hidden md:flex items-center gap-4">
@@ -148,19 +133,6 @@ const DoctorAppointments: React.FC = () => {
             >
               Manage Appointment Requests
             </Button>
-            {(user?.notifications?.length ?? 0) > 0 ? (
-              <BellDotIcon
-                size={24}
-                className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-                onClick={() => setIsOpen(true)}
-              />
-            ) : (
-              <Bell
-                size={24}
-                className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-                onClick={() => setIsOpen(true)}
-              />
-            )}
           </div>
         </div>
 

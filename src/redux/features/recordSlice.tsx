@@ -2,11 +2,11 @@ import { MedicalRecord } from "@/types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type RecordState = {
-  records: Record<string, MedicalRecord[]>;
+  records: MedicalRecord[];
 };
 
 const initialState: RecordState = {
-  records: {},
+  records: [],
 };
 
 const recordSlice = createSlice({
@@ -14,22 +14,7 @@ const recordSlice = createSlice({
   initialState,
   reducers: {
     setRecords: (state, action: PayloadAction<MedicalRecord[]>) => {
-      const recordMap: Record<string, MedicalRecord[]> = {};
-      action.payload.forEach((record) => {
-        const key =
-          record.uploadedBy.role === "doctor"
-            ? record.patient._id
-            : record.doctor._id;
-
-        if (key) {
-          if (!recordMap[key]) {
-            recordMap[key] = [];
-          }
-          recordMap[key].push(record);
-        }
-      });
-      console.log("Final record map:", recordMap);
-      state.records = recordMap;
+      state.records = action.payload;
     },
   },
 });
