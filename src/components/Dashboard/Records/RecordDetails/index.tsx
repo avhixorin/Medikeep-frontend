@@ -239,7 +239,7 @@ const RecordDetails = () => {
             </DialogHeader>
             <Input
               type="file"
-              accept=".pdf,image/*"
+              accept=".pdf"
               className="cursor-pointer"
               multiple
               onChange={handleFilesChange}
