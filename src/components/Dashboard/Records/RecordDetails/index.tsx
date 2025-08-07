@@ -13,29 +13,38 @@ import { User } from "@/types/types";
 import { useParams } from "react-router-dom";
 import { RootState } from "@/redux/store/store";
 import { useSelector } from "react-redux";
-import useAuth from "@/hooks/useAuth";
-import toast from "react-hot-toast";
+import {
+  useDeleteUserRecord,
+  useUploadUserRecords,
+} from "../../hooks/mutationHooks";
+import { useUserRecords } from "../../hooks/dataHooks";
+import { AiChatModal } from "./SearchResults";
+
 const RecordDetails = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [entity, setEntity] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const { uploadUserRecords, deleteUserRecord, getUserRecords } = useAuth();
+
   const { entityId } = useParams();
   const user = useSelector((state: RootState) => state.auth.user);
-  const records = useSelector((state: RootState) => state.record.records);
-  const doctorId = user?.role === "doctor" ? user?._id : entityId;
-  const patientId = user?.role === "doctor" ? entityId : user?._id;
-  useEffect(() => {
-    const fetchRecords = async () => {
-      if (doctorId && patientId) {
-        await getUserRecords(doctorId, patientId);
-      }
-    };
-    fetchRecords();
-  }, [doctorId, getUserRecords, patientId]);
+
+  const { mutate: uploadRecords, isPending: isUploading } =
+    useUploadUserRecords();
+  const { mutate: deleteRecord, isPending: isDeleting } = useDeleteUserRecord();
+
+  const doctorId: string | undefined =
+    user?.role === "doctor" ? user?._id ?? undefined : entityId ?? undefined;
+  const patientId: string | undefined =
+    user?.role === "doctor" ? entityId ?? undefined : user?._id ?? undefined;
+
+  const {
+    data: records,
+    isLoading: recordsLoading,
+    error: recordsError,
+  } = useUserRecords({ doctorId, patientId });
+
   const getEntityData = useCallback(
     (id: string) => {
       if (!user) return null;
@@ -56,16 +65,33 @@ const RecordDetails = () => {
       }
     }
   }, [entityId, getEntityData]);
+  const recordList = Array.isArray(records) ? records : [];
+  const total = recordList?.length ?? 0;
 
-  const total = records?.length ?? 0;
+  const imageCount =
+    recordList?.filter((f) => f.fileType.startsWith("image/")).length ?? 0;
+  const pdfCount =
+    recordList?.filter((f) => f.fileType === "application/pdf").length ?? 0;
 
-  const imageCount = records?.filter((f) =>
-    f.fileType.startsWith("image/")
-  ).length;
+  const handleFileUpload = () => {
+    if (!entityId) {
+      console.error("Target entity ID is missing!");
+      return;
+    }
+    uploadRecords(
+      { files: selectedFiles, target: entityId },
+      {
+        onSuccess: () => {
+          setSelectedFiles([]);
+          setShowModal(false);
+        },
+      }
+    );
+  };
 
-  const pdfCount = records?.filter(
-    (f) => f.fileType === "application/pdf"
-  ).length;
+  const handleDeleteFile = (id: string) => {
+    deleteRecord(id);
+  };
 
   const cleanupPreviewUrl = useCallback(() => {
     if (previewUrl) {
@@ -117,45 +143,6 @@ const RecordDetails = () => {
     setSelectedFiles(uniqueFiles);
   };
 
-  const handleFileUpload = async () => {
-    if (!entityId || !doctorId || !patientId) return;
-    setLoading(true);
-    const res = await uploadUserRecords(
-      selectedFiles,
-      entityId,
-      doctorId,
-      patientId
-    );
-    if (res) {
-      setShowModal(false);
-    }
-    setLoading(false);
-    console.log(res);
-  };
-
-  const handleDeleteFile = async (id: string) => {
-    if (!doctorId || !patientId) return;
-    const toastId = toast.loading("Deleting file...");
-    setLoading(true);
-
-    try {
-      const res = await deleteUserRecord(id, doctorId, patientId);
-      setLoading(false);
-
-      if (res) {
-        toast.success("File deleted successfully", { id: toastId });
-      } else {
-        toast.error("Failed to delete file", { id: toastId });
-      }
-
-      console.log(res);
-    } catch (error) {
-      setLoading(false);
-      toast.error("Something went wrong", { id: toastId });
-      console.error(error);
-    }
-  };
-
   const handlePreview = (fileOrUrl: File | string) => {
     if (typeof fileOrUrl === "string") {
       if (fileOrUrl.endsWith(".pdf")) {
@@ -177,7 +164,7 @@ const RecordDetails = () => {
           URL.revokeObjectURL(previewUrl);
         }
         setPreviewUrl(url);
-        setShowModal(true);
+        setShowPreviewModal(true);
       }
     }
   };
@@ -186,9 +173,9 @@ const RecordDetails = () => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  console.log("Entity Data:", entity);
   return (
     <div className="w-full h-full p-6 shadow-md bg-transparent flex flex-col gap-6">
+      <AiChatModal entityId={entityId!} />
       <div>
         <h1 className="text-lg md:text-2xl font-semibold text-foreground">
           {user?.role === "doctor" ? "Patient" : "Doctor"} Name:{" "}
@@ -226,10 +213,7 @@ const RecordDetails = () => {
         </div>
         <Dialog open={showModal} onOpenChange={setShowModal}>
           <DialogTrigger asChild>
-            <Button
-              variant="default"
-              disabled={selectedFiles.length >= 5 || loading || !entity}
-            >
+            <Button variant="default" disabled={isUploading || !entity}>
               Upload New Files
             </Button>
           </DialogTrigger>
@@ -239,7 +223,7 @@ const RecordDetails = () => {
             </DialogHeader>
             <Input
               type="file"
-              accept=".pdf"
+              accept=".pdf,image/png,image/jpeg"
               className="cursor-pointer"
               multiple
               onChange={handleFilesChange}
@@ -272,31 +256,35 @@ const RecordDetails = () => {
             </ul>
             <Button
               variant="default"
-              disabled={
-                selectedFiles.length >= 5 ||
-                loading ||
-                selectedFiles.length === 0
-              }
+              disabled={isUploading || selectedFiles.length === 0}
               onClick={handleFileUpload}
             >
-              {loading ? "Uploading..." : "Upload"}
+              {isUploading ? "Uploading..." : "Upload"}
             </Button>
           </DialogContent>
         </Dialog>
       </div>
+
       <div className="flex-1 w-full mt-6">
-        {entity &&
-        entity.medicalRecords &&
-        entity.medicalRecords.length === 0 ? (
+        {recordsLoading ? (
+          <div className="flex justify-center items-center h-full text-muted-foreground text-center">
+            Loading records...
+          </div>
+        ) : recordsError ? (
+          <div className="flex justify-center items-center h-full text-destructive text-center">
+            Error loading records. Please try again.
+          </div>
+        ) : entity && records?.length === 0 ? (
           <div className="flex justify-center items-center h-full text-muted-foreground text-center">
             No available {user?.role === "Doctor" ? "doctors" : "patients"}{" "}
-            record. Start uploading prescriptions and record to view them here.
+            record. Start uploading prescriptions and records to view them here.
           </div>
         ) : (
           <ul className="flex flex-col gap-3">
             {records &&
               records.length > 0 &&
-              records.map((record) => (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              records.map((record: any) => (
                 <li
                   key={record._id}
                   className="flex items-center justify-between bg-muted px-4 py-2 rounded-lg cursor-pointer"
@@ -311,11 +299,12 @@ const RecordDetails = () => {
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="hover:bg-destructive/10 transition-colors"
-                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    className="hover:bg-destructive/10"
+                    onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteFile(record._id);
                     }}
+                    disabled={isDeleting}
                   >
                     <Trash2 className="w-4 h-4 text-destructive" />
                   </Button>

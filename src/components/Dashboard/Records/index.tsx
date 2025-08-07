@@ -43,10 +43,8 @@ const MedicalRecords = () => {
         {entities.length === 0 ? (
           <div className="flex justify-center items-center h-full text-muted-foreground text-center px-4">
             No available {user?.role === "Doctor" ? "doctors" : "patients"}. You
-            need to have at least one{" "}
-            <span className="font-medium text-foreground">
-              {user?.role === "Doctor" ? "doctor" : "patient"}
-            </span>{" "}
+            need to have at least one
+            {user?.role === "Doctor" ? " doctor " : " patient "}
             to upload prescriptions.
           </div>
         ) : (

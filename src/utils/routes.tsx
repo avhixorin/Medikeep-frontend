@@ -61,6 +61,7 @@ const DashboardRecordsPage = lazy(
 const DashboardRecordDetailsPage = lazy(
   () => import("../components/Dashboard/Records/RecordDetails")
 );
+
 const DashboardPatientsPage = lazy(
   () => import("../components/Dashboard/Patients/Patients")
 );
@@ -228,6 +229,7 @@ const router = createBrowserRouter(
             </Suspense>
           }
         />
+        // Place these routes next to each other, not nested.
         <Route
           path="records/:entityId"
           element={
