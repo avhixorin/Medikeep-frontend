@@ -1,5 +1,5 @@
+import useAuth from "@/hooks/useAuth";
 import React, { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
 
 interface OTPFormProps {
   toggleOTPForm: () => void;
@@ -10,11 +10,12 @@ interface OTPFormProps {
 const OTPForm: React.FC<OTPFormProps> = ({
   toggleOTPForm,
   mail,
-  setIsEmailVerified,
+  // setIsEmailVerified,
 }) => {
   const inputsRef = useRef<HTMLInputElement[]>([]);
-  const [isVerifying, setIsVrifying] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [timer, setTimer] = useState(60);
+  const { verifyUserOtp } = useAuth();
   const prefixLength = Math.min(2, mail.indexOf("@"));
   const secretMail =
     mail.length > 2
@@ -56,33 +57,10 @@ const OTPForm: React.FC<OTPFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsVrifying(true);
+    setIsVerifying(true);
     const otp = inputsRef.current.map((input) => input?.value).join("");
-    try {
-      const res = await fetch(import.meta.env.VITE_VERIFY_OTP_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ otp, email: mail }),
-      });
-      if (!res.ok) {
-        const errorMessage = await res.text();
-        throw new Error(errorMessage || "Something went wrong");
-      }
-      const data = await res.json();
-      console.log("OTP verification response:", data);
-      if (data.status === "success") {
-        toast.success("Email verified successfully!");
-        setIsEmailVerified(true);
-        toggleOTPForm();
-      } else {
-        toast.error("Invalid OTP. Please try again.");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setIsVrifying(false);
+    await verifyUserOtp({ otp, mail });
+    setIsVerifying(false);
   };
 
   useEffect(() => {
@@ -160,7 +138,7 @@ const OTPForm: React.FC<OTPFormProps> = ({
           type="submit"
           disabled={!isOTPComplete || isVerifying}
           className={`mt-2 px-6 py-3 rounded-md text-white font-medium transition-colors ${
-            (isOTPComplete || isVerifying)
+            isOTPComplete || isVerifying
               ? "bg-indigo-600 hover:bg-indigo-700"
               : "bg-gray-400 cursor-not-allowed"
           }`}

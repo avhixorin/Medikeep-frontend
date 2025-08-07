@@ -1,4 +1,3 @@
-import { clearAuthUser } from "@/redux/features/authSlice";
 import { RootState } from "@/redux/store/store";
 import {
   LayoutGrid,
@@ -9,75 +8,30 @@ import {
   HeartPulse,
   User,
   ShieldCheck,
+  ChartColumn,
+  Bell,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
 import VideoCallScreen from "../../Chat/VideoCallScreen/VideoCallScreen";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { useEffect, useState } from "react";
 import { User as LoggedInUser } from "@/types/types";
 import useSockets from "@/hooks/useSockets";
 import { useTranslation } from "react-i18next";
+import useAuth from "@/hooks/useAuth";
 
 export default function LeftSidebar() {
-  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const admin = useSelector((state: RootState) => state.admin.admin);
   const navigate = useNavigate();
   const { t } = useTranslation();
-
-  const handleLogout = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out of your account.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, log me out",
-      cancelButtonText: "No, cancel",
-      reverseButtons: true,
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
-
-        const response = await axios.post(
-          logoutUrl,
-          {},
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          dispatch(clearAuthUser());
-          toast.success("You have been logged out successfully.");
-          setTimeout(() => navigate("/login"), 0);
-        } else {
-          toast.error(response.data.message || "An error occurred.");
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error(
-          error instanceof Error ? error.message : "An error occurred."
-        );
-      }
-    } else {
-      toast("Logout cancelled.");
-    }
-  };
-
   const { socket } = useSockets();
   const [someoneCalling, setSomeoneCalling] = useState(false);
   const [data, setData] = useState<{ from?: LoggedInUser }>({});
-
+  const { logoutUser } = useAuth();
   useEffect(() => {
     const handleVideoCallRequest = async (data: { from: LoggedInUser }) => {
       console.log("Video call request received", data);
@@ -149,7 +103,7 @@ export default function LeftSidebar() {
             label={t("sidebar.chats")}
           />
           <SidebarLink
-            to="/dashboard/medical-records"
+            to="/dashboard/records"
             icon={<HeartPulse size={24} />}
             label={t("sidebar.records")}
           />
@@ -161,11 +115,23 @@ export default function LeftSidebar() {
             />
           ) : (
             <SidebarLink
-              to="/dashboard/vitals"
+              to="/dashboard/doctors"
               icon={<User size={24} />}
+              label={t("sidebar.doctors")}
+            />
+          )}
+          {user?.role === "patient" && (
+            <SidebarLink
+              to="/dashboard/vitals"
+              icon={<ChartColumn size={24} />}
               label={t("sidebar.vitals")}
             />
           )}
+          <SidebarLink
+              to="/dashboard/notifications"
+              icon={<Bell size={24} />}
+              label={t("sidebar.notifications")}
+            />
           {admin ? (
             <SidebarLink
               to="/admin"
@@ -180,7 +146,7 @@ export default function LeftSidebar() {
         <SidebarButton
           icon={<LogOut size={24} />}
           label={t("sidebar.logout")}
-          onClick={handleLogout}
+          onClick={() => logoutUser()}
         />
         <SidebarLink
           to="/dashboard/settings"

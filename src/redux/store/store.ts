@@ -1,26 +1,11 @@
 import { combineReducers, configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import authSlice from "../features/authSlice";
 import allUsersSlice from "../features/allUsersSlice";
-import notificationsSlice from "../features/notificationsSlice"
+import notificationsSlice from "../features/notificationsSlice";
 import messageSlice from "../features/messageSlice";
 import selectedUserSlice from "../features/selectedUserSlice";
 import adminSlice from "../features/adminSlice";
-import {
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-
-const persistConfig = {
-  key: 'root',
-  version: 1,
-  storage,
-};
+import recordSlice from "../features/recordSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
@@ -28,19 +13,13 @@ const rootReducer = combineReducers({
   notifications: notificationsSlice,
   messages: messageSlice,
   selectedUser: selectedUserSlice,
-  admin: adminSlice
+  admin: adminSlice,
+  record: recordSlice,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

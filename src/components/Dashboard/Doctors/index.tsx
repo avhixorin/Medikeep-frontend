@@ -9,19 +9,16 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import PatientDetailsCard from "./PatientDetailsCard/PatientDetailsCard";
+import DoctorDetailsCard from "./DoctorCard";
 import usePartialUserData from "@/hooks/usePartialUserData";
 
-const Patients: React.FC = () => {
+const Doctors: React.FC = () => {
   const [isViewingDetails, setIsViewingDetails] = React.useState(false);
-  const [selectedPatient, setSelectedPatient] = React.useState<User | null>(
-    null
-  );
+  const [selectedDoctor, setSelectedDoctor] = React.useState<User | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -37,31 +34,29 @@ const Patients: React.FC = () => {
   };
   const { fetchPartialUserData } = usePartialUserData();
   useEffect(() => {
-    if (!user?.patients) {
-      fetchPartialUserData("patients");
+    if (!user?.doctors) {
+      fetchPartialUserData("doctors");
     }
-  }, [fetchPartialUserData, user?.patients]);
+  }, [fetchPartialUserData, user?.doctors]);
   return (
     <div className="w-full h-full bg-transparent flex flex-col items-center px-6 py-4 dark:bg-background">
-      {isViewingDetails && selectedPatient && (
-        <PatientDetailsCard
-          patient={selectedPatient}
+      {isViewingDetails && selectedDoctor && (
+        <DoctorDetailsCard
+          doctor={selectedDoctor}
           setIsViewingDetails={setIsViewingDetails}
           calcAge={calcAge}
         />
       )}
-
       <div className="w-full flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-semibold text-foreground">Patients</h1>
+          <h1 className="text-3xl font-semibold text-foreground">Doctors</h1>
           <Users size={28} className="text-muted-foreground" />
         </div>
       </div>
-
       <div className="relative w-full mb-8">
         <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Search patients..."
+          placeholder="Search doctors..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-12 pr-12 py-3 text-lg bg-background border border-border rounded-lg shadow-sm focus:ring-2 focus:ring-primary text-foreground"
@@ -77,9 +72,8 @@ const Patients: React.FC = () => {
           </Button>
         )}
       </div>
-
-      {user?.patients && user.patients.length > 0 ? (
-        user.patients.map((patient, index) => (
+      {user?.doctors && user.doctors.length > 0 ? (
+        user.doctors.map((doctor, index) => (
           <div
             key={index}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full"
@@ -89,36 +83,33 @@ const Patients: React.FC = () => {
                 <div className="flex items-center gap-4">
                   <Avatar className="w-16 h-16 border-2 border-primary">
                     <AvatarImage
-                      src={patient.profilePicture}
-                      alt={`${patient.firstName} ${patient.lastName}`}
+                      src={doctor.profilePicture}
+                      alt={`${doctor.firstName} ${doctor.lastName}`}
                     />
                     <AvatarFallback>
-                      {patient.firstName[0]}
-                      {patient.lastName[0]}
+                      {doctor.firstName[0]}
+                      {doctor.lastName[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <CardTitle className="text-lg font-semibold text-foreground">
-                      {patient.firstName} {patient.lastName}
+                      {doctor.firstName} {doctor.lastName}
                     </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
-                      Age: {calcAge(patient.dateOfBirth)}
-                    </CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-2">
-                  Email: {patient.email}
+                  Email: {doctor.email}
                 </p>
-                <p className="text-muted-foreground">Phone: {patient.phone}</p>
+                <p className="text-muted-foreground">Phone: {doctor.phone}</p>
               </CardContent>
               <CardFooter>
                 <Button
                   className="w-full py-2 bg-secondary text-secondary-foreground hover:bg-secondary/80"
                   onClick={() =>
-                    patient &&
-                    (setSelectedPatient(patient), setIsViewingDetails(true))
+                    doctor &&
+                    (setSelectedDoctor(doctor), setIsViewingDetails(true))
                   }
                 >
                   View Full Details
@@ -129,11 +120,11 @@ const Patients: React.FC = () => {
         ))
       ) : (
         <div className="w-full h-full flex justify-center items-center text-muted-foreground text-xl font-semibold">
-          No patients found.
+          No doctors found.
         </div>
       )}
     </div>
   );
 };
 
-export default Patients;
+export default Doctors;

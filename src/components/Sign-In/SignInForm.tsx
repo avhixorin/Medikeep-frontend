@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { clearAuthUser, setAuthUser } from "../../redux/features/authSlice";
+import { clearAuthUser } from "../../redux/features/authSlice";
 import { Eye, EyeOff } from "lucide-react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import toast from "react-hot-toast";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import "./SignInForm.css";
@@ -14,11 +13,12 @@ import { resetAllUsers } from "@/redux/features/allUsersSlice";
 import { clearAllMessages } from "@/redux/features/messageSlice";
 import { clearNotifications } from "@/redux/features/notificationsSlice";
 import { clearSelectedUser } from "@/redux/features/selectedUserSlice";
-import { resetAdmin, setAdmin } from "@/redux/features/adminSlice";
+import { resetAdmin } from "@/redux/features/adminSlice";
+import useAuth from "@/hooks/useAuth";
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const { loginUser } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,40 +33,8 @@ const SignInForm: React.FC = () => {
 
   const handleSubmit = async (values: { email: string; password: string }) => {
     setLoading(true);
-    try {
-      const loginUrl = import.meta.env.VITE_SIGN_IN_URL;
-      const response = await fetch(loginUrl, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to log in");
-      }
-
-      const data = await response.json();
-      if (data?.statusCode === 200) {
-        toast.success("Logged in successfully");
-        if (data.data) {
-          dispatch(setAuthUser(data.data));
-          if(data.data._id === import.meta.env.VITE_ADMIN_ID){
-            dispatch(setAdmin());
-          }
-        }
-        navigate("/dashboard");
-      }
-    } catch (error: unknown) {
-      toast.error(
-        (error as Error).message || "An error occurred while logging in"
-      );
-    } finally {
-      setLoading(false);
-    }
+    await loginUser(values);
+    setLoading(false);
   };
   useEffect(() => {
     dispatch(resetAllUsers());

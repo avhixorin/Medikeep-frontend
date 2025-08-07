@@ -1,5 +1,4 @@
 import { RootState } from "@/redux/store/store";
-import { Bell, BellDotIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -7,7 +6,6 @@ import SearchDoctorsForAppointments from "./SearchDoctorsForAppointments/SearchD
 import { Appointment } from "@/types/types";
 import { RescheduleForm } from "../RescheduleForm/RescheduleForm";
 import { Button } from "@/components/ui/button";
-import NotificationDrawer from "../../Notifications/NotificationDrawer";
 import ManageAppointmentRequests from "../ManageAppointmentRequests/ManageAppointmenmentRequests";
 import AppointmentCallScreen from "../AppointmentCallScreen/AppointmentCallScreen";
 
@@ -15,7 +13,6 @@ const PatientAppointments: React.FC = () => {
   const [isSchedulingAppointment, setIsSchedulingAppointment] = useState(false);
   const [appointInQuestion, setAppointInQuestion] = useState<Appointment>();
   const [isSomeOneCalling, setIsSomeOneCalling] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [isManagingAppointmentRequests, setIsManagingAppointmentRequests] =
     useState(false);
   const [reScheduleAppointment, setReScheduleAppointment] =
@@ -24,11 +21,8 @@ const PatientAppointments: React.FC = () => {
   const appointments = useSelector(
     (state: RootState) => state.auth.user?.appointments
   );
-  const user = useSelector((state: RootState) => state.auth.user);
-
   return (
     <div className="w-full h-full flex flex-col bg-transparent p-6 gap-4 dark:bg-[#141414]">
-      {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       {isManagingAppointmentRequests && (
         <ManageAppointmentRequests
           setIsManagingAppointmentRequests={setIsManagingAppointmentRequests}
@@ -71,19 +65,6 @@ const PatientAppointments: React.FC = () => {
           >
             Schedule an Appointment
           </Button>
-          {(user?.notifications?.length ?? 0) > 0 ? (
-            <BellDotIcon
-              size={58}
-              className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-              onClick={() => setIsOpen(true)}
-            />
-          ) : (
-            <Bell
-              size={58}
-              className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-              onClick={() => setIsOpen(true)}
-            />
-          )}
         </div>
       </div>
 

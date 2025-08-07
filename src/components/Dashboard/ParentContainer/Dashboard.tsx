@@ -1,41 +1,39 @@
 import React, { useEffect } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import useAllUsers from "@/hooks/useAllUsers";
 import LeftSidebar from "./LeftSideBar/LeftSideBar";
-
-const useTheme = (userTheme: string | undefined) => {
-  useEffect(() => {
-    const htmlElement = document.querySelector("html");
-    const themeClass = userTheme || "light";
-    htmlElement?.classList.remove("dark", "light");
-    htmlElement?.classList.add(themeClass);
-  }, [userTheme]);
-};
+import useAuth from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 const Dashboard: React.FC = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
+  const { validateSession } = useAuth();
   const { fetchAllUsers } = useAllUsers();
-  const userTheme = user?.settingPreferences?.general?.theme;
-  useTheme(userTheme);
+  const navigate = useNavigate();
   useEffect(() => {
     if (allUsers.length === 0) {
       fetchAllUsers();
     }
   }, [fetchAllUsers, allUsers]);
 
-
-  if (!user) {
-    return <Navigate to="/unauthorized" replace />;
-  }
+  useEffect(() => {
+    const checkSession = async () => {
+      const isValid = await validateSession();
+      if (!isValid) {
+        navigate("/login");
+        toast.error("Session expired. Please log in again.");
+      }
+    };
+    checkSession();
+  }, [navigate, validateSession]);
 
   return (
-    <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-[#0C0C0C]">
+    <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-background">
       <LeftSidebar />
-      <div className="flex-1 bg-transparent p-2 dark:bg-[#0C0C0C]">
-        <main className="w-full h-full overflow-y-auto scrollbar-webkit border border-gray-300 dark:border-gray-700 rounded-md overflow-x-auto">
+      <div className="flex-1 bg-transparent dark:bg-background p-2">
+        <main className="w-full h-full overflow-y-auto overflow-x-auto scrollbar-webkit border border-muted rounded-md">
           <Outlet />
         </main>
       </div>

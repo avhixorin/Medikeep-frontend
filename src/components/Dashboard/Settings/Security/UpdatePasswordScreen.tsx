@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import useUpdate from "@/hooks/useUpdate";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import useAuth from "@/hooks/useAuth";
 
 const UpdatePasswordScreen: React.FC<{ onClose: (arg0: boolean) => void }> = ({
   onClose,
@@ -15,8 +15,7 @@ const UpdatePasswordScreen: React.FC<{ onClose: (arg0: boolean) => void }> = ({
   const [oldPassword, setOldPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const url = import.meta.env.VITE_UPDATE_PASSWORD_URL;
-  const { updatePassword } = useUpdate(url);
+  const { updatePassword } = useAuth();
 
   const handlePasswordUpdate = async () => {
     setUpdating(true);
@@ -27,7 +26,7 @@ const UpdatePasswordScreen: React.FC<{ onClose: (arg0: boolean) => void }> = ({
     }
     if (user?._id) {
       try {
-        await updatePassword(oldPassword, newPassword);
+        await updatePassword({oldPassword, newPassword});
         onClose(false);
       } catch (error) {
         toast.error("Failed to update password");

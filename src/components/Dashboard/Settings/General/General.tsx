@@ -8,8 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import useTheme from "@/hooks/useTheme";
-import React from "react";
+import React, { useCallback } from "react";
 import { RootState } from "@/redux/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import Upload from "@/utils/Upload";
@@ -18,6 +17,7 @@ import {
   updateGeneralSettings,
   updateUserFields,
 } from "@/redux/features/authSlice";
+import { useTheme } from "next-themes";
 
 const General = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -40,8 +40,10 @@ const General = () => {
   });
   const { t, i18n } = useTranslation();
   const [language, setLanguage] = React.useState(i18n.language);
-  const { toggleTheme } = useTheme();
-
+  const { setTheme, resolvedTheme } = useTheme();
+  const toggleTheme = useCallback(() => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  }, [resolvedTheme, setTheme]);
   const cancelUpload = () => {
     setUploadClicked(false);
   };
@@ -126,7 +128,10 @@ const General = () => {
             </div>
 
             {Object.keys(fieldState).map((key) => (
-              <div key={key} className="flex md:flex-row flex-col md:items-center justify-between">
+              <div
+                key={key}
+                className="flex md:flex-row flex-col md:items-center justify-between"
+              >
                 <div className="space-y-1 max-md:flex max-md:flex-col max-md:gap-2">
                   <Label>{t(`settings.general.${key}`)}</Label>
                   {fieldsStatus[key as keyof typeof fieldsStatus] ? (
@@ -194,7 +199,7 @@ const General = () => {
                 </div>
               </div>
               <Switch
-                checked={user?.settingPreferences?.general.theme === "dark"}
+                checked={resolvedTheme === "dark"}
                 onCheckedChange={toggleTheme}
               />
             </div>

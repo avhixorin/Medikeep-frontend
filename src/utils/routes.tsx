@@ -55,11 +55,21 @@ const DashboardWelcomePage = lazy(
 const DashboadChatPage = lazy(
   () => import("../components/Dashboard/Chat/Chat")
 );
-const DashboardMedicalRecordsPage = lazy(
-  () => import("../components/Dashboard/Records/MedicalRecords")
+const DashboardRecordsPage = lazy(
+  () => import("../components/Dashboard/Records")
 );
+const DashboardRecordDetailsPage = lazy(
+  () => import("../components/Dashboard/Records/RecordDetails")
+);
+
 const DashboardPatientsPage = lazy(
   () => import("../components/Dashboard/Patients/Patients")
+);
+const DashboardDoctorsPage = lazy(
+  () => import("../components/Dashboard/Doctors")
+);
+const DashboardNotificationsPage = lazy(
+  () => import("../components/Dashboard/Notifications")
 );
 const DashboardHealthVitalsPage = lazy(
   () => import("../components/Dashboard/HealthVitals/HealthVitals")
@@ -212,10 +222,19 @@ const router = createBrowserRouter(
           }
         />
         <Route
-          path="medical-records"
+          path="records"
           element={
             <Suspense fallback={<LoadingScreen />}>
-              <DashboardMedicalRecordsPage />
+              <DashboardRecordsPage />
+            </Suspense>
+          }
+        />
+        // Place these routes next to each other, not nested.
+        <Route
+          path="records/:entityId"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DashboardRecordDetailsPage />
             </Suspense>
           }
         />
@@ -228,10 +247,26 @@ const router = createBrowserRouter(
           }
         />
         <Route
+          path="doctors"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DashboardDoctorsPage />
+            </Suspense>
+          }
+        />
+        <Route
           path="vitals"
           element={
             <Suspense fallback={<LoadingScreen />}>
               <DashboardHealthVitalsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="notifications"
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DashboardNotificationsPage />
             </Suspense>
           }
         />

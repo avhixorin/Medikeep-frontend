@@ -28,7 +28,9 @@ export type User = {
   specialization?: string;
   yearsOfExperience?: number;
   clinicAffiliation?: string[];
-  patients?: string[];
+  patients?: User[];
+  doctors?: User[];
+  medicalRecords?: MedicalRecord[];
   consultations?: {
     patientId: string;
     date: Date;
@@ -176,6 +178,20 @@ export type MedicalHistory ={
     validitiy: string;
   };
 
+}
+
+export type MedicalRecord = {
+  _id: string;
+  title?: string;
+  notes?: string;
+  fileName: string;
+  fileType: string;
+  size: number
+  url: string;
+  uploadedBy: User;
+  patient: User;
+  doctor: User;
+  uploadedAt: Date;
 }
 
 export type DayData = number[];

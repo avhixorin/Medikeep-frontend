@@ -1,4 +1,4 @@
-import { Appointment, User } from "@/types/types";
+import { Appointment, User } from "../../types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface AuthState {
   user: User | null;

@@ -7,9 +7,9 @@ import { Button } from "../ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
-import useForgot from "@/hooks/useForgot";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const Forget = () => {
   const [credentialsTrue, setCredentialsTrue] = useState(false);
@@ -37,30 +37,37 @@ const Forget = () => {
     }),
   });
   const navigate = useNavigate();
-  const { verifyUser, resetPassword } = useForgot();
+  const { verifyUser, resetPassword } = useAuth();
   const handleFormSubmit = async (values: {
     email: string;
     dateOfBirth: Date | null;
     password: string;
   }) => {
     const { email, dateOfBirth, password } = values;
-    if(!credentialsTrue){
-    const verificationData = await verifyUser(email, dateOfBirth!);
-    if (verificationData.statusCode !== 200) {
-      toast.error("Verification failed. Please check your details.");
+    if (!email || !dateOfBirth || !password) {
+      toast.error("Please fill all required fields.");
       return;
     }
-  }
+    if (!credentialsTrue) {
+      const verificationData = await verifyUser({ email, dateOfBirth });
+      if (verificationData.statusCode !== 200) {
+        toast.error("Verification failed. Please check your details.");
+        return;
+      }
+    }
     setCredentialsTrue(true);
-    if(credentialsTrue){
-      const passwordUpdateData = await resetPassword(email, dateOfBirth!, password);
-    if (passwordUpdateData.statusCode !== 200) {
-      toast.error("Password update failed. Please try again.");
-      return;
-    }
+    if (credentialsTrue) {
+      const passwordUpdateData = await resetPassword({
+        email,
+        dateOfBirth,
+        password,
+      });
+      if (passwordUpdateData.statusCode !== 200) {
+        toast.error("Password update failed. Please try again.");
+        return;
+      }
       navigate("/login");
     }
-
   };
 
   return (
@@ -166,7 +173,8 @@ const Forget = () => {
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                      Confirm New Password<span className="text-red-500">*</span>
+                      Confirm New Password
+                      <span className="text-red-500">*</span>
                     </label>
                     <Field
                       name="confirmPassword"

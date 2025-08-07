@@ -9,7 +9,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import InviteScreen from "./InviteScreen";
 import SearchScreen from "./SearchScreen";
-import useUpdate from "@/hooks/useUpdate";
+import useAuth from "@/hooks/useAuth";
 
 const navItems = [
   { href: "/dashboard/settings/general", title: "settings.navItems.general" },
@@ -30,8 +30,7 @@ export default function SettingsPage() {
   const [isInviting, setIsInviting] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const updateUrl = import.meta.env.VITE_UPDATE_URL;
-  const { updateField } = useUpdate(updateUrl);
+  const { updateField } = useAuth();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
