@@ -44,23 +44,30 @@ const Forget = () => {
     password: string;
   }) => {
     const { email, dateOfBirth, password } = values;
-    if(!credentialsTrue){
-    const verificationData = await verifyUser(email, dateOfBirth!);
-    if (verificationData.statusCode !== 200) {
-      toast.error("Verification failed. Please check your details.");
+    if (!email || !dateOfBirth || !password) {
+      toast.error("Please fill all required fields.");
       return;
     }
-  }
+    if (!credentialsTrue) {
+      const verificationData = await verifyUser({ email, dateOfBirth });
+      if (verificationData.statusCode !== 200) {
+        toast.error("Verification failed. Please check your details.");
+        return;
+      }
+    }
     setCredentialsTrue(true);
-    if(credentialsTrue){
-      const passwordUpdateData = await resetPassword(email, dateOfBirth!, password);
-    if (passwordUpdateData.statusCode !== 200) {
-      toast.error("Password update failed. Please try again.");
-      return;
-    }
+    if (credentialsTrue) {
+      const passwordUpdateData = await resetPassword({
+        email,
+        dateOfBirth,
+        password,
+      });
+      if (passwordUpdateData.statusCode !== 200) {
+        toast.error("Password update failed. Please try again.");
+        return;
+      }
       navigate("/login");
     }
-
   };
 
   return (
@@ -166,7 +173,8 @@ const Forget = () => {
 
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                      Confirm New Password<span className="text-red-500">*</span>
+                      Confirm New Password
+                      <span className="text-red-500">*</span>
                     </label>
                     <Field
                       name="confirmPassword"

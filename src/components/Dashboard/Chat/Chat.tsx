@@ -19,8 +19,6 @@ import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { addMyMessage } from "@/redux/features/messageSlice";
 import { v4 as uuid } from "uuid";
 import { setSelectedUser } from "@/redux/features/selectedUserSlice";
-import NotificationDrawer from "../Notifications";
-import { User } from "@/types/types";
 import Swal from "sweetalert2";
 import VideoCallScreen from "./VideoCallScreen/VideoCallScreen";
 import toast from "react-hot-toast";
@@ -28,12 +26,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { format } from "date-fns";
 import usePartialUserData from "@/hooks/usePartialUserData";
 import styled from "styled-components";
+import { User } from "@/types/types";
 const Chat: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isManagingConnections, setIsManagingConnections] = useState(false);
   const [isVideoCalling, setIsVideoCalling] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [activeFriends, setActiveFriends] = useState<User[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -131,7 +129,6 @@ const Chat: React.FC = () => {
         />
       )}
       {isSearching && <SearchBox setIsSearching={setIsSearching} />}
-      {isOpen && <NotificationDrawer setIsOpen={setIsOpen} />}
       <div className="w-full flex flex-col gap-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="max-md:w-full flex justify-between md:justify-normal items-start md:items-center gap-3 relative">
@@ -183,7 +180,6 @@ const Chat: React.FC = () => {
               <button
                 className="w-full py-3 text-lg font-medium text-white transition"
                 onClick={() => {
-                  setIsOpen(true);
                   setIsMenuOpen(false);
                 }}
               >
@@ -216,13 +212,11 @@ const Chat: React.FC = () => {
               <BellDotIcon
                 size={58}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-                onClick={() => setIsOpen(true)}
               />
             ) : (
               <Bell
                 size={58}
                 className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-                onClick={() => setIsOpen(true)}
               />
             )}
           </div>

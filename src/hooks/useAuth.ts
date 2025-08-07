@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
@@ -297,11 +298,10 @@ const useAuth = () => {
     },
   });
 
-  // Update Password
   const updatePasswordMutation = useMutation({
     mutationFn: async ({ oldPassword, newPassword }: { oldPassword: string; newPassword: string }) => {
       const { data } = await axios.patch(
-        baseUrl + "/update-password", // Assuming a specific endpoint for password update
+        baseUrl + "/update-password", 
         { oldPassword, newPassword },
         { withCredentials: true, headers: { "Content-Type": "application/json" } }
       );
@@ -312,7 +312,6 @@ const useAuth = () => {
     },
     onSuccess: () => {
       toast.success("Password updated successfully");
-      // No need to dispatch setAuthUser as user data (except password) doesn't change
     },
     onError: (error: any) => {
       const errMsg = axios.isAxiosError(error) && error.response?.data?.message
@@ -382,13 +381,12 @@ const useAuth = () => {
           axios.isAxiosError(error) && error.response?.data?.message
             ? error.response.data.message
             : "Fetch failed";
-        // Do not toast here, let the useQuery's onError handle it in the component
         console.error("Record fetching error:", error);
-        throw new Error(errMsg); // Throw to let useQuery's onError catch it
+        throw new Error(errMsg); 
       }
     },
 
-    validateSession, // This remains a standalone async function for session verification
+    validateSession,
     updateField: updateFieldMutation.mutateAsync,
     updateFieldLoading: updateFieldMutation.isPending,
 

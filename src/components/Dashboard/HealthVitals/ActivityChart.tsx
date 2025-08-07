@@ -1,62 +1,63 @@
 import React from "react"
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import { AreaChart, Area, CartesianGrid, XAxis, Tooltip as ChartTooltip } from 'recharts'
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltipContent } from '@/components/ui/chart'
+// import { AreaChart, Area, CartesianGrid, XAxis, Tooltip as ChartTooltip } from 'recharts'
+// import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltipContent } from '@/components/ui/chart'
 
-const chartConfig = {
-    visitors: {
-        label: "Activity",
-    },
-    stepCount: {
-        label: "Step Count",
-        color: "hsl(var(--chart-1))",
-    },
-    heartRate: {
-        label: "Heart Rate",
-        color: "hsl(var(--chart-2))",
-    },
-} satisfies ChartConfig
+// const chartConfig = {
+//     visitors: {
+//         label: "Activity",
+//     },
+//     stepCount: {
+//         label: "Step Count",
+//         color: "hsl(var(--chart-1))",
+//     },
+//     heartRate: {
+//         label: "Heart Rate",
+//         color: "hsl(var(--chart-2))",
+//     },
+// } 
+// satisfies ChartConfig
 
 export function ActivityChart() {
     const [timeRange, setTimeRange] = React.useState("90d")
 
-    const generateRandomData = (numDays: number) => {
-        const activityData = [];
-        const today = new Date();
+    // const generateRandomData = (numDays: number) => {
+    //     const activityData = [];
+    //     const today = new Date();
         
-        for (let i = 0; i < numDays; i++) {
-          const date = new Date();
-          date.setDate(today.getDate() - i);
-          const stepCount = Math.floor(Math.random() * (10000 - 4000 + 1)) + 4000;
+    //     for (let i = 0; i < numDays; i++) {
+    //       const date = new Date();
+    //       date.setDate(today.getDate() - i);
+    //       const stepCount = Math.floor(Math.random() * (10000 - 4000 + 1)) + 4000;
       
-          const heartRate = Math.floor(Math.random() * (80 - 60 + 1)) + 60;
+    //       const heartRate = Math.floor(Math.random() * (80 - 60 + 1)) + 60;
       
-          activityData.push({
-            date: date.toISOString().split('T')[0],
-            stepCount,
-            heartRate,
-          });
-        }
+    //       activityData.push({
+    //         date: date.toISOString().split('T')[0],
+    //         stepCount,
+    //         heartRate,
+    //       });
+    //     }
         
-        return activityData;
-      };
+    //     return activityData;
+    //   };
       
-      const generatedData = generateRandomData(90);
+    //   const generatedData = generateRandomData(90);
 
-      const filteredData = generatedData.filter((item) => {
-        const date = new Date(item.date)
-        const referenceDate = new Date("2024-06-30")
-        let daysToSubtract = 90
-        if (timeRange === "30d") {
-            daysToSubtract = 30
-        } else if (timeRange === "7d") {
-            daysToSubtract = 7
-        }
-        const startDate = new Date(referenceDate)
-        startDate.setDate(startDate.getDate() - daysToSubtract)
-        return date >= startDate
-    })
+    //   const filteredData = generatedData.filter((item) => {
+    //     const date = new Date(item.date)
+    //     const referenceDate = new Date("2024-06-30")
+    //     let daysToSubtract = 90
+    //     if (timeRange === "30d") {
+    //         daysToSubtract = 30
+    //     } else if (timeRange === "7d") {
+    //         daysToSubtract = 7
+    //     }
+    //     const startDate = new Date(referenceDate)
+    //     startDate.setDate(startDate.getDate() - daysToSubtract)
+    //     return date >= startDate
+    // })
       
     return (
         <Card>
@@ -86,7 +87,7 @@ export function ActivityChart() {
                 </Select>
             </CardHeader>
             <CardContent className="mt-4">
-                <ChartContainer
+                {/* <ChartContainer
                     config={chartConfig}
                     className="aspect-auto h-[250px] w-full"
                 >
@@ -157,12 +158,12 @@ export function ActivityChart() {
                             dataKey="stepCount"
                             type="natural"
                             fill="url(#fillDesktop)"
-                            stroke="rgba(255, 80, 80, 1)"  // Dark red stroke
+                            stroke="rgba(255, 80, 80, 1)" 
                             stackId="a"
                         />
-                        <ChartLegend content={<ChartLegendContent />} />
+                        <ChartLegend content={<ChartLegendContent payload={undefined} />} />
                     </AreaChart>
-                </ChartContainer>
+                </ChartContainer> */}
             </CardContent>
         </Card>
     )

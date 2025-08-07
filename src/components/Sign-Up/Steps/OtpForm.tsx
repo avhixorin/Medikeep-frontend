@@ -10,7 +10,7 @@ interface OTPFormProps {
 const OTPForm: React.FC<OTPFormProps> = ({
   toggleOTPForm,
   mail,
-  setIsEmailVerified,
+  // setIsEmailVerified,
 }) => {
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -59,7 +59,7 @@ const OTPForm: React.FC<OTPFormProps> = ({
     e.preventDefault();
     setIsVerifying(true);
     const otp = inputsRef.current.map((input) => input?.value).join("");
-    await verifyUserOtp(otp, mail, setIsEmailVerified, toggleOTPForm);
+    await verifyUserOtp({ otp, mail });
     setIsVerifying(false);
   };
 
