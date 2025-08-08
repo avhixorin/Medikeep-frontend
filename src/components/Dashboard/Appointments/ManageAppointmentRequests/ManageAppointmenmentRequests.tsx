@@ -1,6 +1,6 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import useSockets from "@/hooks/useSockets";
 import { RootState } from "@/redux/store/store";
+import { useSocket } from "@/sockets/context";
 import { Appointment } from "@/types/types";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -15,7 +15,7 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
 }) => {
   const [isAccepting, setIsAccepting] = useState<boolean>(false);
   const [isDeclining, setIsDeclining] = useState<boolean>(false);
-  const { socket } = useSockets();
+  const { socket } = useSocket();
 
   const user = useSelector((state: RootState) => state.auth.user);
 
