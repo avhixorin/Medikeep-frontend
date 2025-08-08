@@ -18,7 +18,7 @@ import {
   useUploadUserRecords,
 } from "../../hooks/mutationHooks";
 import { useUserRecords } from "../../hooks/dataHooks";
-import { AiChatModal } from "./SearchResults";
+import { AiChatModal } from "./AIChatModal";
 
 const RecordDetails = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);

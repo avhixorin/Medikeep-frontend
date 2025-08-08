@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import useSockets from "./useSockets";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
+import { useSocket } from "@/sockets/context";
 
 const useRTC = () => {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
@@ -9,7 +9,7 @@ const useRTC = () => {
     audio: true,
     video: { width: 1280, height: 720 },
   });
-  const { socket } = useSockets();
+  const { socket } = useSocket();
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
   const servers = useMemo(

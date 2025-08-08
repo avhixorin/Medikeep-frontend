@@ -4,9 +4,9 @@ import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import SearchTile from "./SearchTile";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import useSockets from "@/hooks/useSockets";
 import { RootState } from "@/redux/store/store";
 import { connectionResponse, User } from "@/types/types";
+import { useSocket } from "@/sockets/context";
 
 type SearchBoxProps = {
   setIsSearching: (isSearching: boolean) => void;
@@ -14,7 +14,7 @@ type SearchBoxProps = {
 
 const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearching }) => {
   const dispatch = useDispatch();
-  const { socket } = useSockets();
+  const { socket } = useSocket();
 
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
   const { user } = useSelector((state: RootState) => state.auth);

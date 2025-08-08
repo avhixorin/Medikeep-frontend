@@ -22,7 +22,6 @@ const usePartialUserData = () => {
     });
     if (res.ok) {
       const data = await res.json();
-      console.log("Data for the partial user", data)
       if (field === "appointments") {
         dispatch(setUserAppointments(data.data.appointments));
         dispatch(setUserAppointmentRequests(data.data.appointmentRequests));

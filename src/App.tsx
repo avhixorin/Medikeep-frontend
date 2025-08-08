@@ -7,6 +7,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SocketProvider } from "./sockets/context";
 
 const App: React.FC = () => {
   const queryClient = new QueryClient();
@@ -16,7 +17,9 @@ const App: React.FC = () => {
         <ThemeProvider attribute="class">
           <Provider store={store}>
             <I18nextProvider i18n={i18n}>
-              <Outlet />
+              <SocketProvider>
+                <Outlet />
+              </SocketProvider>
               <Toaster position="top-center" />
             </I18nextProvider>
           </Provider>
