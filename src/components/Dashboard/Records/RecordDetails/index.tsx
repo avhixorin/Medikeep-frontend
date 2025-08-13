@@ -1,4 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { MoreHorizontal, Trash2 } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -8,17 +12,39 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import { User } from "@/types/types";
-import { useParams } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { MedicalRecord, User } from "@/types/types";
 import { RootState } from "@/redux/store/store";
-import { useSelector } from "react-redux";
 import {
   useDeleteUserRecord,
   useUploadUserRecords,
 } from "../../hooks/mutationHooks";
 import { useUserRecords } from "../../hooks/dataHooks";
 import { AiChatModal } from "./AIChatModal";
+
+// Utility function to format file size
+const formatBytes = (bytes: number, decimals = 2): string => {
+  if (!+bytes) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+};
 
 const RecordDetails = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -65,9 +91,9 @@ const RecordDetails = () => {
       }
     }
   }, [entityId, getEntityData]);
+
   const recordList = Array.isArray(records) ? records : [];
   const total = recordList?.length ?? 0;
-
   const imageCount =
     recordList?.filter((f) => f.fileType.startsWith("image/")).length ?? 0;
   const pdfCount =
@@ -113,24 +139,13 @@ const RecordDetails = () => {
     };
   }, [cleanupPreviewUrl]);
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
   const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filesFromInput = e.target.files;
     if (!filesFromInput) return;
-
     const validFiles = Array.from(filesFromInput).filter((file) =>
       ["application/pdf", "image/png", "image/jpeg"].includes(file.type)
     );
-
     const combined = [...selectedFiles, ...validFiles];
-
     const uniqueFilesMap = new Map<string, File>();
     for (const file of combined) {
       const key = file.name + file.size;
@@ -138,7 +153,6 @@ const RecordDetails = () => {
         uniqueFilesMap.set(key, file);
       }
     }
-
     const uniqueFiles = Array.from(uniqueFilesMap.values()).slice(0, 5);
     setSelectedFiles(uniqueFiles);
   };
@@ -148,9 +162,7 @@ const RecordDetails = () => {
       if (fileOrUrl.endsWith(".pdf")) {
         window.open(fileOrUrl, "_blank");
       } else {
-        if (previewUrl) {
-          URL.revokeObjectURL(previewUrl);
-        }
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
         setPreviewUrl(fileOrUrl);
         setShowPreviewModal(true);
       }
@@ -160,9 +172,7 @@ const RecordDetails = () => {
         window.open(url, "_blank");
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       } else {
-        if (previewUrl) {
-          URL.revokeObjectURL(previewUrl);
-        }
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
         setPreviewUrl(url);
         setShowPreviewModal(true);
       }
@@ -181,17 +191,13 @@ const RecordDetails = () => {
           {user?.role === "doctor" ? "Patient" : "Doctor"} Name:{" "}
           {entity?.firstName} {entity?.lastName}
         </h1>
-        <div className="text-sm text-muted-foreground mt-2 flex gap-3">
+        <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-x-4 gap-y-1">
           {entity?.role === "doctor" ? (
-            <>
-              <span>Specialization: {entity?.specialization}</span>
-            </>
+            <span>Specialization: {entity?.specialization}</span>
           ) : (
             <>
               <span>Age: {entity?.dateOfBirth}</span>
-              <span>
-                Sex: {entity?.gender === "female" ? "Female" : "Male"}
-              </span>
+              <span>Sex: {entity?.gender === "female" ? "Female" : "Male"}</span>
               <span>Email: {entity?.email}</span>
             </>
           )}
@@ -204,11 +210,10 @@ const RecordDetails = () => {
             Total Files: <strong className="text-foreground">{total}</strong>
           </span>
           <span>
-            Image Files:{" "}
-            <strong className="text-foreground">{imageCount}</strong>
+            Images: <strong className="text-foreground">{imageCount}</strong>
           </span>
           <span>
-            PDF Files: <strong className="text-foreground">{pdfCount}</strong>
+            PDFs: <strong className="text-foreground">{pdfCount}</strong>
           </span>
         </div>
         <Dialog open={showModal} onOpenChange={setShowModal}>
@@ -219,7 +224,7 @@ const RecordDetails = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Upload Prescriptions</DialogTitle>
+              <DialogTitle>Upload Records</DialogTitle>
             </DialogHeader>
             <Input
               type="file"
@@ -233,7 +238,7 @@ const RecordDetails = () => {
               {selectedFiles.length > 0 &&
                 selectedFiles.map((file, index) => (
                   <li
-                    key={index}
+                    key={`${file.name}-${index}`}
                     className="flex items-center justify-between bg-muted px-4 py-2 rounded-lg cursor-pointer"
                     onClick={() => handlePreview(file)}
                   >
@@ -265,60 +270,102 @@ const RecordDetails = () => {
         </Dialog>
       </div>
 
-      <div className="flex-1 w-full mt-6">
-        {recordsLoading ? (
-          <div className="flex justify-center items-center h-full text-muted-foreground text-center">
-            Loading records...
-          </div>
-        ) : recordsError ? (
-          <div className="flex justify-center items-center h-full text-destructive text-center">
-            Error loading records. Please try again.
-          </div>
-        ) : entity && records?.length === 0 ? (
-          <div className="flex justify-center items-center h-full text-muted-foreground text-center">
-            No available {user?.role === "Doctor" ? "doctors" : "patients"}{" "}
-            record. Start uploading prescriptions and records to view them here.
-          </div>
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {records &&
-              records.length > 0 &&
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              records.map((record: any) => (
-                <li
+      <div className="flex-1 w-full mt-2 border rounded-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Uploaded By</TableHead>
+              <TableHead>Size</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {recordsLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center">
+                  Loading records...
+                </TableCell>
+              </TableRow>
+            ) : recordsError ? (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="h-24 text-center text-destructive"
+                >
+                  Error loading records. Please try again.
+                </TableCell>
+              </TableRow>
+            ) : recordList.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="h-24 text-center">
+                  No records have been uploaded yet.
+                </TableCell>
+              </TableRow>
+            ) : (
+              recordList.map((record: MedicalRecord) => (
+                <TableRow
                   key={record._id}
-                  className="flex items-center justify-between bg-muted px-4 py-2 rounded-lg cursor-pointer"
+                  className="cursor-pointer"
                   onClick={() => handlePreview(record.url)}
                 >
-                  <span className="text-sm text-foreground truncate max-w-xs">
+                  <TableCell className="font-medium">
                     {record.fileName}
-                  </span>
-                  <span className="text-sm text-foreground truncate max-w-xs">
-                    {record.fileType}
-                  </span>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="hover:bg-destructive/10"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteFile(record._id);
-                    }}
-                    disabled={isDeleting}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                </li>
-              ))}
-          </ul>
-        )}
+                  </TableCell>
+                  <TableCell>
+                    {record.fileType.includes("pdf") ? "PDF" : "Image"}
+                  </TableCell>
+                  <TableCell>
+                    {record.uploadedBy._id === user?._id
+                      ? "Me"
+                      : `${entity?.firstName} ${entity?.lastName}`}
+                  </TableCell>
+                  <TableCell>{formatBytes(record.size)}</TableCell>
+                  <TableCell>
+                    {new Date(record.uploadedAt).toLocaleDateString("en-GB")}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="h-8 w-8 p-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                          onSelect={() => handleDeleteFile(record._id)}
+                          disabled={isDeleting}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
+
       <Dialog open={showPreviewModal} onOpenChange={handleModalClose}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-2xl">
           {previewUrl && (
             <img
               src={previewUrl}
-              alt="Preview"
+              alt="Record Preview"
               className="w-full h-auto rounded-lg"
             />
           )}

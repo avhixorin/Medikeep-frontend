@@ -1,26 +1,140 @@
-import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea"; // Changed from Input to Textarea
-import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
-import { Sparkles, Send, User } from "lucide-react";
+"use client";
 
-// For a truly auto-growing textarea like in ChatGPT,
-// consider using a library like `react-textarea-autosize`.
-// `npm install react-textarea-autosize`
+import type React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import clsx from "clsx";
+import AutoResizeTextarea from "react-textarea-autosize";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Sparkles, Send, User } from "lucide-react";
+import styles from "./ai-chat-modal.module.css";
+import { useSocket } from "@/sockets/context";
+import { AI_SOCKET_EVENTS } from "@/constants/socketEvents";
+
+type Role = "user" | "assistant";
 
 interface Message {
-  role: "user" | "assistant";
+  id: string;
+  role: Role;
   content: string;
   sources?: string[];
 }
 
-export const AiChatModal = ({ entityId }: { entityId: string }) => {
+export interface AiChatModalProps {
+  entityId: string;
+}
+
+function TypingIndicator() {
+  return (
+    <div className="flex items-start gap-3">
+      <span className="flex-shrink-0 rounded-full bg-muted h-8 w-8 items-center justify-center flex">
+        <Sparkles className="h-4 w-4 text-primary" />
+      </span>
+      <div
+        aria-live="polite"
+        className={clsx(
+          "p-3 rounded-2xl bg-muted/70 text-muted-foreground flex items-center gap-1 border border-border/50 shadow-sm",
+          "backdrop-blur-sm"
+        )}
+      >
+        <span className={clsx(styles.typingDot)} />
+        <span className={clsx(styles.typingDot, styles.dotDelay1)} />
+        <span className={clsx(styles.typingDot, styles.dotDelay2)} />
+      </div>
+    </div>
+  );
+}
+
+function SourceTag({ label }: { label: string }) {
+  return (
+    <span
+      data-tooltip={`Source: ${label}`}
+      className={clsx(
+        "relative inline-flex items-center px-2.5 py-1 text-xs rounded-full transition-colors",
+        "text-muted-foreground border border-border/40 shadow-sm",
+        styles.sourcePill
+      )}
+      role="note"
+      aria-label={`Source: ${label}`}
+      title={`Source: ${label}`}
+    >
+      {label}
+    </span>
+  );
+}
+
+function MessageBubble({
+  msg,
+  highlight,
+}: {
+  msg: Message;
+  highlight?: boolean;
+}) {
+  const isUser = msg.role === "user";
+  return (
+    <div
+      className={clsx(
+        "flex items-start gap-3",
+        isUser ? "flex-row-reverse" : "flex-row",
+        styles.messageEnter,
+        isUser ? styles.fromRight : styles.fromLeft
+      )}
+      role="group"
+      aria-label={isUser ? "User message" : "Assistant message"}
+    >
+      <span className="flex-shrink-0 rounded-full bg-muted h-8 w-8 items-center justify-center flex shadow-sm">
+        {isUser ? (
+          <User className="h-4 w-4" />
+        ) : (
+          <Sparkles className="h-4 w-4 text-primary" />
+        )}
+        <span className="sr-only">{isUser ? "User" : "Assistant"}</span>
+      </span>
+      <div className="flex flex-col gap-1 max-w-[80%] md:max-w-[75%]">
+        <div
+          className={clsx(
+            "p-3 rounded-2xl shadow-sm whitespace-pre-wrap break-words border",
+            isUser
+              ? "text-primary-foreground border-transparent"
+              : "text-muted-foreground bg-muted/70 border-border/50 backdrop-blur-sm",
+            isUser ? styles.userBubble : styles.assistantBubble,
+            highlight && styles.assistantFlash
+          )}
+        >
+          {msg.content}
+        </div>
+        {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {msg.sources.map((source, i) => (
+              <SourceTag key={`${msg.id}-src-${i}`} label={source} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export const AiChatModal: React.FC<AiChatModalProps> = ({ entityId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [highlightIds, setHighlightIds] = useState<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState(false); // Control drawer state
+  const { socket } = useSocket();
+  const canSend = useMemo(
+    () => !!input.trim() && !isLoading,
+    [input, isLoading]
+  );
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,47 +144,43 @@ export const AiChatModal = ({ entityId }: { entityId: string }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Reset chat when the drawer is closed
   useEffect(() => {
     if (!isOpen) {
       setMessages([]);
       setInput("");
       setIsLoading(false);
+      setHighlightIds(new Set());
     }
   }, [isOpen]);
 
-  const handleSendMessage = async () => {
-    if (!input.trim()) return;
+  const makeId = () =>
+    `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-    const userMessage: Message = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
-    const currentInput = input;
+  // const flashMessage = (id: string) => {
+  //   setHighlightIds((prev) => new Set(prev).add(id));
+  //   // Remove flash after animation duration
+  //   setTimeout(() => {
+  //     setHighlightIds((prev) => {
+  //       const next = new Set(prev);
+  //       next.delete(id);
+  //       return next;
+  //     });
+  //   }, 900);
+  // };
+
+  const handleSendMessage = async () => {
+    const trimmed = input.trim();
+    if (!trimmed || isLoading) return;
+
+    const userMsg: Message = { id: makeId(), role: "user", content: trimmed };
+    setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsLoading(true);
-
-    try {
-      const res = await axios.post("/api/chat", {
-        query: currentInput,
-        entityId: entityId,
-      });
-
-      const { answer, sources } = res.data;
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: answer,
-        sources,
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error) {
-      console.error("Error fetching chat response:", error);
-      const errorMessage: Message = {
-        role: "assistant",
-        content: "Sorry, I couldn't get a response. Please try again.",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
+    console.log("Emitting message: ", trimmed);
+    socket?.emit(AI_SOCKET_EVENTS.NEW_AI_MESSAGE, {
+      message: trimmed,
+      to: entityId,
+    });
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -80,97 +190,55 @@ export const AiChatModal = ({ entityId }: { entityId: string }) => {
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      {/* --- Trigger Button --- */}
-      {/* Simplified to a cleaner, circular button */}
       <DrawerTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-8 right-8 z-50 h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+          aria-label="Open AI Assistant"
+          className={clsx(
+            "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-xl",
+            "bg-primary hover:bg-primary/90 transition-all duration-300 hover:scale-105",
+            !isOpen && styles.glowLoop
+          )}
         >
           <Sparkles className="h-6 w-6 text-primary-foreground" />
         </Button>
       </DrawerTrigger>
 
-      {/* --- Drawer Content --- */}
-      {/* Styled to be larger and more modal-like */}
-      <DrawerContent className="h-[85vh] fixed bottom-0 left-0 right-0">
+      <DrawerContent className="h-[85vh] max-h-[85vh] fixed bottom-0 left-0 right-0 border-t border-border bg-background">
         <div className="mx-auto w-full max-w-2xl h-full flex flex-col">
-          <DrawerHeader>
-            <DrawerTitle>AI Assistant</DrawerTitle>
+          <DrawerHeader className="border-b border-border pb-3">
+            <DrawerTitle className="flex items-center gap-2 text-lg font-semibold">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <span>AI Assistant</span>
+            </DrawerTitle>
           </DrawerHeader>
 
-          {/* --- Chat Message Area --- */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-6">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex items-start gap-3 ${
-                  msg.role === "user" ? "flex-row-reverse" : "flex-row"
-                }`}
-              >
-                {/* Avatar */}
-                <span className="flex-shrink-0 rounded-full bg-muted h-8 w-8 items-center justify-center flex">
-                  {msg.role === "user" ? (
-                    <User className="h-4 w-4" />
-                  ) : (
-                    <Sparkles className="h-4 w-4 text-primary" />
-                  )}
-                </span>
-                
-                <div className="flex flex-col gap-1">
-                    {/* Message Bubble */}
-                    <div
-                      className={`p-3 rounded-lg max-w-md whitespace-pre-wrap break-words ${
-                        msg.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      <p>{msg.content}</p>
-                    </div>
-
-                    {/* Sources */}
-                    {msg.role === "assistant" &&
-                      msg.sources &&
-                      msg.sources.length > 0 && (
-                        <div className="flex flex-wrap gap-2 pt-1">
-                          {msg.sources.map((source, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-1 text-xs rounded-full bg-muted-foreground/10 text-muted-foreground"
-                            >
-                              {source}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                </div>
-              </div>
+          <div
+            className="flex-1 overflow-y-auto p-4 space-y-4"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+          >
+            {messages.map((msg) => (
+              <MessageBubble
+                key={msg.id}
+                msg={msg}
+                highlight={highlightIds.has(msg.id)}
+              />
             ))}
-            
-            {/* Loading Indicator */}
-            {isLoading && (
-              <div className="flex items-start gap-3">
-                <span className="flex-shrink-0 rounded-full bg-muted h-8 w-8 items-center justify-center flex">
-                  <Sparkles className="h-4 w-4 text-primary animate-pulse" />
-                </span>
-                <div className="p-3 rounded-lg bg-muted text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-pulse"></div>
-                    <div className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-pulse delay-75"></div>
-                    <div className="w-2 h-2 rounded-full bg-muted-foreground/50 animate-pulse delay-150"></div>
-                  </div>
-                </div>
-              </div>
-            )}
+
+            {isLoading && <TypingIndicator />}
+
             <div ref={messagesEndRef} />
           </div>
 
-          {/* --- Input Area --- */}
-          {/* Changed to a Textarea with a form for better UX and accessibility */}
-          <DrawerFooter>
-            <form onSubmit={handleFormSubmit} className="relative">
-              <Textarea
+          <DrawerFooter className="border-t border-border pt-3 pb-6 px-4">
+            <form
+              onSubmit={handleFormSubmit}
+              className="relative flex items-end"
+            >
+              <AutoResizeTextarea
+                aria-label="Type your message"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -179,18 +247,31 @@ export const AiChatModal = ({ entityId }: { entityId: string }) => {
                     handleSendMessage();
                   }
                 }}
-                placeholder="Ask anything..."
+                placeholder="Ask me anything..."
                 disabled={isLoading}
-                className="pr-12 resize-none" // `resize-none` is important
-                rows={1} // Start with one row
+                className={clsx(
+                  "w-full resize-none rounded-xl border border-input bg-background px-3 py-2 text-sm",
+                  "focus:outline-none focus:ring-2 focus:ring-primary",
+                  "pr-16" // ensure space for the send button
+                )}
+                minRows={1}
+                maxRows={6}
               />
+
               <Button
                 type="submit"
                 size="icon"
-                className="absolute right-3 bottom-2.5"
-                disabled={isLoading || !input.trim()}
+                aria-label="Send message"
+                className={clsx(
+                  "absolute right-2 bottom-1 transition-transform duration-300",
+                  "h-8 w-8 rounded-full shadow-sm",
+                  canSend
+                    ? clsx("bg-primary hover:bg-primary/90", styles.sendWave)
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                )}
+                disabled={!canSend}
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-2 w-2" />
               </Button>
             </form>
           </DrawerFooter>
@@ -199,3 +280,10 @@ export const AiChatModal = ({ entityId }: { entityId: string }) => {
     </Drawer>
   );
 };
+
+// Default props for Next.js previews
+AiChatModal.defaultProps = {
+  entityId: "demo-entity",
+};
+
+export default AiChatModal;

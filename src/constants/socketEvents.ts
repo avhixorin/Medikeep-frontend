@@ -86,3 +86,8 @@ export enum SOCKET_EVENTS {
   AUTHENTICATION_RECONNECT_ATTEMPT_SUCCEEDED_REAUTHORIZED = "authentication_reconnect_attempt_succeeded_reauthorized",
   AUTHENTICATION_RECONNECT_ATTEMPT_SUCCEEDED_REAUTHENTICATED_REAUTHORIZED = "authentication_reconnect_attempt_succeeded_reauthenticated_reauthorized",
 }
+
+export enum AI_SOCKET_EVENTS {
+  NEW_AI_MESSAGE = "new_ai_message",
+  AI_MESSAGE_RESPONSE = "ai_message_response",
+}

@@ -4,7 +4,16 @@ import toast from "react-hot-toast";
 
 import { useSocket } from "@/sockets/context";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { Appointment } from "@/types/types";
+import type { Appointment } from "@/types/types";
+
+type AppointmentEventPayload = {
+  statusCode: number;
+  message: string;
+  data: Appointment;
+};
+const isSuccess = (status?: number): boolean =>
+  typeof status === "number" && status >= 200 && status < 300;
+
 import {
   addAppointment,
   addAppointmentRequest,
@@ -22,20 +31,24 @@ export const useAppointmentSocketEvents = () => {
 
   // Handles the response after the current user requests an appointment
   const handleAppointmentRequestResponse = useCallback(
-    (data: { statusCode: number; message: string; data: Appointment }) => {
-      if (data.statusCode === 200) {
-        toast.success(data.message);
-        dispatch(addAppointmentRequest(data.data));
+    (payload: AppointmentEventPayload) => {
+      if (isSuccess(payload.statusCode)) {
+        toast.success(payload.message);
+        dispatch(addAppointmentRequest(payload.data));
+      } else {
+        toast.error(payload.message);
       }
     },
     [dispatch]
   );
 
   const handleNewAppointmentRequest = useCallback(
-    (data: { statusCode: number; message: string; data: Appointment }) => {
-      if (data.statusCode === 200) {
-        toast.success(data.message);
-        dispatch(addAppointmentRequest(data.data));
+    (payload: AppointmentEventPayload) => {
+      if (isSuccess(payload.statusCode)) {
+        toast.success(payload.message);
+        dispatch(addAppointmentRequest(payload.data));
+      } else {
+        toast.error(payload.message);
       }
     },
     [dispatch]
@@ -43,11 +56,13 @@ export const useAppointmentSocketEvents = () => {
 
   // Handles the confirmation that an appointment was accepted
   const handleAppointmentAcception = useCallback(
-    (data: { statusCode: number; message: string; data: Appointment }) => {
-      if (data.statusCode === 200) {
-        toast.success(data.message);
-        dispatch(removeAppointmentRequest(data.data._id));
-        dispatch(addAppointment(data.data));
+    (payload: AppointmentEventPayload) => {
+      if (isSuccess(payload.statusCode)) {
+        toast.success(payload.message);
+        dispatch(removeAppointmentRequest(payload.data._id));
+        dispatch(addAppointment(payload.data));
+      } else {
+        toast.error(payload.message);
       }
     },
     [dispatch]
@@ -55,10 +70,12 @@ export const useAppointmentSocketEvents = () => {
 
   // Handles the confirmation that an appointment was rejected
   const handleAppointmentRequestRejection = useCallback(
-    (data: { statusCode: number; message: string; data: Appointment }) => {
-      if (data.statusCode === 200) {
-        toast.success(data.message);
-        dispatch(removeAppointmentRequest(data.data._id));
+    (payload: AppointmentEventPayload) => {
+      if (isSuccess(payload.statusCode)) {
+        toast.success(payload.message);
+        dispatch(removeAppointmentRequest(payload.data._id));
+      } else {
+        toast.error(payload.message);
       }
     },
     [dispatch]
@@ -66,10 +83,12 @@ export const useAppointmentSocketEvents = () => {
 
   // Handles the confirmation that an appointment was rescheduled
   const handleAppointmentRescheduling = useCallback(
-    (data: { statusCode: number; message: string; data: Appointment }) => {
-      if (data.statusCode === 200) {
-        toast.success(data.message);
-        dispatch(reScheduleAppointment(data.data));
+    (payload: AppointmentEventPayload) => {
+      if (isSuccess(payload.statusCode)) {
+        toast.success(payload.message);
+        dispatch(reScheduleAppointment(payload.data));
+      } else {
+        toast.error(payload.message);
       }
     },
     [dispatch]
@@ -77,9 +96,11 @@ export const useAppointmentSocketEvents = () => {
 
   // Handles the confirmation that an appointment was cancelled
   const handleAppointmentCancellation = useCallback(
-    (data: { statusCode: number; message: string; data: Appointment }) => {
-      if (data.statusCode === 200) {
-        dispatch(removeAppointment(data.data._id));
+    (payload: AppointmentEventPayload) => {
+      if (isSuccess(payload.statusCode)) {
+        dispatch(removeAppointment(payload.data._id));
+      } else {
+        toast.error(payload.message);
       }
     },
     [dispatch]
@@ -87,10 +108,12 @@ export const useAppointmentSocketEvents = () => {
 
   // Handles the confirmation that an appointment was marked as completed
   const handleAppointmentCompletion = useCallback(
-    (data: { statusCode: number; message: string; data: Appointment }) => {
-      if (data.statusCode === 200) {
-        toast.success(data.message);
-        dispatch(removeAppointment(data.data._id));
+    (payload: AppointmentEventPayload) => {
+      if (isSuccess(payload.statusCode)) {
+        toast.success(payload.message);
+        dispatch(removeAppointment(payload.data._id));
+      } else {
+        toast.error(payload.message);
       }
     },
     [dispatch]
@@ -101,10 +124,12 @@ export const useAppointmentSocketEvents = () => {
 
     // A map of event names to their corresponding handlers for clean registration
     const appointmentListeners = {
-      [SOCKET_EVENTS.REQUEST_APPOINTMENT_RESPONSE]: handleAppointmentRequestResponse,
+      [SOCKET_EVENTS.REQUEST_APPOINTMENT_RESPONSE]:
+        handleAppointmentRequestResponse,
       [SOCKET_EVENTS.NEW_APPOINTMENT_REQUEST]: handleNewAppointmentRequest,
       [SOCKET_EVENTS.ACCEPT_APPOINTMENT]: handleAppointmentAcception,
-      [SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST]: handleAppointmentRequestRejection,
+      [SOCKET_EVENTS.DECLINE_APPOINTMENT_REQUEST]:
+        handleAppointmentRequestRejection,
       [SOCKET_EVENTS.RESCHEDULED_APPOINTMENT]: handleAppointmentRescheduling,
       [SOCKET_EVENTS.CANCELLED_APPOINTMENT]: handleAppointmentCancellation,
       [SOCKET_EVENTS.COMPLETED_APPOINTMENT]: handleAppointmentCompletion,

@@ -9,8 +9,9 @@ import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SocketProvider } from "./sockets/context";
 
+const queryClient = new QueryClient();
+
 const App: React.FC = () => {
-  const queryClient = new QueryClient();
   return (
     <div className="w-full h-full">
       <QueryClientProvider client={queryClient}>
