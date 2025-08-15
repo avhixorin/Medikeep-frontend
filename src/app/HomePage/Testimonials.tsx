@@ -1,10 +1,12 @@
-"use client"
+"use client";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import React from "react";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { testimonials } from "@/constants/homepage";
+
 const Testimonials = () => {
   return (
     <section id="testimonials" className="w-full py-20 md:py-32">
@@ -26,56 +28,13 @@ const Testimonials = () => {
             Loved by Teams Worldwide
           </h2>
           <p className="max-w-[800px] text-muted-foreground md:text-lg">
-            Don&apos;t just take our word for it. See what our customers have to say
-            about their experience.
+            Don&apos;t just take our word for it. See what our customers have to
+            say about their experience.
           </p>
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              quote:
-                "SaaSify has transformed how we manage our projects. The automation features have saved us countless hours of manual work.",
-              author: "Sarah Johnson",
-              role: "Project Manager, TechCorp",
-              rating: 5,
-            },
-            {
-              quote:
-                "The analytics dashboard provides insights we never had access to before. It's helped us make data-driven decisions that have improved our ROI.",
-              author: "Michael Chen",
-              role: "Marketing Director, GrowthLabs",
-              rating: 5,
-            },
-            {
-              quote:
-                "Customer support is exceptional. Any time we've had an issue, the team has been quick to respond and resolve it. Couldn't ask for better service.",
-              author: "Emily Rodriguez",
-              role: "Operations Lead, StartupX",
-              rating: 5,
-            },
-            {
-              quote:
-                "We've tried several similar solutions, but none compare to the ease of use and comprehensive features of SaaSify. It's been a game-changer.",
-              author: "David Kim",
-              role: "CEO, InnovateNow",
-              rating: 5,
-            },
-            {
-              quote:
-                "The collaboration tools have made remote work so much easier for our team. We're more productive than ever despite being spread across different time zones.",
-              author: "Lisa Patel",
-              role: "HR Director, RemoteFirst",
-              rating: 5,
-            },
-            {
-              quote:
-                "Implementation was seamless, and the ROI was almost immediate. We've reduced our operational costs by 30% since switching to SaaSify.",
-              author: "James Wilson",
-              role: "COO, ScaleUp Inc",
-              rating: 5,
-            },
-          ].map((testimonial, i) => (
+          {testimonials.map((testimonial, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}

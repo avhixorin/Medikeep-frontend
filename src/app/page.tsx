@@ -4,6 +4,10 @@ import HeroSection from "./HomePage/HeroSection";
 import Features from "./HomePage/Features";
 import HowItWorks from "./HomePage/HowItWorks";
 import Testimonials from "./HomePage/Testimonials";
+import Pricing from "./HomePage/Pricing";
+import FAQ from "./HomePage/FAQ";
+import CTA from "./HomePage/CTA";
+import Footer from "./HomePage/Footer";
 
 const page = () => {
   return (
@@ -13,7 +17,10 @@ const page = () => {
       <Features />
       <HowItWorks />
       <Testimonials />
-      {/* Add other sections like Testimonials, Pricing, etc. here */}
+      <Pricing />
+      <FAQ />
+      <CTA />
+      <Footer />
     </>
   );
 };

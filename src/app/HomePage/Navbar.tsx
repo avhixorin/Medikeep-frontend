@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-switcher";
 import Image from "next/image";
+import { navLinks } from "@/constants/homepage";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,12 +23,7 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const navLinks = [
-    { href: "#features", label: "Features" },
-    { href: "#testimonials", label: "Testimonials" },
-    { href: "#pricing", label: "Pricing" },
-    { href: "#faq", label: "FAQ" },
-  ];
+
   const menuVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: {
@@ -80,7 +76,7 @@ const Navbar = () => {
           <Button variant="ghost" asChild>
             <Link href="/login">Log in</Link>
           </Button>
-          <Button className="rounded-full group">
+          <Button className="rounded-full group cursor-pointer">
             Get Started
             <ChevronRight className="ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Button>

@@ -50,7 +50,6 @@ const HowItWorks = () => {
       id="how-it-works"
       className="relative w-full py-24 md:py-32 bg-background overflow-hidden"
     >
-      {/* Background Aurora */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-x-0 top-1/4 h-[50rem] w-full overflow-hidden rounded-full bg-primary/5 blur-[120px]" />
       </div>
