@@ -8,9 +8,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-switcher";
 import Image from "next/image";
 import { navLinks } from "@/constants/homepage";
+import { useAuth } from "@/context/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -38,6 +42,7 @@ const Navbar = () => {
     hidden: { opacity: 0, y: -10 },
     visible: { opacity: 1, y: 0 },
   };
+  const navigate = useRouter();
   return (
     <header
       className={`sticky top-0 z-50 w-full px-6 transition-all duration-300 
@@ -71,11 +76,23 @@ const Navbar = () => {
           ))}
         </nav>
 
-        <div className="hidden md:flex gap-2 items-center">
+        <div className="hidden md:flex gap-3 items-center">
           <ThemeToggle />
-          <Button variant="ghost" asChild>
-            <Link href="/login">Log in</Link>
-          </Button>
+          {user ? (
+            <Avatar
+              className="h-8 w-8 rounded-full cursor-pointer"
+              onClick={() => navigate.push("/dashboard")}
+            >
+              <AvatarImage src={user.photoURL || ""} alt="Logo" />
+              <AvatarFallback className="text-foreground rounded-lg">
+                {user.displayName?.slice(0, 2).toLocaleUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            <Button variant="ghost" asChild>
+              <Link href="/login">Log in</Link>
+            </Button>
+          )}
           <Button className="rounded-full group cursor-pointer">
             Get Started
             <ChevronRight className="ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1" />
