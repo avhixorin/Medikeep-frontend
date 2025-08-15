@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "A modern application to manage medical records and appointments.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "https://res.cloudinary.com/avhixorin/image/upload/v1726237530/titleIcon_h3ehnu.png",
   },
 };
 
