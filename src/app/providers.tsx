@@ -3,9 +3,8 @@
 
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { AuthProvider } from "@/context/AuthContext";
 
-// This array holds all the provider components and their initial props.
-// To add a new provider, simply add a new entry to this array.
 const providers: Array<[React.ElementType, Omit<any, "children">]> = [
   [
     NextThemesProvider,
@@ -19,7 +18,11 @@ const providers: Array<[React.ElementType, Omit<any, "children">]> = [
 ];
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return providers.reduceRight((acc, [Provider, props]) => {
-    return <Provider {...props}>{acc}</Provider>;
-  }, children);
+  return (
+    <AuthProvider>
+      {providers.reduceRight((acc, [Provider, props]) => {
+        return <Provider {...props}>{acc}</Provider>;
+      }, children)}
+    </AuthProvider>
+  );
 }
