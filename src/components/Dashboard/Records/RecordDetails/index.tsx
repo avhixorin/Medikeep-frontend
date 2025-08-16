@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, Sparkles, Trash2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -34,7 +34,8 @@ import {
   useUploadUserRecords,
 } from "../../hooks/mutationHooks";
 import { useUserRecords } from "../../hooks/dataHooks";
-import { AiChatModal } from "./AIChatModal";
+import CreativeChatInterface from "./AIChat";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 
 // Utility function to format file size
 const formatBytes = (bytes: number, decimals = 2): string => {
@@ -51,6 +52,7 @@ const RecordDetails = () => {
   const [entity, setEntity] = useState<User | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const { entityId } = useParams();
@@ -185,7 +187,30 @@ const RecordDetails = () => {
 
   return (
     <div className="w-full h-full p-6 shadow-md bg-transparent flex flex-col gap-6">
-      <AiChatModal entityId={entityId!} />
+      <Drawer open={isChatOpen} onOpenChange={setIsChatOpen}>
+        <DrawerTrigger asChild>
+          <Button
+            size="icon"
+            aria-label="Open AI Assistant"
+            className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-xl bg-primary hover:bg-primary/90 transition-all duration-300 hover:scale-105"
+          >
+            <Sparkles className="h-6 w-6 text-primary-foreground" />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent className="h-[90vh] mt-24 flex flex-col">
+          <DrawerHeader className="text-left">
+            <DrawerTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <span>AI Assistant</span>
+            </DrawerTitle>
+          </DrawerHeader>
+          {/* 3. The Chat Interface is now rendered inside the Drawer */}
+          {/* It fills the remaining space of the DrawerContent */}
+          <div className="flex-1 overflow-hidden">
+            <CreativeChatInterface entityId={entityId!} />
+          </div>
+        </DrawerContent>
+      </Drawer>
       <div>
         <h1 className="text-lg md:text-2xl font-semibold text-foreground">
           {user?.role === "doctor" ? "Patient" : "Doctor"} Name:{" "}
@@ -197,7 +222,9 @@ const RecordDetails = () => {
           ) : (
             <>
               <span>Age: {entity?.dateOfBirth}</span>
-              <span>Sex: {entity?.gender === "female" ? "Female" : "Male"}</span>
+              <span>
+                Sex: {entity?.gender === "female" ? "Female" : "Male"}
+              </span>
               <span>Email: {entity?.email}</span>
             </>
           )}

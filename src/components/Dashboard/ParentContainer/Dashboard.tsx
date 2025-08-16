@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import { useChatSocketEvents } from "../Chat/hooks/useChatSocketEvents";
 import { useConnectionSocketEvents } from "../Chat/hooks/useConnectionSocketEvents";
 import { useAppointmentSocketEvents } from "../Appointments/hooks/useAppointmentSocketEvents";
-import { useAiChatSocketEvents } from "../Records/hooks/useAskAi";
 
 const Dashboard: React.FC = () => {
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
@@ -35,7 +34,6 @@ const Dashboard: React.FC = () => {
   useChatSocketEvents();
   useConnectionSocketEvents();
   useAppointmentSocketEvents();
-  useAiChatSocketEvents();
 
   return (
     <div className="w-full max-h-[100dvh] flex bg-dashboard2 bg-center bg-no-repeat bg-cover dark:bg-background">
