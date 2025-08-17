@@ -277,3 +277,26 @@ export type Appointment = {
   status: AppointmentStatus;
   reason: string;
 }
+
+export interface FetchOptions extends RequestInit {
+  headers?: HeadersInit;
+  method?: string;
+  body?: BodyInit | null;
+  mode?: RequestMode;
+  credentials?: RequestCredentials;
+  cache?: RequestCache;
+  redirect?: RequestRedirect;
+  referrer?: string;
+  referrerPolicy?: ReferrerPolicy;
+  integrity?: string;
+  keepalive?: boolean;
+  signal?: AbortSignal | null;
+}
+
+/**
+ * Parameters for the fetchWithAuth function.
+ */
+export interface FetchWithAuthParams {
+  url: string;
+  options?: FetchOptions;
+}

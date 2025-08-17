@@ -7,7 +7,6 @@ interface ChatInputProps {
 
 export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   const [input, setInput] = useState("");
-
   const handleSend = () => {
     const trimmed = input.trim();
     if (trimmed) {

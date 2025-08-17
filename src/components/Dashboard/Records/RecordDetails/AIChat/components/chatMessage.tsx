@@ -1,5 +1,6 @@
 import React from "react";
 import { Sparkles, User, FileText } from "lucide-react";
+import { AIChatMessage } from "../../../types";
 
 const SourceTag = ({ label }: { label: string }) => (
   <button
@@ -14,7 +15,7 @@ const SourceTag = ({ label }: { label: string }) => (
 export const ChatMessage = ({
   msg,
 }: {
-  msg: any /* Replace with Message type */;
+  msg: AIChatMessage
 }) => {
   const isUser = msg.role === "user";
 
@@ -55,7 +56,7 @@ export const ChatMessage = ({
             msg.sources.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {msg.sources.map((source: string, i: number) => (
-                  <SourceTag key={`${msg.id}-src-${i}`} label={source} />
+                  <SourceTag key={`${msg._id}-src-${i}`} label={source} />
                 ))}
               </div>
             )}

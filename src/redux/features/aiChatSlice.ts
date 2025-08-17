@@ -1,14 +1,6 @@
-import { AIChatMessage } from "@/components/Dashboard/Records/types";
+import { AIChatMessage, AiChatThread } from "@/components/Dashboard/Records/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
-
-export interface AiChatThread {
-  _id?: string;
-  title: string;
-  chatThread: AIChatMessage[];
-  createdAt: string;
-  updatedAt: string;
-}
 
 const getInitialState = (): AiChatThread => ({
   _id: uuid(),

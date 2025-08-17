@@ -90,4 +90,5 @@ export enum SOCKET_EVENTS {
 export enum AI_SOCKET_EVENTS {
   NEW_AI_MESSAGE = "new_ai_message",
   AI_MESSAGE_RESPONSE = "ai_message_response",
+  GET_ALL_THREADS = "get_all_threads",
 }
