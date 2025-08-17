@@ -1,87 +1,104 @@
-"use client";
-
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar } from "./components/sidebar";
 import { ChatPanel } from "./components/chatPanel";
-// import { useSocket } from "@/sockets/context"; // Uncomment when integrating
-// import { AI_SOCKET_EVENTS } from "@/constants/socketEvents"; // Uncomment when integrating
+import { useSocket } from "@/sockets/context";
+import { AI_SOCKET_EVENTS } from "@/constants/socketEvents";
+import { useFetchAiChatThreads } from "@/components/Dashboard/Records/hooks/useAskAi";
+import { AiChatThread } from "@/redux/features/aiChatSlice";
+import { AIChatMessage } from "@/components/Dashboard/Records/types";
+import { v4 as uuid } from "uuid";
 
-// --- Mock Data & Types (Replace with your actual data) ---
-export type Role = "user" | "assistant";
+const makeId = () => uuid();
+const createDefaultThread = (): AiChatThread => ({
+  title: "New Chat",
+  chatThread: [],
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+});
 
-export interface Message {
-  id: string;
-  role: Role;
-  content: string;
-  sources?: string[];
-}
+const saveThreadAPI = async (thread: AiChatThread) => {
+  console.log("SAVING THREAD TO BACKEND:", thread.title, thread._id);
+  // In a real app: await fetch(`/api/threads`, { method: 'POST', ... });
+  return Promise.resolve();
+};
 
-const mockRecentChats = [
-  { id: "1", title: "The History of Roman Architecture" },
-  { id: "2", title: "Quantum Computing Explained Simply" },
-  { id: "3", title: "Creative Recipes for Vegan Pasta" },
-  { id: "4", title: "Debugging a Null Pointer Exception" },
-];
-
-// --- Main Component ---
 export const CreativeChatInterface = ({ entityId }: { entityId: string }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeChatId, setActiveChatId] = useState("1"); // Example active chat
+  const [allThreads, setAllThreads] = useState<AiChatThread[]>([]);
+  const [activeThread, setActiveThread] = useState<AiChatThread>(createDefaultThread());
+  const [isSending, setIsSending] = useState(false);
+  const { socket } = useSocket();
 
-  // const { socket } = useSocket(); // Uncomment when integrating
+  const { data, isLoading: isListLoading, isError, refetch } = useFetchAiChatThreads();
 
-  const makeId = () =>
-    `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  useEffect(() => {
+    refetch(); 
+  }, [refetch]);
 
-  // Simulate receiving a message for demonstration
+  useEffect(() => {
+    if (data) {
+      const sorted = [...(data as AiChatThread[])].sort(
+        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      );
+      setAllThreads(sorted);
+      if (sorted.length > 0 && activeThread.title === "New Chat" && activeThread.chatThread.length === 0) {
+        setActiveThread(sorted[0]);
+      }
+    }
+  }, [data, activeThread]);
+
+  const handleSelectThread = (threadId: string) => {
+    const threadToSelect = allThreads.find((t) => t._id === threadId);
+    if (threadToSelect) {
+      setActiveThread(threadToSelect);
+    }
+  };
+
+  const handleNewChat = async () => {
+    if (activeThread.chatThread.length === 0) {
+      console.log("Current chat is empty, doing nothing.");
+      return;
+    }
+    await saveThreadAPI(activeThread);
+    await refetch();
+    setActiveThread(createDefaultThread());
+  };
+
+  const handleSendMessage = (message: string) => {
+    if (!message || isSending || !activeThread) return;
+    const userMsg: AIChatMessage = { _id: makeId(), role: "user", content: message };
+    
+    setActiveThread(current => ({ ...current!, chatThread: [...current!.chatThread, userMsg] }));
+    setIsSending(true);
+
+    socket?.emit(AI_SOCKET_EVENTS.NEW_AI_MESSAGE, { message, to: entityId });
+    simulateAIResponse(message);
+  };
+
   const simulateAIResponse = (userMessage: string) => {
     setTimeout(() => {
-      const aiResponse: Message = {
-        id: makeId(),
+      const aiResponse: AIChatMessage = {
+        _id: makeId(),
         role: "assistant",
-        content: `This is a simulated response to: "${userMessage}". In a real app, this would come from a language model.`,
-        sources: ["Source A", "Source B"],
+        content: `Simulated response to: "${userMessage}".`,
       };
-      setMessages((prev) => [...prev, aiResponse]);
-      setIsLoading(false);
+      setActiveThread(current => ({ ...current!, chatThread: [...current!.chatThread, aiResponse] }));
+      setIsSending(false);
     }, 1500);
   };
-
-  const handleSendMessage = () => {
-    const trimmed = input.trim();
-    if (!trimmed || isLoading) return;
-
-    const userMsg: Message = { id: makeId(), role: "user", content: trimmed };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-    setIsLoading(true);
-
-    // --- Real Socket.IO integration ---
-    // console.log("Emitting message: ", trimmed);
-    // socket?.emit(AI_SOCKET_EVENTS.NEW_AI_MESSAGE, {
-    //   message: trimmed,
-    //   to: entityId,
-    // });
-
-    // --- For Demonstration ---
-    simulateAIResponse(trimmed);
-  };
-
   return (
     <div className="flex h-full w-full text-foreground">
       <Sidebar
-        // recentChats={mockRecentChats}
-        // activeChatId={activeChatId}
-        // onChatSelect={setActiveChatId}
+        threads={allThreads}
+        activeThread={activeThread}
+        onSelectThread={handleSelectThread}
+        onNewChat={handleNewChat}
+        isLoading={isListLoading}
+        isError={isError}
       />
       <ChatPanel
-        messages={messages}
-        isLoading={isLoading}
-        input={input}
-        setInput={setInput}
-        handleSendMessage={handleSendMessage}
+        thread={activeThread}
+        isLoading={isSending}
+        onSendMessage={handleSendMessage}
       />
     </div>
   );

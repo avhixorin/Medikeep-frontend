@@ -1,63 +1,44 @@
-import React from "react";
-import AutoResizeTextarea from "react-textarea-autosize";
-import { ArrowUp } from "lucide-react";
+import React, { useState } from "react";
+import { Send } from "lucide-react";
 
 interface ChatInputProps {
-  input: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  isLoading: boolean;
-  handleSendMessage: () => void;
+  onSendMessage: (message: string) => void;
 }
 
-export const ChatInput = ({
-  input,
-  setInput,
-  isLoading,
-  handleSendMessage,
-}: ChatInputProps) => {
-  const canSend = !!input.trim() && !isLoading;
+export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
+  const [input, setInput] = useState("");
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleSendMessage();
+  const handleSend = () => {
+    const trimmed = input.trim();
+    if (trimmed) {
+      onSendMessage(trimmed);
+      setInput("");
+    }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey && canSend) {
-      e.preventDefault();
-      handleSendMessage();
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSend();
     }
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className="relative flex items-end">
-      <AutoResizeTextarea
-        aria-label="Type your message"
+    <div className="relative">
+      <input
+        type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Ask me anything..."
-        disabled={isLoading}
-        className="w-full resize-none rounded-xl border border-input bg-background/70 px-4 py-3 text-base 
-                   focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background 
-                   pr-14 transition-shadow"
-        minRows={1}
-        maxRows={6}
+        onKeyDown={handleKeyPress}
+        placeholder="Ask anything..."
+        className="w-full border border-border rounded-lg p-3 pr-12 focus:outline-none focus:ring-2 focus:ring-ring"
       />
       <button
-        type="submit"
+        onClick={handleSend}
+        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent"
         aria-label="Send message"
-        className={`absolute right-3 bottom-[11px] h-8 w-8 rounded-full flex items-center justify-center 
-                   transition-all duration-300 transform
-                   ${
-                     canSend
-                       ? "bg-primary text-primary-foreground scale-100 hover:scale-105 hover:bg-primary/90"
-                       : "bg-muted text-muted-foreground scale-95 cursor-not-allowed"
-                   }`}
-        disabled={!canSend}
       >
-        <ArrowUp className="h-4 w-4" />
+        <Send className="h-5 w-5" />
       </button>
-    </form>
+    </div>
   );
 };

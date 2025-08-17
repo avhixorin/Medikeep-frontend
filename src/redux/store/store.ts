@@ -6,7 +6,7 @@ import messageSlice from "../features/messageSlice";
 import selectedUserSlice from "../features/selectedUserSlice";
 import adminSlice from "../features/adminSlice";
 import recordSlice from "../features/recordSlice";
-
+import aiChatSlice from "../features/aiChatSlice";
 const rootReducer = combineReducers({
   auth: authSlice,
   allUsers: allUsersSlice,
@@ -15,6 +15,7 @@ const rootReducer = combineReducers({
   selectedUser: selectedUserSlice,
   admin: adminSlice,
   record: recordSlice,
+  aiChat: aiChatSlice,
 });
 
 const store = configureStore({
