@@ -90,7 +90,7 @@
     "@eslint/js": "^9.17.0",
     "@types/jest": "^29.5.14",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/node": "^22.10.10",
+    "@types/node": "^24.5.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/react-dropzone": "^4.2.2",
