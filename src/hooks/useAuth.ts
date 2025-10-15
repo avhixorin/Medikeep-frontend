@@ -16,7 +16,7 @@ const useAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const baseUrl = import.meta.env.VITE_USER_BASE_URL;
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const user = useSelector((state: RootState) => state.auth.user);
 
   // --- Mutations ---

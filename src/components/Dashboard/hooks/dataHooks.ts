@@ -21,7 +21,7 @@ export const useUserRecords = ({
     queryKey: ["user-records", doctorId, patientId],
     queryFn: async () => {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_USER_BASE_URL}/get-records`,
+        `${import.meta.env.VITE_BASE_URL}/get-records`,
         {
           doctorId,
           patientId,
