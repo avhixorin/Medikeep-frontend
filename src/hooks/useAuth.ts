@@ -24,7 +24,7 @@ const useAuth = () => {
   // Login User
   const loginUserMutation = useMutation({
     mutationFn: async (values: { email: string; password: string }) => {
-      const loginUrl = import.meta.env.VITE_SIGN_IN_URL;
+      const loginUrl = import.meta.env.VITE_BASE_URL + "/login";
       const response = await fetch(loginUrl, {
         method: "POST",
         credentials: "include",
@@ -63,7 +63,7 @@ const useAuth = () => {
   // Register User
   const registerUserMutation = useMutation({
     mutationFn: async (user: User) => {
-      const registerUrl: string = import.meta.env.VITE_SIGN_UP_URL;
+      const registerUrl: string = import.meta.env.VITE_BASE_URL + "/register";
       const response = await fetch(registerUrl, {
         method: "POST",
         headers: {
@@ -94,7 +94,7 @@ const useAuth = () => {
   // Logout User
   const logoutUserMutation = useMutation({
     mutationFn: async () => {
-      const logoutUrl = import.meta.env.VITE_LOGOUT_URL;
+      const logoutUrl = import.meta.env.VITE_BASE_URL + "/logout";
       const response = await axios.post(
         logoutUrl,
         {},
@@ -150,7 +150,7 @@ const useAuth = () => {
   // Verify OTP
   const verifyUserOtpMutation = useMutation({
     mutationFn: async ({ otp, mail }: { otp: string; mail: string }) => {
-      const res = await fetch(import.meta.env.VITE_VERIFY_OTP_URL, {
+      const res = await fetch(import.meta.env.VITE_BASE_URL + "/verify/otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -367,7 +367,7 @@ const useAuth = () => {
     getUserRecords: async (doctorId: string, patientId: string) => {
       try {
         const res = await axios.post(
-          import.meta.env.VITE_GET_USER_RECORDS_URL,
+          import.meta.env.VITE_BASE_URL + "/get-records",
           { doctorId, patientId },
           { withCredentials: true, headers: { "Content-Type": "application/json" } }
         );

@@ -9,7 +9,7 @@ import { setChatHistory } from "@/redux/features/messageSlice";
 import { useDispatch } from "react-redux";
 
 const usePartialUserData = () => {
-  const url = import.meta.env.VITE_USER_PARTIAL_DATA_URL;
+  const url = import.meta.env.VITE_BASE_URL + "/getUserData";
   const dispatch = useDispatch();
   const fetchPartialUserData = async (field: string) => {
     const res = await fetch(url, {
