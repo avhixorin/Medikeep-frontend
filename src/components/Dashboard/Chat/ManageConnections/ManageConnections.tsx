@@ -1,6 +1,6 @@
 import { SOCKET_EVENTS } from '@/constants/socketEvents';
-import useSockets from '@/hooks/useSockets';
 import { RootState } from '@/redux/store/store';
+import { useSocket } from '@/sockets/context';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -11,7 +11,7 @@ type ManageConnectionsProps = {
 const ManageConnections: React.FC<ManageConnectionsProps> = ({
   setIsManagingConnections,
 }) => {
-  const { socket } = useSockets();
+  const { socket } = useSocket();
 
   const user = useSelector(
     (state: RootState) => state.auth.user

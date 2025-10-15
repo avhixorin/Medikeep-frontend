@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import useSockets from "@/hooks/useSockets";
 import { cn } from "@/lib/utils";
+import { useSocket } from "@/sockets/context";
 import { Appointment } from "@/types/types";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -25,7 +25,7 @@ export const RescheduleForm: React.FC<RescheduleFormProps> = ({
   appointment,
   setIsRescheduling,
 }) => {
-  const { socket } = useSockets();
+  const { socket } = useSocket();
     const [date, setDate] = useState<string | undefined>(undefined);
     const [time, setTime] = useState("");
     const [reason, setReason] = useState("");

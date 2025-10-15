@@ -1,5 +1,3 @@
-"use client";
-
 import { RootState } from "@/redux/store/store";
 import { useSelector, useDispatch } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
@@ -65,7 +63,7 @@ const Notifications = () => {
   const isSelected = (index: number) => selected.includes(index);
 
   return (
-    <div className="bg-background p-5 h-full overflow-y-auto">
+    <div className="bg-transparent p-5 h-full overflow-y-auto">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold flex items-center gap-2 text-foreground">
           <BellDot className="w-5 h-5 text-primary" />

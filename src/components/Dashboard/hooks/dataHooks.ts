@@ -1,6 +1,8 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import axios from "axios";
 import { MedicalRecord } from "@/types/types";
+import { AiChatThread } from "../Records/types";
+import fetchWithAuth from "@/utils";
 
 interface UseUserRecordsParams {
   doctorId: string | undefined;
@@ -34,5 +36,47 @@ export const useUserRecords = ({
       return data.records as MedicalRecord[];
     },
     enabled: !!doctorId && !!patientId,
+  });
+};
+
+export const useFetchAiChatThreads = (): UseQueryResult<AiChatThread[]> => {
+  return useQuery({
+    queryKey: ["aiChatThreads"],
+    queryFn: async () => {
+      const res = await axios.get(
+        `${import.meta.env.VITE_USER_BASE_URL}/get-threads`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status !== 200) {
+        throw new Error("Failed to fetch AI chat threads");
+      }
+
+      return res.data.data;
+    },
+    enabled: false,
+  });
+};
+
+export const useFetchAiChatThread = (
+  threadId: string
+): UseQueryResult<AiChatThread> => {
+  return useQuery({
+    queryKey: ["aiChatThread", threadId],
+    queryFn: async () => {
+      const res = await axios.get(
+        `${import.meta.env.VITE_USER_BASE_URL}/get-threads/${threadId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status !== 200) {
+        throw new Error("Failed to fetch the chat thread");
+      }
+
+      return res.data.data;
+    },
+    enabled: !!threadId,
   });
 };

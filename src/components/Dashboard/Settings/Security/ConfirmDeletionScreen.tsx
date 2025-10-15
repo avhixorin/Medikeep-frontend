@@ -29,7 +29,7 @@ const ConfirmDeletionScreen = ({ onCancel }: DeletionProp) => {
       return;
     }
 
-    const deleteUrl = import.meta.env.VITE_DELETE_ACCOUNT_URL;
+    const deleteUrl = import.meta.env.VITE_BASE_URL + "/delete/user";
     try {
       const res = await fetch(deleteUrl, {
         method: "DELETE",

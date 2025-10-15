@@ -1,5 +1,4 @@
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import useSockets from "@/hooks/useSockets";
 import { removeAppointment } from "@/redux/features/authSlice";
 import { Appointment } from "@/types/types";
 import React from "react";
@@ -12,6 +11,7 @@ import { CalendarIcon, ClockIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import Swal from "sweetalert2";
+import { useSocket } from "@/sockets/context";
 
 interface DocotorAppointmentCardProps {
   appointment: Appointment;
@@ -23,7 +23,7 @@ export const DocotorAppointmentCard: React.FC<DocotorAppointmentCardProps> = ({
   onStartSession,
 }) => {
   const [isRescheduling, setIsRescheduling] = React.useState(false);
-  const { socket } = useSockets();
+  const { socket } = useSocket();
   const dispatch = useDispatch();
   const handleReschedule = () => {
     setIsRescheduling(true);
@@ -127,7 +127,7 @@ export function DocotorAppointmentCardMobile({
   onStartSession,
 }: DocotorAppointmentCardMobileProps) {
   const [isRescheduling, setIsRescheduling] = React.useState(false);
-  const { socket } = useSockets();
+  const { socket } = useSocket();
   const dispatch = useDispatch();
   const handleReschedule = () => {
     setIsRescheduling(true);

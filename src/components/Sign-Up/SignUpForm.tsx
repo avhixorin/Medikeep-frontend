@@ -180,7 +180,7 @@ const SignUpA: React.FC = () => {
   };
   const setOtp = async (email: string) => {
     try {
-      const response = await fetch(import.meta.env.VITE_SEND_OTP_URL, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + "/verify/send-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

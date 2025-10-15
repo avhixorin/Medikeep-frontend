@@ -1,16 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatCard from "./ChatCard";
-import {
-  Bell,
-  BellDotIcon,
-  Send,
-  Video,
-  VideoOff,
-} from "lucide-react";
+import { Send, Video, VideoOff } from "lucide-react";
 import Bubble from "./Chatbubble/Bubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import useSockets from "@/hooks/useSockets";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import SearchBox from "./SearchBox/SearchBox";
@@ -27,6 +20,7 @@ import { format } from "date-fns";
 import usePartialUserData from "@/hooks/usePartialUserData";
 import styled from "styled-components";
 import { User } from "@/types/types";
+import { useSocket } from "@/sockets/context";
 const Chat: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -35,38 +29,52 @@ const Chat: React.FC = () => {
   const [message, setMessage] = useState("");
   const [activeFriends, setActiveFriends] = useState<User[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const { socket } = useSockets();
+  const { socket } = useSocket();
   const { user } = useSelector((state: RootState) => state.auth);
   const selectedUser = useSelector(
     (state: RootState) => state.selectedUser.selectedUser
   );
-  const messages = useSelector((state: RootState) =>
-    selectedUser?._id && state.messages.chatHistories
+  const messages = useSelector((state: RootState) => {
+    const chatHistory = selectedUser?._id
       ? state.messages.chatHistories[selectedUser._id] || []
-      : []
-  );
+      : [];
+    return chatHistory;
+  });
   const dispatch = useDispatch();
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages, selectedUser]);
 
   const handleSendMessage = () => {
-    if (!message.trim() || !socket || !selectedUser) return;
+    if (!message.trim()) {
+        return;
+    }
+    if (!socket) {
+        return;
+    }
+    if (!selectedUser) {
+        return;
+    }
+
     const messageId = uuid();
-    dispatch(
-      addMyMessage({ message, to: selectedUser, messageId, sender: user! })
-    );
-    socket.emit(SOCKET_EVENTS.PRIVATE_MESSAGE, {
+    const messagePayload = {
       message: message.trim(),
       sender: user?._id,
       receiver: selectedUser._id,
       messageId,
-    });
+    };
+
+    dispatch(
+      addMyMessage({ message, to: selectedUser, messageId, sender: user! })
+    );
+
+    socket.emit(SOCKET_EVENTS.PRIVATE_MESSAGE, messagePayload);
+    
     setMessage("");
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSendMessage();
@@ -208,17 +216,6 @@ const Chat: React.FC = () => {
             >
               Add Connection
             </Button>
-            {(user?.notifications?.length ?? 0) > 0 ? (
-              <BellDotIcon
-                size={58}
-                className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-              />
-            ) : (
-              <Bell
-                size={58}
-                className="stroke-[#3f3f46] hover:stroke-black dark:stroke-gray-200 dark:hover:stroke-white cursor-pointer"
-              />
-            )}
           </div>
         </div>
 

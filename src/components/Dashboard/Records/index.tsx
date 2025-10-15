@@ -5,6 +5,7 @@ import { RootState } from "../../../redux/store/store";
 import { User } from "@/types/types";
 import { useNavigate } from "react-router-dom";
 import usePartialUserData from "@/hooks/usePartialUserData";
+import { useAiChatSocketEvents } from "./hooks/useAskAi";
 
 const MedicalRecords = () => {
   const [entities, setEntities] = useState<User[]>([]);
@@ -30,6 +31,7 @@ const MedicalRecords = () => {
   }, [user?.role, user?.patients, user?.doctors]);
   console.log("Entities:", entities);
   const navigate = useNavigate();
+  useAiChatSocketEvents();
   return (
     <div className="w-full h-full p-6 shadow-md bg-transparent flex flex-col gap-6">
       <div>

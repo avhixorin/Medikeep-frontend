@@ -9,7 +9,7 @@ import { setChatHistory } from "@/redux/features/messageSlice";
 import { useDispatch } from "react-redux";
 
 const usePartialUserData = () => {
-  const url = import.meta.env.VITE_USER_PARTIAL_DATA_URL;
+  const url = import.meta.env.VITE_BASE_URL + "/getUserData";
   const dispatch = useDispatch();
   const fetchPartialUserData = async (field: string) => {
     const res = await fetch(url, {
@@ -22,7 +22,6 @@ const usePartialUserData = () => {
     });
     if (res.ok) {
       const data = await res.json();
-      console.log("Data for the partial user", data)
       if (field === "appointments") {
         dispatch(setUserAppointments(data.data.appointments));
         dispatch(setUserAppointmentRequests(data.data.appointmentRequests));

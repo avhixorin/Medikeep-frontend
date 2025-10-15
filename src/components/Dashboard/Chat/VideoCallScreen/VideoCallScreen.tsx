@@ -9,10 +9,10 @@ import {
   X,
 } from "lucide-react";
 import useRTC from "@/hooks/useRTC";
-import useSockets from "@/hooks/useSockets";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { User } from "@/types/types";
 import toast from "react-hot-toast";
+import { useSocket } from "@/sockets/context";
 
 type VideoCallScreenProps = {
   setIsVideoCalling: (value: boolean) => void;
@@ -46,7 +46,7 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
   const localStreamRef = useRef<HTMLDivElement | null>(null);
 
   const { localStream, remoteStream, grabLocalMedia, createOffer } = useRTC();
-  const { socket } = useSockets();
+  const { socket } = useSocket();
   useEffect(() => {
     if (localVideoRef.current && localStream) {
       localVideoRef.current.srcObject = localStream;

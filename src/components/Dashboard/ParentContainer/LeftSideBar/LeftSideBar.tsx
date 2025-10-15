@@ -19,16 +19,16 @@ import VideoCallScreen from "../../Chat/VideoCallScreen/VideoCallScreen";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { useEffect, useState } from "react";
 import { User as LoggedInUser } from "@/types/types";
-import useSockets from "@/hooks/useSockets";
 import { useTranslation } from "react-i18next";
 import useAuth from "@/hooks/useAuth";
+import { useSocket } from "@/sockets/context";
 
 export default function LeftSidebar() {
   const user = useSelector((state: RootState) => state.auth.user);
   const admin = useSelector((state: RootState) => state.admin.admin);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { socket } = useSockets();
+  const { socket } = useSocket();
   const [someoneCalling, setSomeoneCalling] = useState(false);
   const [data, setData] = useState<{ from?: LoggedInUser }>({});
   const { logoutUser } = useAuth();
