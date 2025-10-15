@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 
 const useAllUsers = () => {
   const dispatch = useDispatch();
-  const fetchAllUsersUrl = import.meta.env.VITE_FETCH_ALL_USERS_URL;
+  const fetchAllUsersUrl = import.meta.env.VITE_BASE_URL + "/getUsers";
   const fetchAllUsers = async () => {
     const response = await axios.get(fetchAllUsersUrl, {
       withCredentials: true,

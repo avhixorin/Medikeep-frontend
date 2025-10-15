@@ -66,7 +66,7 @@ export const FileUpload = ({
     try {
       const formData = new FormData();
       formData.append("avatar", selectedFile);
-      const uploadUrl = import.meta.env.VITE_AVATAR_UPLOAD_URL;
+      const uploadUrl = import.meta.env.VITE_BASE_URL + "/upload";
       const response = await fetch(uploadUrl, {
         method: "POST",
         credentials: "include",

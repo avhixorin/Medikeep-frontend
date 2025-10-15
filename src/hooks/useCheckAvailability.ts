@@ -8,7 +8,7 @@ const useCheckAvailability = (username: string, email: string) => {
 
   const check = debounce(async () => {
     if (username || email) {
-      const res = await axios.post(import.meta.env.VITE_CHECK_AVAILABILITY_URL, { username, email });
+      const res = await axios.post(import.meta.env.VITE_BASE_URL + "/check/availability", { username, email });
       setUsernameExists(res.data.usernameExists);
       setEmailExists(res.data.emailExists);
     }

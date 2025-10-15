@@ -41,7 +41,7 @@ export const useUploadUserRecords = (): UseMutationResult<
       formData.append("target", target);
 
       const { data } = await axios.post(
-        import.meta.env.VITE_UPLOAD_FILES_URL,
+        import.meta.env.VITE_BASE_URL + "/upload-files",
         formData,
         {
           withCredentials: true,
@@ -86,7 +86,7 @@ export const useDeleteUserRecord = (): UseMutationResult<
       if (!id) throw new Error("ID of record is not specified");
 
       const { data } = await axios.post(
-        import.meta.env.VITE_DELETE_FILE_URL,
+        import.meta.env.VITE_BASE_URL + "/delete-file",
         { recordId: id },
         {
           withCredentials: true,
