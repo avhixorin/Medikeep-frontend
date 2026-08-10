@@ -323,7 +323,7 @@ const useAuth = () => {
 
   return {
     // Return the mutation functions and their states
-    loginUser: loginUserMutation.mutateAsync, // Expose mutateAsync for awaiting the result
+    loginUser: loginUserMutation.mutateAsync,
     loginUserStatus: loginUserMutation.status,
     loginUserLoading: loginUserMutation.isPending,
     loginUserError: loginUserMutation.error,

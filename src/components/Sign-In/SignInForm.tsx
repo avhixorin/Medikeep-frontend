@@ -17,8 +17,7 @@ import { resetAdmin } from "@/redux/features/adminSlice";
 import useAuth from "@/hooks/useAuth";
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const { loginUser } = useAuth();
+  const { loginUser, loginUserLoading } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -32,9 +31,7 @@ const SignInForm: React.FC = () => {
   });
 
   const handleSubmit = async (values: { email: string; password: string }) => {
-    setLoading(true);
     await loginUser(values);
-    setLoading(false);
   };
   useEffect(() => {
     dispatch(resetAllUsers());
@@ -144,12 +141,12 @@ const SignInForm: React.FC = () => {
 
                   <Button
                     className={`${
-                      loading ? "cursor-not-allowed" : "cursor-pointer"
+                      loginUserLoading ? "cursor-not-allowed" : "cursor-pointer"
                     }`}
                     type="submit"
-                    disabled={loading}
+                    disabled={loginUserLoading}
                   >
-                    {loading ? "Logging in..." : "Log in"}
+                    {loginUserLoading ? "Logging in..." : "Log in"}
                   </Button>
                 </Form>
               )}
