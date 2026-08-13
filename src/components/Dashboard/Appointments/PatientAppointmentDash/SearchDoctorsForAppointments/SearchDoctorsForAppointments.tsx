@@ -19,11 +19,12 @@ const SearchDoctorsForAppointments = ({
   const allUsers = useSelector((state: RootState) => state.allUsers.users);
   const doctors = allUsers.filter(
     (user: User) =>
-      user.role === "doctor" &&
+      user.role.toLowerCase() === "doctor" &&
       `${user.firstName} ${user.lastName}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase())
   );
+  console.log("The doctors available are", doctors)
   const handleRequest = (doctor: User) => {
     setIsRequesting(true);
     setRequestedDoctors(doctor);

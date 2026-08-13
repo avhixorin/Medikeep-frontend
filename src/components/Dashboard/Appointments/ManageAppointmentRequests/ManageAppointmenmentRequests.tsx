@@ -102,8 +102,8 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
                 <div className="flex justify-between">
                   <div>
                     <p className="text-gray-800 dark:text-gray-200 font-medium">
-                      {user?.role === "doctor" ? "Patient: " : "Doctor: "}
-                      {user?.role === "doctor"
+                      {user?.role === "DOCTOR" ? "Patient: " : "Doctor: "}
+                      {user?.role === "DOCTOR"
                         ? `${request?.patient?.firstName} ${request?.patient?.lastName}`
                         : `${request?.doctor?.firstName} ${request?.doctor?.lastName}`}
                     </p>
@@ -118,7 +118,7 @@ const ManageAppointmentRequests: React.FC<ManageAppointmentRequestsProps> = ({
                 </div>
 
                 <div className="flex space-x-3 justify-end">
-                  {user.role === "doctor" && (
+                  {user.role === "DOCTOR" && (
                     <button
                       disabled={isAccepting || isDeclining}
                       className="px-4 py-2 disabled:opacity-50 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
