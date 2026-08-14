@@ -1,398 +1,292 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns";
-import { toast } from "react-hot-toast";
-import axios from "axios";
-import { setRecords } from "@/redux/features/recordSlice";
-import { clearAuthUser, setAuthUser } from "@/redux/features/authSlice";
-import { setAdmin } from "@/redux/features/adminSlice";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { RootState } from "@/redux/store/store";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { User } from "@/types/types"; 
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import apiClient from '@/lib/api';
+import { useAuthStore } from '@/stores';
+import type { ApiResponse, SignInData, ForgotPasswordData, ResetPasswordData, User, RegistrationFormData } from '@/types';
+import { toast } from 'sonner';
+import { useNavigate } from '@tanstack/react-router';
 
-const useAuth = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+export function useAuth() {
+  const { login: storeLogin, logout: storeLogout, user, isAuthenticated } = useAuthStore();
   const queryClient = useQueryClient();
-  const baseUrl = import.meta.env.VITE_BASE_URL;
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  // --- Mutations ---
-
-  // Login User
-  const loginUserMutation = useMutation({
-    mutationFn: async (values: { email: string; password: string }) => {
-      const loginUrl = import.meta.env.VITE_BASE_URL + "/login";
-      const response = await fetch(loginUrl, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to log in");
-      }
-      return response.json();
+  const navigate = useNavigate();
+  const loginMutation = useMutation({
+    mutationFn: async (data: SignInData) => {
+      const response = await apiClient.post<ApiResponse<User>>(
+        '/users/login',
+        data
+      );
+      return response.data;
     },
     onSuccess: (data) => {
-      if (data?.statusCode === 200) {
-        toast.success("Logged in successfully");
-        if (data.data) {
-          dispatch(setAuthUser(data.data));
-          if (data.data._id === import.meta.env.VITE_ADMIN_ID) {
-            dispatch(setAdmin());
-          }
-        }
-        navigate("/dashboard");
-        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      if (data.success && data.data) {
+        storeLogin(data.data);
+        toast.success('Login successful');
+        queryClient.setQueryData(['user'], data.data);
       } else {
-        throw new Error(data.message || "Login failed");
+        toast.error(data.message || 'Login failed');
+        return Promise.reject(new Error(data.message || 'Login failed'));
       }
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "An error occurred while logging in");
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Login failed');
+      return Promise.reject(error);
     },
   });
 
-  // Register User
-  const registerUserMutation = useMutation({
-    mutationFn: async (user: User) => {
-      const registerUrl: string = import.meta.env.VITE_BASE_URL + "/register";
-      const response = await fetch(registerUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
+  const registerMutation = useMutation({
+    mutationFn: async (data: RegistrationFormData) => {
+      const response = await apiClient.post<
+        ApiResponse<{
+          authUser: User;
+          accessToken: string;
+          refreshToken: string;
+        }>
+      >('/users/register', data);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
+      if (!response.data.success || !response.data.data) {
+        throw new Error(
+          response.data.message || "Registration failed"
+        );
       }
-      return response.json();
+
+      return response.data;
+    },
+
+    onSuccess: (data) => {
+      const { authUser } = data.data!;
+
+      storeLogin(authUser);
+      toast.success("Registration successful");
+      queryClient.setQueryData(["user"], authUser);
+    },
+
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message ||
+        error.message ||
+        "Registration failed"
+      );
+    },
+  });
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiClient.post('/users/logout');
+    },
+    onSuccess: () => {
+      storeLogout();
+      queryClient.clear();
+      toast.success('Logged out successfully');
+      navigate({to: "/auth/login", replace: true})
+    },
+    onError: () => {
+      storeLogout();
+      queryClient.clear();
+    },
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (data: ForgotPasswordData) => {
+      const response = await apiClient.post<ApiResponse>('/users/forgot/verify', data);
+      return response.data;
     },
     onSuccess: (data) => {
       if (data.success) {
-        toast.success("User registered successfully");
-        navigate("/login");
+        toast.success('Password reset instructions sent');
       } else {
-        throw new Error(data.message || "Registration failed");
+        toast.error(data.message);
       }
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "An error occurred during registration");
-    },
-  });
-
-  // Logout User
-  const logoutUserMutation = useMutation({
-    mutationFn: async () => {
-      const logoutUrl = import.meta.env.VITE_BASE_URL + "/logout";
-      const response = await axios.post(
-        logoutUrl,
-        {},
-        { withCredentials: true, headers: { "Content-Type": "application/json" } }
-      );
-      if (response.status !== 200) {
-        throw new Error(response.data.message || "Logout failed");
-      }
-      return response.data;
-    },
-    onSuccess: () => {
-      dispatch(clearAuthUser());
-      toast.success("You have been logged out successfully.");
-      setTimeout(() => navigate("/login"), 0);
-      queryClient.invalidateQueries();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "An error occurred during logout.");
-    },
-  });
-
-  // Verify User (Forgot Password Step 1)
-  const verifyUserMutation = useMutation({
-    mutationFn: async ({ email, dateOfBirth }: { email: string; dateOfBirth: Date }) => {
-      const url = import.meta.env.VITE_FORGOT_URL1;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          dateOfBirth: format(dateOfBirth, "dd-MM-yyyy"),
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || `Verification failed: ${res.statusText}`);
-      }
-      return res.json();
-    },
-    onSuccess: (data) => {
-      if (data.statusCode === 200) {
-        toast.success("Verification successful.");
-      } else {
-        throw new Error(data.message || "Verification failed. Please check your details.");
-      }
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
-
-  // Verify OTP
-  const verifyUserOtpMutation = useMutation({
-    mutationFn: async ({ otp, mail }: { otp: string; mail: string }) => {
-      const res = await fetch(import.meta.env.VITE_BASE_URL + "/verify/otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ otp, email: mail }),
-      });
-      if (!res.ok) {
-        const errorMessage = await res.text();
-        throw new Error(errorMessage || "Something went wrong during OTP verification");
-      }
-      return res.json();
-    },
-    onSuccess: (data) => {
-      if (data.status === "success") {
-        toast.success("Email verified successfully!");
-        // Note: setIsEmailVerified and toggleOTPForm would typically be handled in the component
-        // where this mutation is called, not directly in the hook.
-      } else {
-        throw new Error("Invalid OTP. Please try again.");
-      }
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
-
-  // Reset Password
-  const resetPasswordMutation = useMutation({
-    mutationFn: async ({ email, dateOfBirth, password }: { email: string; dateOfBirth: Date; password: string }) => {
-      const url = import.meta.env.VITE_FORGOT_URL2;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          dateOfBirth: format(dateOfBirth, "dd-MM-yyyy"),
-          password,
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || `Password update failed: ${res.statusText}`);
-      }
-      return res.json();
-    },
-    onSuccess: (data) => {
-      if (data.statusCode === 200) {
-        toast.success("Password updated successfully.");
-      } else {
-        throw new Error(data.message || "Password update failed.");
-      }
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
-
-  // Validate Session - This could be a useQuery if it needs to fetch user data on mount,
-  // or remain a plain function if only called on demand (e.g., in a route guard).
-  // For simplicity, let's keep it as a standalone function for now,
-  // as it primarily deals with authentication side effects (dispatching setAuthUser).
-  const validateSession = async () => {
-    console.log("[validateSession] Starting session validation...");
-    if (user) {
-      return true; // If user is already in Redux, consider session valid
-    }
-    try {
-      console.log("[validateSession] Sending initial request to:", baseUrl + "/verify");
-      const res = await fetch(baseUrl + "/verify", {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      console.log("[validateSession] Initial response status:", res.status);
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log("[validateSession] Session valid. User data:", data.data);
-        dispatch(setAuthUser(data.data));
-        return true;
-      }
-
-      if (res.status === 401) {
-        console.warn("[validateSession] Session expired. Attempting refresh...");
-        const refreshUrl = baseUrl + "/generate/refresh"; // Corrected refresh URL based on baseUrl
-        console.log("[validateSession] Refresh URL:", refreshUrl);
-
-        const refRes = await fetch(refreshUrl, {
-          method: "GET",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        console.log("[validateSession] Refresh response status:", refRes.status);
-
-        if (refRes.ok) {
-          const data = await refRes.json();
-          console.log("[validateSession] Token refreshed. User data:", data.data);
-          dispatch(setAuthUser(data.data));
-          return true;
-        } else {
-          console.error("[validateSession] Refresh failed with status:", refRes.status);
-          dispatch(clearAuthUser()); // Clear user if refresh fails
-          navigate("/login"); // Redirect to login
-        }
-      }
-
-      console.warn("[validateSession] Session invalid and refresh failed.");
-      return false;
-    } catch (error) {
-      console.error("[validateSession] Unexpected error:", error);
-      dispatch(clearAuthUser()); // Clear user on unexpected error
-      navigate("/login"); // Redirect to login
-      return false;
-    }
-  };
-
-  // Update User Profile Fields
-  const updateFieldMutation = useMutation({
-    mutationFn: async (updatedUser: Partial<User>) => { // Accept Partial<User> for specific field updates
-      const { data } = await axios.patch(baseUrl + "/update", updatedUser, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-      if (data.statusCode !== 200) {
-        throw new Error(data.message || "Failed to update profile");
-      }
-      return data;
-    },
-    onSuccess: (data) => {
-      toast.success("Update successful");
-      if (data.data) {
-        dispatch(setAuthUser(data.data)); // Update Redux state with new user data
-      }
-      // Invalidate relevant queries if other parts of the app rely on user data
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
     onError: (error: any) => {
-      const errMsg = axios.isAxiosError(error) && error.response?.data?.message
-        ? error.response.data.message
-        : "Failed to update profile";
-      toast.error(errMsg);
+      toast.error(error.response?.data?.message || 'Failed to send reset instructions');
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (data: ResetPasswordData) => {
+      const response = await apiClient.post<ApiResponse>('/users/forgot/newPass', data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success('Password reset successful');
+      } else {
+        toast.error(data.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to reset password');
+    },
+  });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: Partial<User>) => {
+      const response = await apiClient.patch<ApiResponse<User>>('/users/update', data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.success && data.data) {
+        useAuthStore.getState().updateUser(data.data);
+        queryClient.setQueryData(['user'], data.data);
+        toast.success('Profile updated successfully');
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to update profile');
     },
   });
 
   const updatePasswordMutation = useMutation({
-    mutationFn: async ({ oldPassword, newPassword }: { oldPassword: string; newPassword: string }) => {
-      const { data } = await axios.patch(
-        baseUrl + "/update-password", 
-        { oldPassword, newPassword },
-        { withCredentials: true, headers: { "Content-Type": "application/json" } }
-      );
-      if (data.statusCode !== 200) {
-        throw new Error(data.message || "Failed to update password");
-      }
-      return data;
+    mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
+      const response = await apiClient.patch<ApiResponse>('/users/update/password', data);
+      return response.data;
     },
-    onSuccess: () => {
-      toast.success("Password updated successfully");
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success('Password updated successfully');
+      } else {
+        toast.error(data.message);
+      }
     },
     onError: (error: any) => {
-      const errMsg = axios.isAxiosError(error) && error.response?.data?.message
-        ? error.response.data.message
-        : "Failed to update password";
-      toast.error(errMsg);
+      toast.error(error.response?.data?.message || 'Failed to update password');
+    },
+  });
+
+  const deleteAccountMutation = useMutation({
+    mutationFn: async (password: string) => {
+      const response = await apiClient.delete<ApiResponse>('/users/delete/user', {
+        data: { password },
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        storeLogout();
+        queryClient.clear();
+        toast.success('Account deleted successfully');
+        navigate({ to: '/auth/login', replace: true });
+      } else {
+        toast.error(data.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to delete account');
+    },
+  });
+
+  const uploadAvatarMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      const response = await apiClient.post<ApiResponse<string>>(
+        '/users/upload',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.success && data.data) {
+        useAuthStore.getState().updateUser({ profilePicture: data.data });
+        queryClient.setQueryData(['user'], (old: User | undefined) =>
+          old ? { ...old, profilePicture: data.data } : old
+        );
+        toast.success('Profile picture updated successfully');
+      } else {
+        toast.error(data.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || 'Failed to update profile picture'
+      );
     },
   });
 
   return {
-    // Return the mutation functions and their states
-    loginUser: loginUserMutation.mutateAsync,
-    loginUserStatus: loginUserMutation.status,
-    loginUserLoading: loginUserMutation.isPending,
-    loginUserError: loginUserMutation.error,
-
-    registerUser: registerUserMutation.mutateAsync,
-    registerUserStatus: registerUserMutation.status,
-    registerUserLoading: registerUserMutation.isPending,
-    registerUserError: registerUserMutation.error,
-
-    logoutUser: async () => { // Wrap logout in a function to show SweetAlert
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You will be logged out of your account.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, log me out",
-        cancelButtonText: "No, cancel",
-        reverseButtons: true,
-      });
-
-      if (result.isConfirmed) {
-        logoutUserMutation.mutate();
-      } else {
-        toast("Logout cancelled.");
-      }
-    },
-    logoutUserLoading: logoutUserMutation.isPending,
-
-    verifyUser: verifyUserMutation.mutateAsync,
-    verifyUserLoading: verifyUserMutation.isPending,
-
-    verifyUserOtp: verifyUserOtpMutation.mutateAsync,
-    verifyUserOtpLoading: verifyUserOtpMutation.isPending,
-
-    resetPassword: resetPasswordMutation.mutateAsync,
-    resetPasswordLoading: resetPasswordMutation.isPending,
-
-    // getUserRecords will be used directly with useQuery in components,
-    // so we'll provide the function directly for the queryFn.
-    // It's not a mutation in this context.
-    getUserRecords: async (doctorId: string, patientId: string) => {
-      try {
-        const res = await axios.post(
-          import.meta.env.VITE_BASE_URL + "/get-records",
-          { doctorId, patientId },
-          { withCredentials: true, headers: { "Content-Type": "application/json" } }
-        );
-        if (res.status !== 200) {
-          throw new Error("Failed to fetch records");
-        }
-        dispatch(setRecords(res.data.records)); // Still dispatch to Redux for global state
-        return res.data.records;
-      } catch (error: unknown) {
-        const errMsg =
-          axios.isAxiosError(error) && error.response?.data?.message
-            ? error.response.data.message
-            : "Fetch failed";
-        console.error("Record fetching error:", error);
-        throw new Error(errMsg); 
-      }
-    },
-
-    validateSession,
-    updateField: updateFieldMutation.mutateAsync,
-    updateFieldLoading: updateFieldMutation.isPending,
-
-    updatePassword: updatePasswordMutation.mutateAsync,
-    updatePasswordLoading: updatePasswordMutation.isPending,
+    user,
+    isAuthenticated,
+    login: loginMutation.mutateAsync,
+    isLoginPending: loginMutation.isPending,
+    register: registerMutation.mutateAsync,
+    isRegisterPending: registerMutation.isPending,
+    logout: logoutMutation.mutate,
+    isLogoutPending: logoutMutation.isPending,
+    forgotPassword: forgotPasswordMutation.mutate,
+    isForgotPasswordPending: forgotPasswordMutation.isPending,
+    resetPassword: resetPasswordMutation.mutate,
+    isResetPasswordPending: resetPasswordMutation.isPending,
+    updateProfile: updateProfileMutation.mutate,
+    isUpdateProfilePending: updateProfileMutation.isPending,
+    updatePassword: updatePasswordMutation.mutate,
+    isUpdatePasswordPending: updatePasswordMutation.isPending,
+    deleteAccount: deleteAccountMutation.mutate,
+    isDeleteAccountPending: deleteAccountMutation.isPending,
+    uploadAvatar: uploadAvatarMutation.mutate,
+    isUploadAvatarPending: uploadAvatarMutation.isPending,
   };
-};
+}
 
-export default useAuth;
+export function useCurrentUser() {
+  const { user } = useAuthStore();
+  return useQuery({
+    queryKey: ["user"],
+
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<User>>(
+        "/users/verify"
+      );
+
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+
+      throw new Error(
+        response.data.message || "Session verification failed"
+      );
+    },
+    enabled: !!user,
+    retry: false,
+  });
+}
+
+export function useUser(username: string) {
+  return useQuery({
+    queryKey: ['user', username],
+    queryFn: async () => {
+      const response = await apiClient.post<ApiResponse<User>>('/users/getUserData', { username });
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      throw new Error('Failed to fetch user');
+    },
+    enabled: !!username,
+  });
+}
+
+export function useUsers() {
+  return useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<User[]>>('/users/getUsers');
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      throw new Error('Failed to fetch users');
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useCheckAvailability() {
+  return useMutation({
+    mutationFn: async (data: { type: 'username' | 'email'; value: string }) => {
+      const response = await apiClient.post<ApiResponse<{ available: boolean }>>(
+        '/users/check/availability',
+        data
+      );
+      return response.data;
+    },
+  });
+}
