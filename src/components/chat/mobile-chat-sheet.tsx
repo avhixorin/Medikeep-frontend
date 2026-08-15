@@ -4,6 +4,8 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { useSocketEmitters } from '@/hooks';
 import { useAuthStore } from '@/stores/authStore';
 import { useChatStore } from '@/stores/chatStore';
+import { useVideoCall } from '@/components/video-call/video-call-context';
+import type { ChatConversation } from '@/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -18,22 +20,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-interface Conversation {
-  friendId: string;
-  chatHistory: {
-    messageId: string;
-    message: string;
-    sender: string;
-    timestamp?: string;
-  }[];
-  friend?: {
-    firstName?: string;
-    lastName?: string;
-    profilePicture?: string;
-  };
-  unreadCount?: number;
-}
-
 export function MobileChatSheet({
   open,
   conversation,
@@ -41,13 +27,14 @@ export function MobileChatSheet({
   onClose,
 }: {
   open: boolean;
-  conversation: Conversation | null;
+  conversation: ChatConversation | null;
   online: boolean;
   onClose: () => void;
 }) {
   const { user } = useAuthStore();
   const { sendMessage } = useSocketEmitters();
   const { markAsRead } = useChatStore();
+  const { startCall } = useVideoCall();
   const [messageInput, setMessageInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -113,6 +100,11 @@ export function MobileChatSheet({
                 <Button
                   variant="ghost"
                   size="icon"
+                  onClick={() => {
+                    if (conversation.friend) {
+                      startCall(conversation.friendId, conversation.friend, true);
+                    }
+                  }}
                   aria-label="Start audio call"
                 >
                   <Phone className="h-5 w-5" />
@@ -121,6 +113,11 @@ export function MobileChatSheet({
                   variant="ghost"
                   size="icon"
                   className="text-primary"
+                  onClick={() => {
+                    if (conversation.friend) {
+                      startCall(conversation.friendId, conversation.friend, false);
+                    }
+                  }}
                   aria-label="Start video call"
                 >
                   <Video className="h-5 w-5" />

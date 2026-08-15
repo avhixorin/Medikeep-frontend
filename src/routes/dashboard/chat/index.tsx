@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar';
 import { Badge } from '#/components/ui/badge';
 import { Button } from '#/components/ui/button';
 import { Input } from '#/components/ui/input';
-import { useSocketEmitters, useConnections } from '#/hooks';
+import { useSocketEmitters, useConnections, useIsMobile } from '#/hooks';
 import { useAuthStore } from '#/stores/authStore';
 import { useChatStore } from '#/stores/chatStore';
 import { createFileRoute } from '@tanstack/react-router'
@@ -24,6 +24,7 @@ function ChatPage() {
   const { sendMessage } = useSocketEmitters();
   const { conversations, connectionRequests, isLoading } = useConnections();
   const { startCall } = useVideoCall();
+  const isMobile = useIsMobile();
 
   const [isConnectionsOpen, setIsConnectionsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -345,7 +346,7 @@ function ChatPage() {
       {isConnectionsOpen && <ConnectionsModal onClose={() => setIsConnectionsOpen(false)} />}
 
       <MobileChatSheet
-        open={!!activeConversationId}
+        open={isMobile && !!activeConversationId}
         conversation={activeConversation ?? null}
         online={activeConversation ? isOnline(activeConversation.friendId) : false}
         onClose={() => setActiveConversation(null)}
