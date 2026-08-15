@@ -1,5 +1,6 @@
 import { DashboardShell } from '#/components/layout';
 import { ConnectionsModal } from '#/components/chat/connections-modal';
+import { MobileChatSheet } from '#/components/chat/mobile-chat-sheet';
 import { useVideoCall } from '#/components/video-call/video-call-context';
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar';
 import { Badge } from '#/components/ui/badge';
@@ -342,6 +343,13 @@ function ChatPage() {
       </div>
 
       {isConnectionsOpen && <ConnectionsModal onClose={() => setIsConnectionsOpen(false)} />}
+
+      <MobileChatSheet
+        open={!!activeConversationId}
+        conversation={activeConversation ?? null}
+        online={activeConversation ? isOnline(activeConversation.friendId) : false}
+        onClose={() => setActiveConversation(null)}
+      />
     </DashboardShell>
   );
 }
