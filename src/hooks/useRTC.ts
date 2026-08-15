@@ -37,21 +37,68 @@ export function useRTC() {
   const busyRef = useRef(false);
   const ringtoneRef = useRef<{ stop: () => void } | null>(null);
 
-  const { socket, on, off } = useSocket();
+  const { socket, on, off, isConnected } = useSocket();
 
   const servers = useMemo(
-    () => ({
-      iceServers: [
+    () => {
+      const iceServers: RTCIceServer[] = [
         {
           urls: [
             'stun:stun1.l.google.com:19302',
             'stun:stun2.l.google.com:19302',
           ],
         },
-      ],
-    }),
+      ];
+
+      // TURN relays traffic when a direct STUN connection can't be made
+      // (mobile devices behind symmetric NAT, cellular networks, etc.).
+      // Configure via VITE_TURN_URL (comma-separated for multiple endpoints)
+      // plus VITE_TURN_USERNAME / VITE_TURN_CREDENTIAL (e.g. Metered).
+      const turnUrl = import.meta.env.VITE_TURN_URL;
+      const turnUsername = import.meta.env.VITE_TURN_USERNAME;
+      const turnCredential = import.meta.env.VITE_TURN_CREDENTIAL;
+
+      if (turnUrl) {
+        const urls = turnUrl
+          .split(',')
+          .map((u: string) => u.trim())
+          .filter(Boolean);
+        if (urls.length > 0) {
+          const turnServer: RTCIceServer = { urls };
+          if (turnUsername && turnCredential) {
+            turnServer.username = turnUsername;
+            turnServer.credential = turnCredential;
+          }
+          iceServers.push(turnServer);
+        }
+      } else if (import.meta.env.DEV) {
+        // Free public relay for local development only (limited bandwidth).
+        iceServers.push({ urls: 'turn:openrelay.metered.ca:80' });
+      }
+
+      return { iceServers };
+    },
     []
   );
+
+  // Fetch ephemeral STUN/TURN credentials from Twilio (via the backend) so
+  // mobile calls can traverse symmetric NATs. Returns null on failure so the
+  // base servers are still used as a fallback.
+  const fetchTwilioTurn = useCallback(async (): Promise<RTCIceServer[] | null> => {
+    try {
+      const res = await fetch('/api/v1/users/turn/credentials', {
+        credentials: 'include',
+      });
+      if (!res.ok) return null;
+      const json = await res.json();
+      if (!json.success) return null;
+      const servers = json.data;
+      return Array.isArray(servers) && servers.length > 0 ? servers : null;
+    } catch (error) {
+      console.error('Failed to fetch Twilio TURN credentials:', error);
+      return null;
+    }
+  }, []);
 
   const resetToIdle = useCallback((callStatus: VideoCallState['callStatus'] = 'idle') => {
     busyRef.current = false;
@@ -171,8 +218,10 @@ export function useRTC() {
   );
 
   const createPeerConnection = useCallback(
-    (to: string) => {
-      const peerConnection = new RTCPeerConnection(servers);
+    (to: string, iceServers?: RTCIceServer[]) => {
+      const peerConnection = new RTCPeerConnection(
+        iceServers ? { iceServers } : servers,
+      );
 
       peerConnection.ontrack = (event) => {
         setRemoteStream((prevStream) => {
@@ -236,8 +285,11 @@ export function useRTC() {
       busyRef.current = true;
 
       try {
+        const twilioServers = await fetchTwilioTurn();
+        const iceServers = twilioServers ?? undefined;
+
         await grabLocalMedia(audioOnly);
-        const peerConnection = createPeerConnection(to);
+        const peerConnection = createPeerConnection(to, iceServers);
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
         pendingOfferRef.current = offer;
@@ -258,7 +310,7 @@ export function useRTC() {
         busyRef.current = false;
       }
     },
-    [createPeerConnection, grabLocalMedia, socket]
+    [createPeerConnection, grabLocalMedia, socket, fetchTwilioTurn]
   );
 
   const handleIncomingCall = useCallback(
@@ -298,8 +350,9 @@ export function useRTC() {
     // Prepare the callee side immediately so ICE candidates can be received
     // while the offer is in flight.
     try {
+      const twilioServers = await fetchTwilioTurn();
       await grabLocalMedia(callState.audioOnly);
-      createPeerConnection(callState.caller._id);
+      createPeerConnection(callState.caller._id, twilioServers ?? undefined);
     } catch (error) {
       console.error('Error accepting call:', error);
     }
@@ -310,7 +363,7 @@ export function useRTC() {
       isIncomingCall: false,
       callStatus: 'connecting',
     }));
-  }, [callState.caller, createPeerConnection, grabLocalMedia, socket, stopRingtone]);
+  }, [callState.caller, callState.audioOnly, createPeerConnection, fetchTwilioTurn, grabLocalMedia, socket, stopRingtone]);
 
   const declineCall = useCallback(() => {
     if (callState.caller) {
@@ -450,7 +503,7 @@ export function useRTC() {
       off(SOCKET_EVENTS.VIDEO_CALL_RESPONSE, handleVideoCallResponse);
       off(SOCKET_EVENTS.RTC_EVENT, handleRTCEvent);
     };
-  }, [on, off, handleIncomingCall, handleVideoCallResponse, handleRTCEvent]);
+  }, [on, off, isConnected, handleIncomingCall, handleVideoCallResponse, handleRTCEvent]);
 
   const toggleMute = useCallback(() => {
     const audioTrack = localStreamRef.current?.getAudioTracks()[0];

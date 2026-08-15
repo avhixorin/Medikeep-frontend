@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -34,6 +34,7 @@ const addNotification = (
 
 export function useSocket() {
   const socketRef = useRef<Socket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
   const { isAuthenticated } = useAuthStore();
   const queryClient = useQueryClient();
   const { addMessage, addOnlineUser, removeOnlineUser } = useChatStore();
@@ -54,6 +55,12 @@ export function useSocket() {
 
     socketRef.current.on('connect', () => {
       console.log('Socket connected');
+      setIsConnected(true);
+    });
+
+    socketRef.current.on('disconnect', () => {
+      console.log('Socket disconnected');
+      setIsConnected(false);
     });
 
     socketRef.current.on('connect_error', (error) => {
@@ -189,6 +196,7 @@ export function useSocket() {
       socketRef.current.disconnect();
       socketRef.current = null;
     }
+    setIsConnected(false);
   }, []);
 
   useEffect(() => {
@@ -223,7 +231,7 @@ export function useSocket() {
 
   return {
     socket: socketRef.current,
-    isConnected: socketRef.current?.connected || false,
+    isConnected,
     emit,
     on,
     off,
