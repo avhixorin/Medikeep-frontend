@@ -63,7 +63,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-40 flex h-screen flex-col border-r bg-background transition-all duration-300',
+        'fixed left-0 top-0 z-40 hidden h-screen flex-col border-r bg-background transition-all duration-300 lg:flex',
         isSidebarCollapsed ? 'w-16' : 'w-70'
       )}
     >
@@ -217,11 +217,14 @@ export function MobileSidebar() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="lg:hidden p-2 -ml-2 mr-2">
+        <button
+          className="cursor-pointer lg:hidden p-2 -ml-2 mr-2 z-40"
+          aria-label="Open navigation menu"
+        >
           <Menu className="h-6 w-6" />
         </button>
       </SheetTrigger>
-      <SheetContent className="w-75 p-0">
+      <SheetContent side="left" className="w-75 p-0">
         <div className="flex h-16 items-center border-b px-4">
           <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600">
