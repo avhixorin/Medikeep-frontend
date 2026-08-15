@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ export const Route = createFileRoute('/auth/forgot-password')({
 type Step = 'email' | 'otp' | 'newPassword' | 'success';
 
 function ForgotPasswordPage() {
-  const { forgotPassword, resetPassword } = useAuth();
+  const { forgotPassword, resetPassword, verifyOtp, isVerifyOtpPending } = useAuth();
   
   const [step, setStep] = useState<Step>('email');
   const [formData, setFormData] = useState({
@@ -23,6 +23,16 @@ function ForgotPasswordPage() {
     newPassword: '',
     confirmPassword: '',
   });
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [resendCountdown, setResendCountdown] = useState(0);
+
+  useEffect(() => {
+    if (resendCountdown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCountdown((prev) => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCountdown]);
 
   const validateStep = () => {
     const newErrors: Record<string, string> = {};
@@ -61,16 +71,39 @@ function ForgotPasswordPage() {
   const handleSubmitEmail = async () => {
     if (!validateStep()) return;
     
+    setOtpError(null);
     forgotPassword({ email: formData.email }, {
       onSuccess: () => {
+        setResendCountdown(30);
         setStep('otp');
       },
     });
   };
 
-  const handleVerifyOTP = () => {
+  const handleVerifyOTP = async () => {
     if (!validateStep()) return;
-    setStep('newPassword');
+    setOtpError(null);
+
+    try {
+      await verifyOtp({ email: formData.email, otp: formData.otp });
+      setStep('newPassword');
+    } catch (error: any) {
+      setOtpError(
+        error.response?.data?.message ||
+        'Invalid OTP. Please check the code and try again.'
+      );
+    }
+  };
+
+  const handleResend = () => {
+    setOtpError(null);
+    setFormData((prev) => ({ ...prev, otp: '' }));
+    forgotPassword({ email: formData.email }, {
+      onSuccess: () => {
+        setResendCountdown(30);
+        setOtpError(null);
+      },
+    });
   };
 
   const handleResetPassword = async () => {
@@ -149,12 +182,18 @@ function ForgotPasswordPage() {
                 <p className="text-center text-sm text-slate-600 dark:text-slate-400 mt-4">
                   Didn't receive the code?{' '}
                   <button 
-                    onClick={() => forgotPassword({ email: formData.email })}
-                    className="text-primary-600 hover:underline font-medium"
+                    onClick={handleResend}
+                    disabled={resendCountdown > 0}
+                    className="text-primary-600 hover:underline font-medium disabled:text-slate-400 disabled:cursor-not-allowed"
                   >
-                    Resend
+                    {resendCountdown > 0 ? `Resend in ${resendCountdown}s` : 'Resend'}
                   </button>
                 </p>
+                {otpError && (
+                  <p className="text-center text-sm text-red-500 mt-2">
+                    {otpError}
+                  </p>
+                )}
               </div>
             )}
 
@@ -201,21 +240,21 @@ function ForgotPasswordPage() {
               </div>
             )}
 
-            {step !== 'success' && (
-              <Button
-                onClick={
-                  step === 'email' ? handleSubmitEmail :
-                  step === 'otp' ? handleVerifyOTP :
-                  handleResetPassword
-                }
-                className="w-full"
-              >
-                {step === 'email' && 'Send Code'}
-                {step === 'otp' && 'Verify Code'}
-                {step === 'newPassword' && 'Reset Password'}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
+                {step !== 'success' && (
+                  <Button
+                    onClick={
+                      step === 'email' ? handleSubmitEmail :
+                      step === 'otp' ? handleVerifyOTP :
+                      handleResetPassword
+                    }
+                    className="w-full"
+                  >
+                    {step === 'email' && 'Send Code'}
+                    {step === 'otp' && (isVerifyOtpPending ? 'Verifying...' : 'Verify Code')}
+                    {step === 'newPassword' && 'Reset Password'}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
           </div>
 
           {step !== 'success' && (

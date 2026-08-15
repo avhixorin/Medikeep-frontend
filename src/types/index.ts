@@ -105,6 +105,7 @@ export interface Doctor extends User {
 }
 
 export interface Notification {
+  _id?: string;
   type: 'connection' | 'appointment' | 'message' | 'system';
   message: string;
   time: string;
@@ -142,6 +143,7 @@ export type DocumentType =
   | 'BLOOD_REPORT'
   | 'ECG_REPORT'
   | 'XRAY_REPORT'
+  | 'SONOGRAPHY_REPORT'
   | 'OTHER';
 
 export interface MedicalRecord {
@@ -200,16 +202,6 @@ export interface AppointmentRescheduleData {
 export interface AppointmentsData {
   appointments: Appointment[];
   appointmentRequests: Appointment[];
-}
-
-export interface HealthVital {
-  _id: string;
-  userId: string;
-  type: 'blood_pressure' | 'heart_rate' | 'blood_sugar' | 'weight' | 'height' | 'temperature' | 'oxygen_saturation';
-  value: number;
-  unit: string;
-  recordedAt: string;
-  notes?: string;
 }
 
 export interface VideoCallState {

@@ -26,6 +26,7 @@ const DOCUMENT_TYPE_LABELS: Record<string, string> = {
   BLOOD_REPORT: 'Blood Report',
   ECG_REPORT: 'ECG Report',
   XRAY_REPORT: 'X-Ray Report',
+  SONOGRAPHY_REPORT: 'Sonography Report',
   OTHER: 'Other',
 };
 

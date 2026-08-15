@@ -33,6 +33,7 @@ const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
   BLOOD_REPORT: 'Blood Report',
   ECG_REPORT: 'ECG Report',
   XRAY_REPORT: 'X-Ray Report',
+  SONOGRAPHY_REPORT: 'Sonography Report',
   OTHER: 'Other',
 };
 
@@ -119,6 +120,7 @@ function RecordDetailsPage() {
         </div>
 
         <div
+          onClick={() => fileInputRef.current?.click()}
           onDragOver={(e) => {
             e.preventDefault();
             if (!isUploading) setIsDragging(true);
@@ -126,7 +128,7 @@ function RecordDetailsPage() {
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           className={cn(
-            'border-2 border-dashed rounded-xl p-8 text-center transition-colors',
+            'border-2 cursor-pointer border-dashed rounded-xl p-8 text-center transition-colors',
             isUploading
               ? 'border-primary-300 bg-primary-50/60 dark:border-primary-800 dark:bg-primary-900/10 cursor-not-allowed'
               : isDragging
@@ -151,13 +153,7 @@ function RecordDetailsPage() {
               <p className="text-sm font-medium text-primary-600">Uploading and processing...</p>
             ) : (
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="font-medium text-primary-600"
-                >
-                  Click to upload
-                </button>{' '}
-                or drag and drop
+                Click to upload or drag and drop
               </p>
             )}
             <p className="text-xs text-slate-500">PDF, JPG, PNG up to 50MB each</p>

@@ -18,6 +18,7 @@ interface UIState {
   setSearchQuery: (query: string) => void;
   addNotification: (notification: Notification) => void;
   markNotificationAsRead: (notificationId: string) => void;
+  markAllNotificationsAsRead: () => void;
   clearNotifications: () => void;
   incrementUnreadNotifications: () => void;
   resetUnreadNotifications: () => void;
@@ -25,10 +26,10 @@ interface UIState {
 
 interface Notification {
   id: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'connection' | 'appointment' | 'message' | 'system';
   title: string;
   message: string;
-  timestamp: Date;
+  time: string;
   read: boolean;
 }
 
@@ -58,14 +59,31 @@ export const useUIStore = create<UIState>()(
       addNotification: (notification) =>
         set((state) => ({
           notifications: [notification, ...state.notifications],
-          unreadNotificationsCount: state.unreadNotificationsCount + 1,
+          unreadNotificationsCount: notification.read
+            ? state.unreadNotificationsCount
+            : state.unreadNotificationsCount + 1,
         })),
       
       markNotificationAsRead: (notificationId) =>
+        set((state) => {
+          const notification = state.notifications.find(
+            (n) => n.id === notificationId
+          );
+          return {
+            notifications: state.notifications.map((n) =>
+              n.id === notificationId ? { ...n, read: true } : n
+            ),
+            unreadNotificationsCount:
+              notification && !notification.read
+                ? Math.max(0, state.unreadNotificationsCount - 1)
+                : state.unreadNotificationsCount,
+          };
+        }),
+      
+      markAllNotificationsAsRead: () =>
         set((state) => ({
-          notifications: state.notifications.map((n) =>
-            n.id === notificationId ? { ...n, read: true } : n
-          ),
+          notifications: state.notifications.map((n) => ({ ...n, read: true })),
+          unreadNotificationsCount: 0,
         })),
       
       clearNotifications: () => set({ notifications: [], unreadNotificationsCount: 0 }),

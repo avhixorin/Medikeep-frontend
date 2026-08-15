@@ -1,13 +1,14 @@
 import { Link } from '@tanstack/react-router';
-import { Search, Bell } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useAuthStore, useUIStore } from '@/stores';
 import { MobileSidebar } from './Sidebar';
 import ThemeToggle from '../ui/theme-toggle';
+import { NotificationsDropdown } from './NotificationsDropdown';
 
 export function TopBar() {
   const { user } = useAuthStore();
-  const { unreadNotificationsCount, isSidebarCollapsed, toggleSidebar } = useUIStore();
+  const { isSidebarCollapsed, toggleSidebar } = useUIStore();
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background px-4 lg:px-8">
       <div className="flex items-center">
@@ -46,14 +47,7 @@ export function TopBar() {
           />
         </div>
 
-        <button className="relative rounded-md p-2 hover:bg-accent">
-          <Bell className="h-5 w-5" />
-          {unreadNotificationsCount > 0 && (
-            <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger-500 text-[10px] font-medium text-white">
-              {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
-            </span>
-          )}
-        </button>
+        <NotificationsDropdown />
 
         <ThemeToggle />
         {/* User Menu */}

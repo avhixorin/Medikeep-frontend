@@ -1,10 +1,12 @@
-import { Shield } from "lucide-react";
+import { Shield, RefreshCw, Loader2 } from "lucide-react";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import type { RegistrationFormData } from "#/types";
 import { useAuth } from "#/hooks/useAuth";
 import { otpSchema } from "#/schemas/registration.schema";
+
+const RESEND_COOLDOWN_SECONDS = 30;
 
 const OtpStep = ({
     form,
@@ -16,7 +18,37 @@ const OtpStep = ({
     const [otp, setOtp] = useState("");
     const [isOtpVerified, setIsOtpVerified] = useState(false);
     const [otpError, setOtpError] = useState<string | null>(null);
-    const { register } = useAuth();
+    const [sentMessage, setSentMessage] = useState<string | null>(null);
+    const [countdown, setCountdown] = useState(0);
+    const { register, sendOtp, verifyOtp, isSendOtpPending, isVerifyOtpPending } = useAuth();
+
+    const sendCode = async () => {
+        setOtpError(null);
+        setSentMessage(null);
+        try {
+            await sendOtp(form.email);
+            setSentMessage("A verification code has been sent to your email.");
+            setCountdown(RESEND_COOLDOWN_SECONDS);
+        } catch (error: any) {
+            setOtpError(
+                error.response?.data?.message ||
+                "Failed to send the verification code. Please try again."
+            );
+        }
+    };
+
+    useEffect(() => {
+        sendCode();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (countdown <= 0) return;
+        const timer = setInterval(() => {
+            setCountdown((prev) => (prev <= 1 ? 0 : prev - 1));
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [countdown]);
 
     const handleCreateAccount = async () => {
         try {
@@ -37,19 +69,18 @@ const OtpStep = ({
             return;
         }
 
-        const success = await verifyOtp();
-
-        if (success) {
+        try {
+            await verifyOtp({ email: form.email, otp });
             setIsOtpVerified(true);
-        } else {
-            setOtpError("Invalid OTP");
+            setOtpError(null);
+        } catch (error: any) {
+            setOtpError(
+                error.response?.data?.message ||
+                "Invalid OTP. Please check the code and try again."
+            );
         }
     };
 
-    const verifyOtp = async (): Promise<boolean> => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        return otp === "123456";
-    }
     return (
         <div className="space-y-6 text-center py-6">
             <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -63,8 +94,9 @@ const OtpStep = ({
             </p>
             <Input
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="000000"
+                disabled={isOtpVerified}
                 className={`text-center text-3xl tracking-[1em] h-16 bg-slate-50 mt-6 ${otpError
                     ? "border-red-400 focus-visible:ring-red-500"
                     : "border-slate-200"
@@ -76,18 +108,43 @@ const OtpStep = ({
                     {otpError}
                 </p>
             )}
+            {sentMessage && !otpError && (
+                <p className="text-sm text-green-600">
+                    {sentMessage}
+                </p>
+            )}
             {!isOtpVerified ? (
-                <Button
-                    onClick={handleVerifyOtp}
-                >
-                    Verify OTP
-                </Button>
+                <div className="flex flex-col items-center gap-3">
+                    <Button
+                        onClick={handleVerifyOtp}
+                        disabled={isVerifyOtpPending || isSendOtpPending || otp.length !== 6}
+                    >
+                        {isVerifyOtpPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Verify OTP
+                    </Button>
+                    <button
+                        type="button"
+                        onClick={sendCode}
+                        disabled={countdown > 0 || isSendOtpPending}
+                        className="text-sm text-indigo-600 hover:text-indigo-700 hover:underline underline-offset-4 transition-all flex items-center gap-1 cursor-pointer disabled:text-slate-400 disabled:cursor-not-allowed"
+                    >
+                        <RefreshCw className={`h-3.5 w-3.5 ${isSendOtpPending ? "animate-spin" : ""}`} />
+                        {countdown > 0
+                            ? `Resend code in ${countdown}s`
+                            : "Resend code"}
+                    </button>
+                </div>
             ) : (
-                <Button
-                    onClick={handleCreateAccount}
-                >
-                    Create Account
-                </Button>
+                <div className="flex flex-col items-center gap-3">
+                    <p className="text-sm text-green-600 font-medium">
+                        Email verified successfully!
+                    </p>
+                    <Button
+                        onClick={handleCreateAccount}
+                    >
+                        Create Account
+                    </Button>
+                </div>
             )}
         </div>
     )

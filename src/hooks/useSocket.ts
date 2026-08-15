@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { SOCKET_EVENTS } from '@/constants/socketEvents';
-import { useAuthStore, useChatStore } from '@/stores';
+import { useAuthStore, useChatStore, useUIStore } from '@/stores';
 import { APPOINTMENTS_QUERY_KEY } from '@/hooks/useAppointments';
 import { CONNECTIONS_QUERY_KEY } from '@/hooks/useConnections';
 import type { ChatMessage, User, Appointment, ApiResponse } from '@/types';
@@ -11,6 +11,25 @@ import { toast } from 'sonner';
 
 type AppointmentEventPayload = ApiResponse<Appointment> & {
   appointment?: Appointment;
+};
+
+const addNotification = (
+  type: 'connection' | 'appointment' | 'message' | 'system',
+  message: string
+) => {
+  const state = useUIStore.getState();
+  const isDuplicate = state.notifications.some(
+    (n) => n.message === message && n.type === type
+  );
+  if (isDuplicate) return;
+  state.addNotification({
+    id: crypto.randomUUID(),
+    type,
+    title: message,
+    message,
+    time: new Date().toISOString(),
+    read: false,
+  });
 };
 
 export function useSocket() {
@@ -65,6 +84,10 @@ export function useSocket() {
         toast.info(`New message from ${data.sender.username || 'Unknown'}`, {
           description: data.message,
         });
+        addNotification(
+          'message',
+          `New message from ${data.sender.username || 'Unknown'}`
+        );
       }
     });
 
@@ -76,6 +99,7 @@ export function useSocket() {
       from: Partial<User>;
     }) => {
       toast.info(data.message);
+      addNotification('connection', data.message);
       queryClient.invalidateQueries({
         queryKey: CONNECTIONS_QUERY_KEY,
       });
@@ -86,6 +110,7 @@ export function useSocket() {
       accepter: Partial<User>;
     }) => {
       toast.success(data.message);
+      addNotification('connection', data.message);
       queryClient.invalidateQueries({
         queryKey: CONNECTIONS_QUERY_KEY,
       });
@@ -96,6 +121,7 @@ export function useSocket() {
       rejecterId: string;
     }) => {
       toast.error(data.message);
+      addNotification('connection', data.message);
       queryClient.invalidateQueries({
         queryKey: CONNECTIONS_QUERY_KEY,
       });
@@ -109,6 +135,7 @@ export function useSocket() {
     ) => {
       if (payload.message) {
         toastFn(payload.message);
+        addNotification('appointment', payload.message);
       }
       queryClient.invalidateQueries({ queryKey: APPOINTMENTS_QUERY_KEY });
     };

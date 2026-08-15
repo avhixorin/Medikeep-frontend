@@ -85,26 +85,43 @@ export function useAuth() {
     },
   });
 
+  const sendOtpMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const response = await apiClient.post<ApiResponse>('/users/verify/send-otp', { email });
+      return response.data;
+    },
+  });
+
+  const verifyOtpMutation = useMutation({
+    mutationFn: async (data: { email: string; otp: string }) => {
+      const response = await apiClient.post<ApiResponse>('/users/verify/otp', data);
+      return response.data;
+    },
+  });
+
   const forgotPasswordMutation = useMutation({
     mutationFn: async (data: ForgotPasswordData) => {
-      const response = await apiClient.post<ApiResponse>('/users/forgot/verify', data);
+      const response = await apiClient.post<ApiResponse>('/users/verify/send-otp', data);
       return response.data;
     },
     onSuccess: (data) => {
       if (data.success) {
-        toast.success('Password reset instructions sent');
+        toast.success('Verification code sent to your email');
       } else {
         toast.error(data.message);
       }
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to send reset instructions');
+      toast.error(error.response?.data?.message || 'Failed to send verification code');
     },
   });
 
   const resetPasswordMutation = useMutation({
     mutationFn: async (data: ResetPasswordData) => {
-      const response = await apiClient.post<ApiResponse>('/users/forgot/newPass', data);
+      const response = await apiClient.post<ApiResponse>('/users/forgot/newPass', {
+        email: data.email,
+        password: data.newPassword,
+      });
       return response.data;
     },
     onSuccess: (data) => {
@@ -213,6 +230,10 @@ export function useAuth() {
     isRegisterPending: registerMutation.isPending,
     logout: logoutMutation.mutate,
     isLogoutPending: logoutMutation.isPending,
+    sendOtp: sendOtpMutation.mutateAsync,
+    isSendOtpPending: sendOtpMutation.isPending,
+    verifyOtp: verifyOtpMutation.mutateAsync,
+    isVerifyOtpPending: verifyOtpMutation.isPending,
     forgotPassword: forgotPasswordMutation.mutate,
     isForgotPasswordPending: forgotPasswordMutation.isPending,
     resetPassword: resetPasswordMutation.mutate,
@@ -276,17 +297,5 @@ export function useUsers() {
       throw new Error('Failed to fetch users');
     },
     staleTime: 5 * 60 * 1000,
-  });
-}
-
-export function useCheckAvailability() {
-  return useMutation({
-    mutationFn: async (data: { type: 'username' | 'email'; value: string }) => {
-      const response = await apiClient.post<ApiResponse<{ available: boolean }>>(
-        '/users/check/availability',
-        data
-      );
-      return response.data;
-    },
   });
 }
